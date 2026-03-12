@@ -410,6 +410,242 @@
 
     <div id="admin-add" class="admin-card" style="display:none">
       <h3 style="margin:0 0 8px;font-family:Poppins">Add New Stove/Product</h3>
+   imation: marquee 20s linear infinite;
+  }
+  @keyframes marquee {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+  }
+
+  /* Admin CSS */
+  #admin-app{display:none}
+  .admin-wrap{max-width:920px;margin:0 auto;padding:16px;padding-bottom:120px}
+  .admin-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+  .admin-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding:10px 12px calc(10px + var(--safe))}
+  .admin-cta-inner{max-width:920px;margin:0 auto;display:flex;gap:10px}
+  .btn-black{background:var(--primary);color:var(--accentText);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
+  .btn-white{background:#fff;color:var(--primary);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
+
+  .table{width:100%;border-collapse:collapse;font-size:14px;}
+  .table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:middle}
+  .chip-sm{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#F8FAFC;color:var(--primary);font-weight:600;}
+
+  .dropzone{border:2px dashed #94A3B8;border-radius:14px;padding:24px;text-align:center;background:#F8FAFC;color:var(--muted); cursor:pointer;}
+  .dropzone:hover{border-color:var(--primary); background:#EFF6FF;}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+
+  .profile-head{display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0 16px}
+  .avatar{width:96px;height:96px;border-radius:999px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .like-btn{position:absolute;top:10px;left:10px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.8);backdrop-filter:blur(4px);display:grid;place-items:center;color:#9ca3af;font-size:18px;box-shadow:var(--shadow-sm);transition:color .2s}
+  .like-btn.liked{color:#EF4444;} /* Red heart for favorites */
+
+  /* Chatbot styles */
+  .chatbot-icon {
+    position: fixed;
+    bottom: calc(96px + var(--safe));
+    right: 16px;
+    z-index: 50;
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    background: var(--primary); /* Blue bot icon */
+    color: var(--accentText);
+    box-shadow: 0 4px 14px rgba(0, 90, 208, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  .chatbot-icon:hover { transform: scale(1.05); }
+  .chatbot-popup {
+    position: fixed;
+    bottom: calc(170px + var(--safe));
+    right: 16px;
+    width: 340px;
+    max-width: 90%;
+    max-height: 450px; 
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .chatbot-popup.visible {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .chatbot-header {
+    background: var(--primary); /* Blue Header */
+    color: var(--accentText);
+    padding: 14px 16px;
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Poppins, sans-serif;
+  }
+  .chatbot-body {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #F8FAFC;
+  }
+  .chatbot-msg-container.user-msg { align-self: flex-end; }
+  .chatbot-msg-container.bot-msg { align-self: flex-start; }
+  .chatbot-msg {
+    background: var(--primary);
+    color: var(--accentText);
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 85%;
+    word-wrap: break-word;
+    box-shadow: var(--shadow-sm);
+    font-size: 14px;
+    border-bottom-right-radius: 4px;
+  }
+  .chatbot-msg.bot {
+    background: #FFFFFF;
+    color: #0F172A;
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 18px;
+  }
+  .chatbot-footer {
+    padding: 16px;
+    border-top: 1px solid var(--line);
+    background: #fff;
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+  .chatbot-questions { display: flex; flex-direction: column; gap: 8px; }
+  .chatbot-questions .question-chip {
+    padding: 10px 14px;
+    background: #FFFFFF;
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+    text-align: left;
+  }
+  .chatbot-questions .question-chip:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div id="store-app">
+  <div class="animated-banner-wrap" id="animated-banner-wrap" style="display:none">
+    <div class="animated-banner-text" id="animated-banner-text">🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.</div>
+  </div>
+  <div id="app" class="wrap">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button id="back-btn" class="icon-round" aria-label="Back" style="display:none"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1 id="page-title" class="title"><i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span></h1>
+      </div>
+    </header>
+    <main id="view" aria-live="polite"></main>
+    <nav class="tabbar">
+      <div class="tabbar-inner">
+        <a class="tab" data-tab="home" href="#/home"><i class="fa-solid fa-bolt"></i><span>Home</span></a>
+        <a class="tab" data-tab="shop" href="#/shop"><i class="fa-solid fa-fire-burner"></i><span>Stoves</span></a>
+        <a class="tab" data-tab="cart" href="#/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+        <a class="tab" data-tab="account" href="#/account"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+      </div>
+    </nav>
+  </div>
+  <div id="toast" class="toast">Added to cart</div>
+</div>
+
+<div id="admin-app" style="display:none;">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button id="admin-back" class="icon-round" aria-label="Back" style="display:none"><i class="fa-solid fa-arrow-left"></i></button>
+      <h1 id="admin-title" class="title">Admin</h1>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-outline" id="admin-logout">Logout</button>
+        <a class="btn btn-outline" href="#/shop">Store</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-wrap">
+    <div id="admin-login" class="admin-card" style="max-width:520px;margin:18px auto;display:none">
+      <h3 style="margin:0 0 8px;font-family:Poppins">Admin Login</h3>
+      <form id="admin-login-form" autocomplete="off">
+        <label for="adm-id">Admin ID</label>
+        <input id="adm-id" type="text" placeholder="Admin ID" autocomplete="off" required>
+        <label for="adm-pw">Password</label>
+        <input id="adm-pw" type="password" placeholder="Password" autocomplete="off" required>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn" type="submit">Login</button>
+          <a class="btn btn-outline" href="#/shop">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+    <div id="admin-dashboard" class="admin-card" style="display:none">
+      <h3 style="margin:0 0 8px;font-family:Poppins">Admin Dashboard</h3>
+      <div style="display:grid;gap:12px">
+        <a class="btn btn-outline" href="#/admin/banners">Manage Banners & Hero</a>
+        <a class="btn btn-outline" href="#/admin/add">Add Product</a>
+        <a class="btn btn-outline" href="#/admin/manage">Manage Products (Table)</a>
+        <a class="btn btn-outline" href="#/admin/manage-cards">Manage Products (Cards)</a>
+        <a class="btn btn-outline" href="#/admin/orders">Manage Orders</a>
+        <a class="btn btn-outline" href="#/admin/customers">Customers</a>
+      </div>
+    </div>
+    
+    <div id="admin-banners" class="admin-card" style="display:none">
+      <h3 style="margin:0 0 8px;font-family:Poppins">Manage Banners & Hero</h3>
+      <h4 style="margin:0 0 10px">Animated Banner</h4>
+      <form id="banner-form">
+        <label>Banner Text</label>
+        <input id="banner-text" type="text" placeholder="e.g., Gas crisis special! Get 50% OFF today.">
+        <div style="margin-top:10px">
+          <button type="submit" class="btn">Save Banner Text</button>
+          <button type="button" class="btn btn-outline" id="banner-remove">Remove Banner</button>
+        </div>
+      </form>
+
+      <h4 style="margin:16px 0 10px">Home Page Hero Image</h4>
+      <form id="hero-form">
+        <label>Hero Image</label>
+        <div class="dropzone" id="hero-dz" onclick="document.getElementById('hero-upload').click()">
+          <div><i class="fa-solid fa-cloud-arrow-up" style="font-size:24px; margin-bottom:8px;"></i></div>
+          <div style="font-weight:700">Click to upload banner</div>
+        </div>
+        <input id="hero-upload" type="file" accept="image/*" style="display:none">
+        <div class="thumbs" id="hero-thumbs" style="margin-top:10px"></div>
+        <div style="margin-top:10px">
+          <button type="submit" class="btn">Save Hero Image</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="admin-add" class="admin-card" style="display:none">
+      <h3 style="margin:0 0 8px;font-family:Poppins">Add New Stove/Product</h3>
       <form id="product-form">
         <input type="hidden" id="pf-id">
         <label>Product Name</label><input id="pf-name" required placeholder="e.g., 2000W Smart Induction Cooktop">
