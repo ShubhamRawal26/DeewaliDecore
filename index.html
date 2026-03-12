@@ -1,765 +1,1433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>InstaChulha | Smart Electric Stoves</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>InstaChulha | Smart Electric Stoves</title>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    databaseURL: "https://deewali-decore-default-rtdb.firebaseio.com/",
-    projectId: "deewali-decore",
-    messagingSenderId: "58828615961"
-  };
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://deewali-decore-default-rtdb.firebaseio.com/",
+            projectId: "deewali-decore",
+            messagingSenderId: "58828615961"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+    </script>
 
-<style>
-  :root{
-    --primary: #005AD0;     
-    --accent: #FF6600;      
-    --bg: #F8FAFC;          
-    --surface: #FFFFFF;     
-    --line: #E2E8F0;        
-    --muted: #64748B;       
-    --accentText: #FFFFFF;  
-    --success: #10B981;     
-    --radius: 16px;
-    --shadow: 0 2px 4px rgba(0,90,208,.04), 0 8px 24px rgba(0,90,208,.06);
-    --shadow-sm: 0 1px 3px rgba(0,90,208,.08);
-    --safe: env(safe-area-inset-bottom, 0px);
-    --container: 740px;
-  }
-  *{box-sizing:border-box}
-  html, body{height:100%}
-  body{margin:0;background:var(--bg);color:#0F172A;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.35}
-  img{max-width:100%;display:block}
-  button{font:inherit;cursor:pointer}
-  a{color:inherit;text-decoration:none}
+    <style>
+        :root {
+            /* InstaChulha Brand Colors */
+            --primary: #005AD0;     
+            --accent: #FF3300;      /* Darker Red-Orange for High Urgency */
+            --bg: #F8FAFC;          
+            --surface: #FFFFFF;     
+            --line: #E2E8F0;        
+            --muted: #64748B;       
+            --accentText: #FFFFFF;  
+            --success: #10B981;     
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 90, 208, 0.1), 0 2px 4px -1px rgba(0, 90, 208, 0.06);
+            --shadow-sm: 0 1px 3px rgba(0,90,208,.08);
+            --safe: env(safe-area-inset-bottom, 0px);
+            --container: 740px;
+        }
 
-  #app{min-height:100dvh;display:flex;flex-direction:column}
-  .wrap{max-width:var(--container);margin:0 auto}
+        * {
+            box-sizing: border-box;
+        }
 
-  .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.95);backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--line)}
-  .topbar-inner{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px}
-  .title{font-family:Poppins,sans-serif;font-size:22px;font-weight:700;font-style:italic;margin:0; color: var(--primary);}
-  .title span { color: var(--accent); } 
-  .icon-round{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;display:inline-grid;place-items:center;color:var(--primary);box-shadow:var(--shadow-sm)}
+        html, body {
+            height: 100%;
+        }
 
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding-bottom:var(--safe)}
-  .tabbar-inner{max-width:var(--container);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:8px 8px calc(10px + var(--safe))}
-  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:#94A3B8;padding:6px 4px;border-radius:10px; transition: 0.2s;}
-  .tab.active{color:var(--accent);background:#FFF3EB;}
-  .tab span{font-size:12px; font-weight: 500;}
-  main{flex:1;min-height:0;padding-bottom:96px}
-  
-  .loader{text-align:center;padding:30px;color:var(--muted);}
-  .loader .dot{
-    display:inline-block;width:8px;height:8px;background:var(--primary);
-    border-radius:999px;margin:0 2px;animation: bounce 1.4s infinite ease-in-out both;
-  }
-  .loader .dot:nth-child(1){animation-delay:-.32s}
-  .loader .dot:nth-child(2){animation-delay:-.16s}
-  @keyframes bounce{
-    0%,80%,100%{transform:scale(0)}
-    40%{transform:scale(1.0)}
-  }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #0F172A;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+            line-height: 1.4;
+        }
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-  .card.pad{padding:16px}
-  .muted{color:var(--muted)}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:14px; font-weight:500; color: var(--primary);}
-  .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-  
-  input, textarea, select{width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;background:#F8FAFC;font:inherit;color:#0F172A;}
-  input:focus, textarea:focus { outline: 2px solid var(--primary); background: #fff; }
-  textarea{min-height:92px;resize:vertical}
-  label{font-size:13px;color:#334155;margin:10px 0 6px;display:block;font-weight:600;}
-  
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:15px;border:none;border-radius:14px;padding:14px 16px;background:var(--accent);color:var(--accentText);box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3); transition: 0.2s; cursor:pointer;}
-  .btn:active{transform:translateY(2px); box-shadow: 0 2px 6px rgba(255, 102, 0, 0.3);}
-  .btn-outline{background:transparent;color:var(--primary);border:1px solid var(--primary);box-shadow:none;}
-  .btn-outline:active{background: #EFF6FF;}
-  .btn-block{width:100%}
-  
-  .star-rating{color:#FFD700;font-size:16px;margin-left:auto;font-weight:600;display:flex;align-items:center;gap:4px;}
-  .star-rating .fa-regular{color:#ccc}
-  .rate-stars .fa-star{cursor:pointer;transition:color .2s}
-  .rate-stars .active{color:#FFD700}
-  
-  .size-btn{
-    display:inline-flex;align-items:center;justify-content:center;
-    height:56px;min-width:56px;padding:0 12px;border-radius:12px;border:1px solid var(--line);
-    background:var(--surface);font-weight:600;box-shadow:var(--shadow-sm);transition:0.2s;
-  }
-  .size-btn.active, .size-btn:active{
-    transform:translateY(1px);box-shadow:0 1px 2px rgba(10,10,10,.06);
-    background:#EFF6FF;border-color:var(--primary);border:2px solid var(--primary); color:var(--primary);
-  }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
-  .price-line{display:flex;align-items:center;gap:8px}
-  .strike{color:#94A3B8;text-decoration:line-through;font-size:14px;}
-  .badge-off{background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:4px 8px;font-weight:700;letter-spacing:0.5px;}
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
 
-  .filters{display:flex;gap:10px;overflow:auto;padding:8px 0}
-  .filters::-webkit-scrollbar { display: none; }
-  .grid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
-  @media(min-width:680px){.grid{grid-template-columns:repeat(3,1fr)}}
-  
-  .p-card{overflow:hidden;position:relative; transition:0.2s;}
-  .p-card:active { transform: scale(0.98); }
-  .p-img{border-bottom:1px solid var(--line);position:relative;width:100%;aspect-ratio:1/1; background: #fff;}
-  .p-img img{width:100%;height:100%;object-fit:cover}
-  .p-meta{padding:12px}
-  .p-title{font-weight:600; font-size: 15px; line-height: 1.3; margin-bottom: 6px; color: #0F172A;}
-  .discount-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:6px 10px;font-weight:700;}
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-  .hero-img{margin:12px;border-radius:18px;overflow:hidden;max-height:400px;display:flex}
-  .hero-img img{width:100%;aspect-ratio:1/1.2;object-fit:cover;object-position:center top;}
+        #app {
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
 
-  .cart-list{display:flex;flex-direction:column;gap:12px}
-  .cart-item{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;padding:10px;border-radius:14px;border:1px solid var(--line);background:#fff}
-  .cart-item img{width:76px;height:76px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
-  .qty{display:flex;align-items:center;gap:10px;margin-top:8px}
-  .circle-btn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;background:#F8FAFC;color:var(--primary); font-weight:600;}
-  .circle-btn.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent);}
+        .wrap {
+            max-width: var(--container);
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
 
-  .sticky-sheet{position:sticky;bottom:0;background:rgba(255,255,255,.95);backdrop-filter:saturate(120%) blur(6px);border-top:1px solid var(--line);padding:14px;border-bottom-left-radius:12px;border-bottom-right-radius:12px; z-index:10;}
-  .row{display:flex;align-items:center;justify-content:space-between}
-  .sep{height:1px;background:var(--line);margin:10px 0}
+        /* ===== NEW: SMOOTH PAGE TRANSITION ===== */
+        @keyframes fadeSlideUp {
+            0% { 
+                opacity: 0; 
+                transform: translateY(15px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
 
-  .success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 14px}
-  .check-anim{
-    width:92px;height:92px;border-radius:999px;background:#D1FAE5;border:2px solid #A7F3D0;display:grid;place-items:center;color:var(--success);
-    animation:pop .35s ease-out forwards, glow 1.2s ease-in-out 0.3s infinite alternate;
-  }
-  @keyframes pop{from{transform:scale(.7);opacity:.2}to{transform:scale(1);opacity:1}}
-  @keyframes glow{from{box-shadow:0 0 0 rgba(16,185,129,.0)}to{box-shadow:0 0 18px rgba(16,185,129,.35)}}
-  .confetti{position:relative;width:100%;height:0;overflow:visible}
-  .confetti span{position:absolute;width:8px;height:14px;border-radius:2px;animation:fall 1.2s linear forwards}
-  @keyframes fall{to{transform:translateY(220px) rotate(360deg);opacity:.2}}
+        #view { 
+            animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
 
-  .toast{position:fixed;left:50%;bottom:calc(84px + var(--safe));transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s; z-index: 100;}
-  .toast.show{opacity:1}
-  
-  .animated-banner-wrap {
-    background: var(--accent);
-    color: var(--accentText);
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    height: 38px;
-    line-height: 38px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .animated-banner-text {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee 20s linear infinite;
-  }
-  @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        /* Header / Topbar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: saturate(180%) blur(10px);
+            border-bottom: 1px solid var(--line);
+        }
 
-  /* Admin CSS */
-  #admin-app{display:none}
-  .admin-wrap{max-width:920px;margin:0 auto;padding:16px;padding-bottom:120px}
-  .admin-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
-  .admin-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding:10px 12px calc(10px + var(--safe))}
-  .admin-cta-inner{max-width:920px;margin:0 auto;display:flex;gap:10px}
-  .btn-black{background:var(--primary);color:var(--accentText);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
-  .btn-white{background:#fff;color:var(--primary);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
+        .topbar-inner {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+        }
 
-  .table{width:100%;border-collapse:collapse;font-size:14px;}
-  .table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:middle}
-  .chip-sm{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#F8FAFC;color:var(--primary);font-weight:600;}
+        .title {
+            font-family: Poppins, sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            font-style: italic;
+            margin: 0;
+            color: var(--primary);
+        }
 
-  .dropzone{border:2px dashed #94A3B8;border-radius:14px;padding:24px;text-align:center;background:#F8FAFC;color:var(--muted); cursor:pointer;}
-  .dropzone:hover{border-color:var(--primary); background:#EFF6FF;}
-  .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-  .thumb img{width:100%;height:100%;object-fit:cover}
+        .title span { 
+            color: var(--accent); 
+        } 
 
-  .profile-head{display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0 16px}
-  .avatar{width:96px;height:96px;border-radius:999px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.1)}
-  .avatar img{width:100%;height:100%;object-fit:cover}
-  .like-btn{position:absolute;top:10px;left:10px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.8);backdrop-filter:blur(4px);display:grid;place-items:center;color:#9ca3af;font-size:18px;box-shadow:var(--shadow-sm);transition:color .2s}
-  .like-btn.liked{color:#EF4444;} 
+        .icon-round {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: #fff;
+            display: inline-grid;
+            place-items: center;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
+        }
 
-  /* Chatbot styles */
-  .chatbot-icon {
-    position: fixed;
-    bottom: calc(96px + var(--safe));
-    right: 16px;
-    z-index: 50;
-    width: 60px;
-    height: 60px;
-    border-radius: 999px;
-    background: var(--primary);
-    color: var(--accentText);
-    box-shadow: 0 4px 14px rgba(0, 90, 208, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
-  .chatbot-icon:hover { transform: scale(1.05); }
-  .chatbot-popup {
-    position: fixed;
-    bottom: calc(170px + var(--safe));
-    right: 16px;
-    width: 340px;
-    max-width: 90%;
-    max-height: 450px; 
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    z-index: 50;
-    transform: scale(0.95);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.2s, opacity 0.2s;
-  }
-  .chatbot-popup.visible {
-    transform: scale(1);
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .chatbot-header {
-    background: var(--primary); 
-    color: var(--accentText);
-    padding: 14px 16px;
-    border-top-left-radius: var(--radius);
-    border-top-right-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: Poppins, sans-serif;
-  }
-  .chatbot-body {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background: #F8FAFC;
-  }
-  .chatbot-msg-container.user-msg { align-self: flex-end; }
-  .chatbot-msg-container.bot-msg { align-self: flex-start; }
-  .chatbot-msg {
-    background: var(--primary);
-    color: var(--accentText);
-    padding: 12px 16px;
-    border-radius: 18px;
-    max-width: 85%;
-    word-wrap: break-word;
-    box-shadow: var(--shadow-sm);
-    font-size: 14px;
-    border-bottom-right-radius: 4px;
-  }
-  .chatbot-msg.bot {
-    background: #FFFFFF;
-    color: #0F172A;
-    border: 1px solid var(--line);
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 18px;
-  }
-  .chatbot-footer {
-    padding: 16px;
-    border-top: 1px solid var(--line);
-    background: #fff;
-    border-bottom-left-radius: var(--radius);
-    border-bottom-right-radius: var(--radius);
-  }
-  .chatbot-questions { display: flex; flex-direction: column; gap: 8px; }
-  .chatbot-questions .question-chip {
-    padding: 10px 14px;
-    background: #FFFFFF;
-    border: 1px solid var(--primary);
-    border-radius: 12px;
-    cursor: pointer;
-    color: var(--primary);
-    font-size: 13px;
-    font-weight: 600;
-    transition: background 0.2s;
-    text-align: left;
-  }
-  .chatbot-questions .question-chip:hover {
-    background: var(--primary);
-    color: #fff;
-  }
-</style>
+        .icon-round:active {
+            transform: scale(0.9);
+        }
+
+        /* Tabbar Navigation */
+        .tabbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 30;
+            background: rgba(255,255,255,.98);
+            border-top: 1px solid var(--line);
+            backdrop-filter: saturate(180%) blur(10px);
+            padding-bottom: var(--safe);
+        }
+
+        .tabbar-inner {
+            max-width: var(--container);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 2px;
+            padding: 8px 8px calc(10px + var(--safe));
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94A3B8;
+            padding: 8px 4px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            background: #FFF3EB;
+        }
+
+        .tab span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+            min-height: 0;
+            padding-bottom: 100px;
+        }
+        
+        /* Loader */
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .loader .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 999px;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loader .dot:nth-child(1) { animation-delay: -.32s; }
+        .loader .dot:nth-child(2) { animation-delay: -.16s; }
+
+        @keyframes bounce { 
+            0%, 80%, 100% { transform: scale(0); } 
+            40% { transform: scale(1.0); } 
+        }
+
+        /* Generic Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .card.pad {
+            padding: 18px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .chip.active { 
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary); 
+        }
+        
+        /* Inputs */
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #F8FAFC;
+            font: inherit;
+            color: #0F172A;
+            transition: 0.2s;
+        }
+
+        input:focus, textarea:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(0,90,208,0.1); 
+            background: #fff; 
+        }
+
+        textarea {
+            min-height: 92px;
+            resize: vertical;
+        }
+
+        label {
+            font-size: 13px;
+            color: #475569;
+            margin: 12px 0 6px;
+            display: block;
+            font-weight: 600;
+        }
+        
+        /* ===== NEW: PULSE & SHIMMER BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            background: var(--accent);
+            color: var(--accentText);
+            box-shadow: 0 4px 15px rgba(255, 51, 0, 0.35);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: translateY(2px) scale(0.98); 
+            box-shadow: 0 2px 8px rgba(255, 51, 0, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            box-shadow: none;
+        }
+
+        .btn-outline:active {
+            background: #EFF6FF;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+        
+        @keyframes pulseRed { 
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 0, 0.6); } 
+            70% { box-shadow: 0 0 0 12px rgba(255, 51, 0, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 0, 0); } 
+        }
+
+        .btn-pulse { 
+            animation: pulseRed 2s infinite; 
+        }
+
+        .shimmer-text { 
+            background: linear-gradient(90deg, var(--primary) 0%, #38BDF8 50%, var(--primary) 100%); 
+            background-size: 200% auto; 
+            color: transparent; 
+            -webkit-background-clip: text; 
+            animation: shimmer 2.5s linear infinite; 
+            font-weight: 900; 
+        }
+
+        @keyframes shimmer { 
+            to { background-position: 200% center; } 
+        }
+
+        /* ===== URGENCY BOXES (WARNINGS) ===== */
+        .urgency-box { 
+            background: #FEF2F2; 
+            border: 1px dashed #FCA5A5; 
+            color: #DC2626; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 10px; 
+            margin: 16px 0; 
+            animation: blinkBorder 2s infinite; 
+        }
+
+        .urgency-box i { 
+            font-size: 18px; 
+            margin-top: 2px; 
+        }
+
+        @keyframes blinkBorder { 
+            0% { border-color: #FCA5A5; } 
+            50% { border-color: #EF4444; } 
+            100% { border-color: #FCA5A5; } 
+        }
+
+        /* Ratings */
+        .star-rating {
+            color: #FFD700;
+            font-size: 15px;
+            margin-left: auto;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .star-rating .fa-regular {
+            color: #E2E8F0;
+        }
+
+        .rate-stars .fa-star {
+            cursor: pointer;
+            transition: color .2s;
+        }
+
+        .rate-stars .active {
+            color: #FFD700;
+        }
+        
+        /* Quantity Buttons */
+        .size-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            min-width: 50px;
+            padding: 0 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
+        }
+
+        .size-btn.active, .size-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(10,10,10,.06);
+            background: #EFF6FF;
+            border-color: var(--primary);
+            border: 2px solid var(--primary); 
+            color: var(--primary);
+        }
+
+        .price-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strike {
+            color: #94A3B8;
+            text-decoration: line-through;
+            font-size: 15px;
+        }
+        
+        /* ===== DEAL BADGES ===== */
+        .badge-off {
+            background: linear-gradient(135deg, #FF3300, #FF6600);
+            color: var(--accentText);
+            border-radius: 6px;
+            font-size: 13px;
+            padding: 4px 8px;
+            font-weight: 800;
+            letter-spacing: 0.5px; 
+            box-shadow: 0 2px 4px rgba(255,51,0,0.3);
+        }
+
+        .flash-deal-badge { 
+            position: absolute; 
+            top: -10px; 
+            left: -10px; 
+            background: var(--accent); 
+            color: #fff; 
+            font-size: 11px; 
+            font-weight: 800; 
+            padding: 6px 12px; 
+            border-radius: 0 12px 12px 0; 
+            z-index: 5; 
+            box-shadow: 0 4px 10px rgba(255,0,0,0.3); 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            text-transform: uppercase;
+        }
+
+        /* Product Grid */
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow: auto;
+            padding: 8px 0;
+        }
+
+        .filters::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr 1fr; 
+            padding: 0 16px;
+        }
+
+        @media(min-width:680px) {
+            .grid {
+                grid-template-columns: repeat(3,1fr);
+            }
+        }
+        
+        /* Product Card */
+        .p-card {
+            overflow: hidden;
+            position: relative; 
+            transition: 0.2s; 
+            border-radius: 14px; 
+            border: 1px solid var(--line); 
+            background: #fff; 
+            display: flex; 
+            flex-direction: column;
+        }
+
+        .p-card:active { 
+            transform: scale(0.97); 
+        }
+
+        .p-img {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1; 
+            background: #F8FAFC; 
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .p-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            mix-blend-mode: multiply; 
+            transition: transform 0.3s;
+        }
+
+        .p-card:hover .p-img img { 
+            transform: scale(1.05); 
+        }
+
+        .p-meta {
+            padding: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            justify-content: space-between;
+        }
+
+        .p-title {
+            font-weight: 600; 
+            font-size: 14px; 
+            line-height: 1.3; 
+            margin-bottom: 8px; 
+            color: #0F172A;
+        }
+
+        /* Hero Image */
+        .hero-img {
+            margin: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            max-height: 400px;
+            display: flex; 
+            box-shadow: var(--shadow);
+        }
+
+        .hero-img img {
+            width: 100%;
+            aspect-ratio: 1/1.2;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        /* Cart Items */
+        .cart-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 14px;
+            align-items: center;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #fff;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+        }
+
+        .qty {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .circle-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            display: grid;
+            place-items: center;
+            background: #F8FAFC;
+            color: var(--primary); 
+            font-weight: 600;
+        }
+
+        .circle-btn.primary {
+            background: var(--accent);
+            color: var(--accentText);
+            border-color: var(--accent);
+        }
+
+        /* Sticky Footer Sheet */
+        .sticky-sheet {
+            position: sticky;
+            bottom: 0;
+            background: rgba(255,255,255,.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--line);
+            padding: 16px; 
+            z-index: 10; 
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sep {
+            height: 1px;
+            background: var(--line);
+            margin: 12px 0;
+        }
+
+        /* Success Animation */
+        .success-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px; 
+            text-align: center;
+        }
+
+        .check-anim {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #D1FAE5;
+            display: grid;
+            place-items: center;
+            color: var(--success); 
+            font-size: 36px; 
+            margin-bottom: 20px; 
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes pop {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(84px + var(--safe));
+            transform: translateX(-50%);
+            background: #0F172A;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s; 
+            z-index: 100; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* Animated Banner */
+        .animated-banner-wrap { 
+            background: linear-gradient(90deg, #FF3300, #FF6600); 
+            color: #fff; 
+            overflow: hidden; 
+            white-space: nowrap; 
+            position: relative; 
+            height: 40px; 
+            line-height: 40px; 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+        }
+
+        .animated-banner-text { 
+            display: inline-block; 
+            padding-left: 100%; 
+            animation: marquee 20s linear infinite; 
+        }
+
+        @keyframes marquee { 
+            0% { transform: translate(0, 0); } 
+            100% { transform: translate(-100%, 0); } 
+        }
+
+        /* Admin CSS */
+        #admin-app {
+            display: none;
+        }
+
+        .admin-wrap {
+            padding: 16px;
+            padding-bottom: 120px;
+        }
+
+        .admin-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            padding: 20px; 
+            margin-bottom: 16px;
+        }
+
+        .admin-cta {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 40;
+            background: rgba(255,255,255,.98);
+            border-top: 1px solid var(--line);
+            padding: 12px calc(12px + var(--safe)); 
+            display: flex; 
+            gap: 10px;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table th, .table td {
+            border-bottom: 1px solid var(--line);
+            padding: 12px 8px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        
+        .dropzone {
+            border: 2px dashed #94A3B8;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #F8FAFC;
+            color: var(--muted); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+
+        .dropzone:hover {
+            border-color: var(--primary); 
+            background: #EFF6FF;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Likes & Avatars */
+        .like-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.9);
+            backdrop-filter: blur(4px);
+            display: grid;
+            place-items: center;
+            color: #CBD5E1;
+            font-size: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: 0.2s; 
+            z-index: 10;
+        }
+
+        .like-btn.liked {
+            color: #EF4444; 
+            transform: scale(1.1);
+        } 
+
+        .profile-head {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0 16px;
+        }
+
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,.1);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Chatbot styles */
+        .chatbot-icon {
+            position: fixed;
+            bottom: calc(96px + var(--safe));
+            right: 16px;
+            z-index: 50;
+            width: 60px;
+            height: 60px;
+            border-radius: 999px;
+            background: var(--primary);
+            color: var(--accentText);
+            box-shadow: 0 4px 14px rgba(0, 90, 208, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .chatbot-icon:hover { 
+            transform: scale(1.05); 
+        }
+
+        .chatbot-popup {
+            position: fixed;
+            bottom: calc(170px + var(--safe));
+            right: 16px;
+            width: 340px;
+            max-width: 90%;
+            max-height: 450px; 
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            transform: scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .chatbot-popup.visible {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .chatbot-header {
+            background: var(--primary); 
+            color: var(--accentText);
+            padding: 14px 16px;
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: Poppins, sans-serif;
+        }
+
+        .chatbot-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #F8FAFC;
+        }
+
+        .chatbot-msg-container.user-msg { align-self: flex-end; }
+        .chatbot-msg-container.bot-msg { align-self: flex-start; }
+
+        .chatbot-msg {
+            background: var(--primary);
+            color: var(--accentText);
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            box-shadow: var(--shadow-sm);
+            font-size: 14px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chatbot-msg.bot {
+            background: #FFFFFF;
+            color: #0F172A;
+            border: 1px solid var(--line);
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 18px;
+        }
+
+        .chatbot-footer {
+            padding: 16px;
+            border-top: 1px solid var(--line);
+            background: #fff;
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
+        }
+
+        .chatbot-questions { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+
+        .chatbot-questions .question-chip {
+            padding: 10px 14px;
+            background: #FFFFFF;
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+            text-align: left;
+        }
+
+        .chatbot-questions .question-chip:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 
 <div id="store-app">
-  <div class="animated-banner-wrap" id="animated-banner-wrap" style="display:none">
-    <div class="animated-banner-text" id="animated-banner-text">🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.</div>
-  </div>
-  <div id="app" class="wrap">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <button id="back-btn" class="icon-round" aria-label="Back" style="display:none"><i class="fa-solid fa-arrow-left"></i></button>
-        <h1 id="page-title" class="title"><i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span></h1>
-      </div>
-    </header>
-    <main id="view" aria-live="polite"></main>
-    <nav class="tabbar">
-      <div class="tabbar-inner">
-        <a class="tab" data-tab="home" href="#/home"><i class="fa-solid fa-bolt"></i><span>Home</span></a>
-        <a class="tab" data-tab="shop" href="#/shop"><i class="fa-solid fa-fire-burner"></i><span>Stoves</span></a>
-        <a class="tab" data-tab="cart" href="#/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
-        <a class="tab" data-tab="account" href="#/account"><i class="fa-regular fa-user"></i><span>Profile</span></a>
-      </div>
-    </nav>
-  </div>
-  <div id="toast" class="toast">Added to cart</div>
-</div>
-
-<div id="admin-app" style="display:none;">
-  <header class="topbar">
-    <div class="topbar-inner">
-      <button id="admin-back" class="icon-round" aria-label="Back" style="display:none"><i class="fa-solid fa-arrow-left"></i></button>
-      <h1 id="admin-title" class="title">Admin</h1>
-      <div style="margin-left:auto;display:flex;gap:8px">
-        <button class="btn btn-outline" id="admin-logout">Logout</button>
-        <a class="btn btn-outline" href="#/shop">Store</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="admin-wrap">
-    <div id="admin-login" class="admin-card" style="max-width:520px;margin:18px auto;display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Admin Login</h3>
-      <form id="admin-login-form" autocomplete="off">
-        <label for="adm-id">Admin ID</label>
-        <input id="adm-id" type="text" placeholder="Admin ID" autocomplete="off" required>
-        <label for="adm-pw">Password</label>
-        <input id="adm-pw" type="password" placeholder="Password" autocomplete="off" required>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button class="btn" type="submit">Login</button>
-          <a class="btn btn-outline" href="#/shop">Cancel</a>
-        </div>
-      </form>
-    </div>
-
-    <div id="admin-dashboard" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Admin Dashboard</h3>
-      <div style="display:grid;gap:12px">
-        <a class="btn btn-outline" href="#/admin/banners">Store Settings & UPI Setup</a>
-        <a class="btn btn-outline" href="#/admin/add">Add Product</a>
-        <a class="btn btn-outline" href="#/admin/manage">Manage Products (Table)</a>
-        <a class="btn btn-outline" href="#/admin/manage-cards">Manage Products (Cards)</a>
-        <a class="btn btn-outline" href="#/admin/orders">Manage Orders</a>
-        <a class="btn btn-outline" href="#/admin/customers">Customers</a>
-      </div>
+    <div class="animated-banner-wrap" id="animated-banner-wrap" style="display:none">
+        <div class="animated-banner-text" id="animated-banner-text">🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.</div>
     </div>
     
-    <div id="admin-banners" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins; color:var(--primary);">Store Settings & QR Setup</h3>
-      
-      <h4 style="margin:16px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px;">1. Payment UPI Setup (QR & ID)</h4>
-      <form id="upi-form">
-        <label>Your UPI ID (e.g. yourname@paytm)</label>
-        <input id="upi-id-input" type="text" placeholder="Enter UPI ID for manual payments">
+    <div id="app" class="wrap">
+        <header class="topbar">
+            <div class="topbar-inner">
+                <button id="back-btn" class="icon-round" aria-label="Back" style="display:none; border:none;"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 id="page-title" class="title"><i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span></h1>
+            </div>
+        </header>
         
-        <label style="margin-top:12px;">Your Payment QR Code Image (PhonePe/GPay)</label>
-        <div class="dropzone" id="upi-dz" onclick="document.getElementById('upi-upload').click()">
-          <div><i class="fa-solid fa-qrcode" style="font-size:24px; margin-bottom:8px; color:var(--primary);"></i></div>
-          <div style="font-weight:700">Click to upload your QR Code</div>
-        </div>
-        <input id="upi-upload" type="file" accept="image/*" style="display:none">
-        <div class="thumbs" id="upi-thumbs" style="margin-top:10px"></div>
-        <div style="margin-top:10px">
-          <button type="submit" class="btn" style="background:var(--success);">Save UPI Settings</button>
-        </div>
-      </form>
-
-      <h4 style="margin:30px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px;">2. Top Notification Banner</h4>
-      <form id="banner-form">
-        <label>Banner Text</label>
-        <input id="banner-text" type="text" placeholder="e.g., Fast Local Delivery within 2 Days!">
-        <div style="margin-top:10px">
-          <button type="submit" class="btn">Save Banner</button>
-          <button type="button" class="btn btn-outline" id="banner-remove">Remove Banner</button>
-        </div>
-      </form>
-
-      <h4 style="margin:30px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px;">3. Home Page Hero Image</h4>
-      <form id="hero-form">
-        <label>Hero Image</label>
-        <div class="dropzone" id="hero-dz" onclick="document.getElementById('hero-upload').click()">
-          <div><i class="fa-solid fa-image" style="font-size:24px; margin-bottom:8px;"></i></div>
-          <div style="font-weight:700">Click to upload main banner</div>
-        </div>
-        <input id="hero-upload" type="file" accept="image/*" style="display:none">
-        <div class="thumbs" id="hero-thumbs" style="margin-top:10px"></div>
-        <div style="margin-top:10px">
-          <button type="submit" class="btn">Save Hero Image</button>
-        </div>
-      </form>
+        <main id="view" aria-live="polite"></main>
+        
+        <nav class="tabbar">
+            <div class="tabbar-inner">
+                <a class="tab" data-tab="home" href="#/home"><i class="fa-solid fa-bolt"></i><span>Home</span></a>
+                <a class="tab" data-tab="shop" href="#/shop"><i class="fa-solid fa-fire-burner"></i><span>Stoves</span></a>
+                <a class="tab" data-tab="cart" href="#/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
+                <a class="tab" data-tab="account" href="#/account"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            </div>
+        </nav>
     </div>
+    
+    <div id="toast" class="toast">Added to cart</div>
+</div>
 
-    <div id="admin-add" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Add New Stove/Product</h3>
-      <form id="product-form">
-        <input type="hidden" id="pf-id">
-        <label>Product Name</label><input id="pf-name" required placeholder="e.g., 2000W Smart Induction Cooktop">
-        <label>Description (Use '-' for bullet points)</label>
-        <textarea id="pf-desc" style="min-height:120px;" placeholder="Highlight fast cooking, safety...&#10;- 2000W Power&#10;- Fast Heating&#10;- 1 Year Warranty"></textarea>
-        <label>Category</label><input id="pf-category" required placeholder="e.g., Induction, Infrared, Hot Plate">
+<div id="admin-app" class="wrap">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <button id="admin-back" class="icon-round" aria-label="Back" style="display:none; border:none;"><i class="fa-solid fa-arrow-left"></i></button>
+            <h1 id="admin-title" class="title">Admin</h1>
+            <div style="margin-left:auto;display:flex;gap:8px">
+                <button class="btn btn-outline" id="admin-logout" style="padding:8px 16px;">Logout</button>
+                <a class="btn btn-outline" href="#/shop" style="padding:8px 16px;">Store</a>
+            </div>
+        </div>
+    </header>
 
-        <div class="row" style="gap:10px">
-          <div style="flex:1">
-            <label>MRP (Strike-through)</label>
-            <input id="pf-mrp" type="number" min="0" placeholder="e.g., 3499">
-          </div>
-          <div style="flex:1">
-            <label>Discount %</label>
-            <input id="pf-disc" type="number" min="0" max="99" placeholder="e.g., 40">
-          </div>
-          <div style="flex:1">
-            <label>Sale Price</label>
-            <input id="pf-price" type="number" min="0" placeholder="e.g., 2099">
-          </div>
+    <div class="admin-wrap">
+        <div id="admin-login" class="admin-card" style="max-width:520px;margin:18px auto;display:none">
+            <h3 style="margin:0 0 16px;font-family:Poppins">Admin Login</h3>
+            <form id="admin-login-form" autocomplete="off">
+                <label>Admin ID</label>
+                <input id="adm-id" type="text" autocomplete="off" required>
+                <label>Password</label>
+                <input id="adm-pw" type="password" autocomplete="off" required>
+                <button class="btn btn-block" type="submit" style="margin-top:20px;">Secure Login</button>
+            </form>
         </div>
 
-        <label style="margin-top:12px;">Product Images</label>
-        <div class="dropzone" id="dz" onclick="document.getElementById('pf-upload').click()">
-          <div><i class="fa-solid fa-image" style="font-size:24px; margin-bottom:8px;"></i></div>
-          <div style="font-weight:700">Click to upload product images</div>
-          <div class="muted" style="font-size:12px; margin-top:4px;">JPG/PNG • Auto-compress • Max side 1200px</div>
+        <div id="admin-dashboard" class="admin-card" style="display:none">
+            <h3 style="margin:0 0 16px;font-family:Poppins">Admin Dashboard</h3>
+            <div style="display:grid;gap:12px">
+                <a class="btn btn-outline" href="#/admin/banners"><i class="fa-solid fa-gear"></i> Store Settings & UPI Setup</a>
+                <a class="btn btn-outline" href="#/admin/add"><i class="fa-solid fa-plus"></i> Add New Product</a>
+                <a class="btn btn-outline" href="#/admin/manage-cards"><i class="fa-solid fa-box-open"></i> Manage Inventory</a>
+                <a class="btn btn-outline" href="#/admin/orders"><i class="fa-solid fa-truck-fast"></i> View Orders</a>
+                <a class="btn btn-outline" href="#/admin/customers"><i class="fa-solid fa-users"></i> Customers</a>
+            </div>
         </div>
-        <input id="pf-upload" type="file" accept="image/*" multiple style="display:none">
-        <div class="thumbs" id="pf-thumbs"></div>
-      </form>
-      <div class="admin-cta">
-        <div class="admin-cta-inner">
-          <button class="btn-white" id="pf-reset">Reset</button>
-          <button class="btn-black" id="pf-save">Save Product</button>
+        
+        <div id="admin-banners" class="admin-card" style="display:none">
+            <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Store Settings & QR Setup</h3>
+            <form id="upi-form">
+                <label>Your UPI ID (e.g. yourname@paytm)</label>
+                <input id="upi-id-input" type="text" placeholder="Enter UPI ID for manual payments">
+                
+                <label style="margin-top:16px;">Payment QR Code Image</label>
+                <div class="dropzone" id="upi-dz" onclick="document.getElementById('upi-upload').click()">Click to upload QR</div>
+                <input id="upi-upload" type="file" accept="image/*" style="display:none">
+                
+                <div class="thumbs" id="upi-thumbs" style="margin-top:10px"></div>
+                <button type="submit" class="btn btn-block" style="margin-top:16px; background:var(--success);">Save UPI Settings</button>
+            </form>
+            
+            <hr style="margin:24px 0; border:none; border-top:1px solid var(--line);">
+            
+            <form id="banner-form">
+                <label>Top Notification Banner Text</label>
+                <input id="banner-text" type="text">
+                <button type="submit" class="btn btn-block" style="margin-top:16px;">Save Banner</button>
+            </form>
         </div>
-      </div>
-    </div>
 
-    <div id="admin-manage" class="admin-card" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <h3 style="margin:0;font-family:Poppins">Manage Products (Table)</h3>
-        <a class="btn btn-outline" href="#/admin/add">+ Add New</a>
-      </div>
-      <table class="table" id="admin-table" style="margin-top:8px">
-        <thead>
-          <tr>
-            <th style="width:56px">Image</th>
-            <th>Name</th>
-            <th>MRP</th>
-            <th>Discount %</th>
-            <th>Sale Price</th>
-            <th style="width:168px">Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div id="admin-manage-cards" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Manage Products (Cards)</h3>
-      <div id="mpc-list" style="display:flex;flex-direction:column;gap:12px"></div>
-      <div class="admin-cta" style="padding:12px">
-        <div class="admin-cta-inner">
-          <a href="#/admin/add" class="btn-black" style="text-align:center"><i class="fa-solid fa-plus"></i>&nbsp; Add New Product</a>
+        <div id="admin-add" class="admin-card" style="display:none; padding-bottom:80px;">
+            <h3 style="margin:0 0 16px;font-family:Poppins">Add / Edit Stove</h3>
+            <form id="product-form">
+                <input type="hidden" id="pf-id">
+                <label>Product Name</label>
+                <input id="pf-name" required>
+                
+                <label>Description (Use '-' for bullet points)</label>
+                <textarea id="pf-desc" style="min-height:120px;"></textarea>
+                
+                <label>Category</label>
+                <input id="pf-category" required>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
+                    <div>
+                        <label>MRP (Strike-through)</label>
+                        <input id="pf-mrp" type="number" min="0">
+                    </div>
+                    <div>
+                        <label>Sale Price</label>
+                        <input id="pf-price" type="number" min="0">
+                    </div>
+                </div>
+                
+                <label style="margin-top:16px;">Product Image</label>
+                <div class="dropzone" id="dz" onclick="document.getElementById('pf-upload').click()">Click to upload product image</div>
+                <input id="pf-upload" type="file" accept="image/*" multiple style="display:none">
+                <div class="thumbs" id="pf-thumbs" style="margin-top:10px;"></div>
+            </form>
+            
+            <div class="admin-cta">
+                <button class="btn btn-outline" id="pf-reset" style="flex:1;">Reset</button>
+                <button class="btn" id="pf-save" style="flex:2;">Save Product</button>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div id="admin-orders" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Manage Orders</h3>
-      <div id="orders-admin"></div>
-    </div>
+        <div id="admin-manage-cards" class="admin-card" style="display:none">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="margin:0;font-family:Poppins">Manage Inventory</h3>
+                <a href="#/admin/add" style="color:var(--primary); font-weight:700;">+ Add</a>
+            </div>
+            <div id="mpc-list" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
 
-    <div id="admin-customers" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Customers</h3>
-      <div id="customers-admin"></div>
+        <div id="admin-orders" class="admin-card" style="display:none">
+            <h3 style="margin:0 0 16px;font-family:Poppins">Manage Orders</h3>
+            <div id="orders-admin" style="overflow-x:auto;"></div>
+        </div>
+
+        <div id="admin-customers" class="admin-card" style="display:none">
+            <h3 style="margin:0 0 16px;font-family:Poppins">Customers</h3>
+            <div id="customers-admin" style="overflow-x:auto;"></div>
+        </div>
     </div>
-  </div>
 </div>
 
 <button class="chatbot-icon" id="chatbot-toggle">
-  <i class="fa-solid fa-robot"></i>
+    <i class="fa-solid fa-robot"></i>
 </button>
-<div class="chatbot-popup" id="chatbot-popup">
-  <div class="chatbot-header">
-    <div style="font-weight:600"><i class="fa-solid fa-bolt" style="color:var(--accent);"></i> InstaChulha Assistant</div>
-    <button class="icon-round" style="background:transparent;border:none;color:var(--accentText);width:28px;height:28px;box-shadow:none;" id="chatbot-close">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
-  <div class="chatbot-body" id="chatbot-body">
-    <div class="chatbot-questions" id="chatbot-questions"></div>
-  </div>
-</div>
-<script>
-/* ===== Flags & Admin credentials ===== */
-const ADMIN_ID = "Madhav@store";
-const ADMIN_PW = "Madhav@1234";
-let HERO_IMAGE_URL = "";
-let BANNER_TEXT = "🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.";
-let UPI_QR_URL = "https://placehold.co/300x300?text=Admin:+Upload+QR+Code"; // Default placeholder
-let UPI_ID = "admin@bank"; // Default placeholder
 
-/* ===== Utilities ===== */
-const $ = s => document.querySelector(s);
+<div class="chatbot-popup" id="chatbot-popup">
+    <div class="chatbot-header">
+        <div style="font-weight:600"><i class="fa-solid fa-bolt" style="color:var(--accent);"></i> InstaChulha Assistant</div>
+        <button class="icon-round" style="background:transparent;border:none;color:var(--accentText);width:28px;height:28px;box-shadow:none;" id="chatbot-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="chatbot-body" id="chatbot-body">
+        <div class="chatbot-questions" id="chatbot-questions"></div>
+    </div>
+</div>
+
+<script>
+/* ===== Config & Utils ===== */
+const ADMIN_ID = "Madhav@store"; 
+const ADMIN_PW = "Madhav@1234";
+let HERO_IMAGE_URL = ""; 
+let BANNER_TEXT = "🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.";
+let UPI_QR_URL = "https://placehold.co/300x300?text=Upload+QR+Code"; 
+let UPI_ID = "admin@bank";
+
+const $ = s => document.querySelector(s); 
 const $$ = s => Array.from(document.querySelectorAll(s));
 const money = n => `₹${(n||0).toLocaleString("en-IN")}`;
 const uid = () => 'p_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-const readLocal = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch { return d; } };
+
+const readLocal = (k, d) => { 
+    try { 
+        return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); 
+    } catch { 
+        return d; 
+    } 
+};
+
 const writeLocal = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 const escapeHtml = (s="") => s.replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
-const toast = (msg) => { const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=> t.classList.remove("show"), 1600); };
+
+const toast = (msg) => { 
+    const t = $("#toast"); 
+    t.textContent = msg; 
+    t.classList.add("show"); 
+    setTimeout(()=> t.classList.remove("show"), 2000); 
+};
+
 const routeTo = (hash) => { location.hash = hash; };
 
-/* Helper for Professional Description formatting */
-function formatDesc(text) {
-  if(!text) return "";
-  return escapeHtml(text).replace(/\n/g, '<br/>').replace(/- (.*?)<br\/>/g, '• <b>$1</b><br/>').replace(/- (.*?)$/g, '• <b>$1</b>');
+function formatDesc(text) { 
+    if(!text) return ""; 
+    return escapeHtml(text).replace(/\n/g, '<br/>').replace(/- (.*?)<br\/>/g, '• <b>$1</b><br/>').replace(/- (.*?)$/g, '• <b>$1</b>'); 
 }
 
-window.copyUPI = () => {
-    navigator.clipboard.writeText(UPI_ID).then(()=>toast("UPI ID Copied!"));
+/* ===== NEW: DOWNLOAD QR LOGIC ===== */
+window.downloadQR = () => {
+    if(!UPI_QR_URL || UPI_QR_URL.includes("placehold")) {
+        toast("QR Code not available yet."); 
+        return;
+    }
+    const a = document.createElement('a');
+    a.href = UPI_QR_URL;
+    a.download = 'InstaChulha_Payment_QR.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast("Saving QR Code to Gallery...");
 }
 
-/* ===== Profile & Data ===== */
-let PROFILE = readLocal("instachulha_profile", {
-  name:"", email:"", phone:"", address:"", pincode:"", city:"", state:"", district:"", landmark:"", avatar:"", isComplete:false,
-  favorites: []
+window.copyUPI = () => { 
+    navigator.clipboard.writeText(UPI_ID).then(()=>toast("UPI ID Copied!")); 
+}
+
+/* ===== TIMER LOGIC ===== */
+let activeIntervals = [];
+
+function startTimer(durationInSeconds, displayId) {
+    let timer = durationInSeconds, minutes, seconds;
+    const display = document.getElementById(displayId);
+    if(!display) return;
+    
+    // Clear old intervals for this element to prevent bugs
+    activeIntervals.forEach(clearInterval); 
+    activeIntervals = [];
+    
+    const interval = setInterval(function () {
+        minutes = parseInt(timer / 60, 10); 
+        seconds = parseInt(timer % 60, 10);
+        minutes = minutes < 10 ? "0" + minutes : minutes; 
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        if(document.getElementById(displayId)) {
+            document.getElementById(displayId).textContent = minutes + ":" + seconds;
+        } else {
+            clearInterval(interval);
+        }
+        
+        if (--timer < 0) { 
+            timer = 0; 
+        } // Stops at 00:00
+    }, 1000);
+    
+    activeIntervals.push(interval);
+}
+
+/* ===== Data State ===== */
+let PROFILE = readLocal("instachulha_profile", { 
+    name:"", phone:"", address:"", pincode:"", city:"", state:"", favorites: [], isComplete:false 
 });
+
 const saveProfile = () => writeLocal("instachulha_profile", PROFILE);
 const hasCompleteProfile = () => !!(PROFILE.name && PROFILE.phone && PROFILE.address && PROFILE.pincode);
 
-let PRODUCTS = [];
+let PRODUCTS = []; 
 let CART = readLocal("instachulha_cart", []);
 const saveCart = () => writeLocal("instachulha_cart", CART);
-const cartTotal = () => CART.reduce((a,c)=>{ const p=PRODUCTS.find(x=>x.id===c.productId); return a+(p? (p.price||0)*c.qty : 0); },0);
+const cartTotal = () => CART.reduce((a,c) => { 
+    const p = PRODUCTS.find(x=>x.id===c.productId); 
+    return a+(p? (p.price||0)*c.qty : 0); 
+}, 0);
 
-let ORDERS = [];
+let ORDERS = []; 
+let RATINGS = []; 
 let CUSTOMERS = [];
-let RATINGS = [];
 
-/* ===== Firebase Listeners ===== */
-const productsRef = db.ref('products');
-const ordersRef = db.ref('orders');
-const ratingsRef = db.ref('ratings');
+const productsRef = db.ref('products'); 
+const ordersRef = db.ref('orders'); 
+const ratingsRef = db.ref('ratings'); 
 const appConfigRef = db.ref('config');
 
 let dataFetched = { products: false, orders: false, ratings: false, config: false };
 
-function showLoader() {
-  $("#view").innerHTML = `
-    <div class="loader">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div style="margin-top:12px; font-weight:600;">Loading InstaChulha...</div>
-    </div>
-  `;
+function showLoader() { 
+    $("#view").innerHTML = `<div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div style="margin-top:12px; font-weight:600;">Loading InstaChulha...</div></div>`; 
 }
 
-function checkAndRender() {
-  if (dataFetched.products && dataFetched.orders && dataFetched.ratings && dataFetched.config) {
-    render();
-  }
+function checkAndRender() { 
+    if (dataFetched.products && dataFetched.orders && dataFetched.ratings && dataFetched.config) {
+        render(); 
+    }
 }
 
-productsRef.on('value', snapshot => {
-  const data = snapshot.val();
-  PRODUCTS = data ? Object.values(data) : [];
-  PRODUCTS.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  dataFetched.products = true;
-  checkAndRender(); 
+productsRef.on('value', snap => { 
+    PRODUCTS = snap.val() ? Object.values(snap.val()) : []; 
+    PRODUCTS.sort((a,b)=>b.createdAt-a.createdAt); 
+    dataFetched.products = true; 
+    checkAndRender(); 
 });
 
-ordersRef.on('value', snapshot => {
-  const data = snapshot.val();
-  ORDERS = data ? Object.values(data) : [];
-  ORDERS.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  rebuildCustomers();
-  dataFetched.orders = true;
-  checkAndRender();
+ordersRef.on('value', snap => { 
+    ORDERS = snap.val() ? Object.values(snap.val()) : []; 
+    ORDERS.sort((a,b)=>b.createdAt-a.createdAt); 
+    rebuildCustomers(); 
+    dataFetched.orders = true; 
+    checkAndRender(); 
 });
 
-ratingsRef.on('value', snapshot => {
-  const data = snapshot.val();
-  RATINGS = data ? Object.values(data) : [];
-  dataFetched.ratings = true;
-  checkAndRender();
+ratingsRef.on('value', snap => { 
+    RATINGS = snap.val() ? Object.values(snap.val()) : []; 
+    dataFetched.ratings = true; 
+    checkAndRender(); 
 });
 
-appConfigRef.on('value', snapshot => {
-  const config = snapshot.val() || {};
-  if(config.heroImage) HERO_IMAGE_URL = config.heroImage;
-  if(config.bannerText !== undefined) BANNER_TEXT = config.bannerText;
-  if(config.upiQr) UPI_QR_URL = config.upiQr;
-  if(config.upiId) UPI_ID = config.upiId;
-  
-  if (BANNER_TEXT) {
-    $("#animated-banner-text").textContent = BANNER_TEXT;
-    $("#animated-banner-wrap").style.display = "block";
-  } else {
-    $("#animated-banner-wrap").style.display = "none";
-  }
-  dataFetched.config = true;
-  checkAndRender();
+appConfigRef.on('value', snap => { 
+    const c = snap.val()||{}; 
+    if(c.heroImage) HERO_IMAGE_URL = c.heroImage; 
+    if(c.bannerText !== undefined) BANNER_TEXT = c.bannerText;
+    if(c.upiQr) UPI_QR_URL = c.upiQr; 
+    if(c.upiId) UPI_ID = c.upiId;
+    
+    if(BANNER_TEXT) { 
+        $("#animated-banner-text").textContent = BANNER_TEXT; 
+        $("#animated-banner-wrap").style.display="block"; 
+    } else { 
+        $("#animated-banner-wrap").style.display="none"; 
+    }
+    
+    dataFetched.config = true; 
+    checkAndRender(); 
 });
 
-/* ===== Router ===== */
-function parseRoute(){
-  const h = location.hash.replace(/^#/, "") || "shop";
-  const parts = h.split("?")[0].split("/").filter(Boolean);
-  return { parts };
+/* ===== Router Setup ===== */
+function parseRoute(){ 
+    const h = location.hash.replace(/^#/, "") || "shop"; 
+    return { parts: h.split("?")[0].split("/").filter(Boolean) }; 
 }
+
 function setTopbar(title, showBack){ 
     if(!title) {
-        $("#page-title").innerHTML = `<i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span>`;
+        $("#page-title").innerHTML = `<i class="fa-solid fa-power-off" style="font-size:18px; color:var(--accent);"></i> Insta<span>Chulha</span>`;
     } else {
         $("#page-title").textContent = title; 
     }
     $("#back-btn").style.display = showBack? "inline-grid":"none"; 
 }
-function setActiveTab(name){ $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name)); }
-$("#back-btn").addEventListener("click", ()=> history.back());
+
+function setActiveTab(name){ 
+    $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name)); 
+}
+
+$("#back-btn").addEventListener("click", ()=> history.back()); 
 $("#admin-back").addEventListener("click", ()=> history.back());
 window.addEventListener("hashchange", render);
-window.addEventListener("popstate", render);
 
 function ensureProfileBefore(nextHash){
-  if (!hasCompleteProfile()){
-    writeLocal("instachulha_next", nextHash || "#/checkout");
-    routeTo("#/profile/setup");
-    return false;
+  if (!hasCompleteProfile()){ 
+      writeLocal("instachulha_next", nextHash || "#/checkout"); 
+      routeTo("#/profile/setup"); 
+      return false; 
   }
   return true;
 }
 
-/* ===== Store Views ===== */
+/* ===== STORE VIEWS ===== */
+
 function HomeView(){
-  setTopbar("", false); setActiveTab("home");
+  setTopbar("", false); 
+  setActiveTab("home");
+  
   const viewElement = $("#view");
   viewElement.innerHTML = `
-    <section style="padding:14px">
-      <div class="card" style="overflow:hidden; background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);">
-        ${HERO_IMAGE_URL ? `<div class="hero-img"><img src="${HERO_IMAGE_URL}" alt="Hero" /></div>` : ''}
-        <div class="pad" style="padding:20px 16px; text-align:center;">
-          <h2 style="margin:0 0 8px;font-family:Poppins; color:var(--primary); font-size: 24px;">Gas ki tension khatam,<br><span style="color:var(--accent);">Smart cooking shuru.</span></h2>
-          <p class="muted" style="margin:0 auto 16px; max-width: 280px;">Switch to fast, safe, and reliable electric cooktops. Stop waiting for cylinder bookings!</p>
-          <button class="btn btn-block" onclick="routeTo('#/shop')" style="font-size: 16px; padding: 16px;"><i class="fa-solid fa-bolt"></i> Explore Electric Stoves</button>
+    <section style="padding:0 0 16px 0;">
+      <div style="background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%); padding-bottom:20px; border-bottom:1px solid var(--line);">
+        ${HERO_IMAGE_URL ? `<div class="hero-img" style="margin:0; border-radius:0; border-bottom:1px solid var(--line);"><img src="${HERO_IMAGE_URL}"></div>` : ''}
+        <div style="padding:24px 20px; text-align:center;">
+          <div class="chip" style="background:#FEF2F2; border-color:#FCA5A5; color:#DC2626; margin-bottom:12px; font-size:12px;"><i class="fa-solid fa-fire"></i> High Demand Area</div>
+          <h2 style="margin:0 0 8px;font-family:Poppins; color:var(--primary); font-size: 26px; line-height:1.2;">Gas ki tension khatam,<br><span style="color:var(--accent);">Smart cooking shuru.</span></h2>
+          <p class="muted" style="margin:0 auto 20px; max-width: 300px;">Stop waiting for cylinder bookings. Switch to fast, safe electric cooktops today.</p>
+          <button class="btn btn-pulse" onclick="routeTo('#/shop')" style="width:100%;"><i class="fa-solid fa-bolt"></i> Order Your Stove Now</button>
         </div>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 4px 12px;">
-        <h3 style="margin:0;font-family:Poppins">Trending Alternatives</h3>
-        <a href="#/shop" style="color:var(--primary); font-weight:600; font-size:14px;">View All</a>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:24px 16px 16px;">
+        <h3 style="margin:0;font-family:Poppins">🔥 Trending Alternatives</h3>
+        <a href="#/shop" style="color:var(--primary); font-weight:700; font-size:14px;">View All <i class="fa-solid fa-arrow-right"></i></a>
       </div>
       <div class="grid" id="home-grid"></div>
     </section>
   `;
-  const grid = $("#home-grid");
-  const featuredProducts = PRODUCTS.slice(0, 6); 
-
-  if (featuredProducts.length > 0) {
-    grid.innerHTML = featuredProducts.map(p => ProductCard(p)).join("");
-    attachProductCardHandlers(grid);
-  } else {
-    grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3; padding: 20px;">No electric stoves found. Admin, please add products.</div>`;
+  
+  const grid = $("#home-grid"); 
+  const featured = PRODUCTS.slice(0, 6); 
+  
+  if (featured.length > 0) { 
+      grid.innerHTML = featured.map(p => ProductCard(p)).join(""); 
+      attachProductCardHandlers(grid); 
+  } else { 
+      grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3; padding: 20px;">Inventory updating...</div>`; 
   }
 }
 
 function ShopView(){
-  setTopbar("Shop Stoves", false); setActiveTab("shop");
+  setTopbar("Shop Stoves", false); 
+  setActiveTab("shop");
+  
   const categories = [...new Set(PRODUCTS.map(p => p.category).filter(Boolean))];
   const filtersHtml = categories.map(c => `<button class="chip" data-filter="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="filters">
-        <button class="chip" data-filter="all">All Items</button>
-        ${filtersHtml}
-      </div>
-      <div class="card" style="padding:6px 12px;margin:8px 0 16px;display:flex;gap:10px;align-items:center; border: 2px solid var(--line);">
-        <i class="fa-solid fa-magnifying-glass" style="color:var(--primary)"></i>
-        <input id="shop-search" placeholder="Search induction, infrared, hot plate..." style="border:none;padding:10px 0;outline:none; background:transparent;">
+      <div class="filters"><button class="chip active" data-filter="all">All</button>${filtersHtml}</div>
+      <div class="card" style="padding:6px 16px; margin:12px 0 20px; display:flex; gap:10px; align-items:center; border: 2px solid var(--line); border-radius:12px;">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--muted)"></i>
+        <input id="shop-search" placeholder="Search smart stoves..." style="border:none; padding:10px 0; outline:none; background:transparent; width:100%;">
       </div>
       <div class="grid" id="shop-grid"></div>
     </section>
   `;
-  const grid = $("#shop-grid");
-  const filterButtons = $$(".filters .chip");
+  
+  const grid = $("#shop-grid"); 
+  const filterButtons = $$(".filters .chip"); 
   let activeFilter = "all";
-
-  const draw = (term="")=>{
-    const list = PRODUCTS.filter(p => {
-      const matchCategory = activeFilter === "all" || p.category === activeFilter;
-      const matchSearch = term.length === 0 || p.name.toLowerCase().includes(term.toLowerCase());
-      return matchCategory && matchSearch;
-    });
-    grid.innerHTML = list.map(p => ProductCard(p)).join("");
-    if (list.length === 0) {
-      grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3; padding: 30px;">No stoves found matching your search.</div>`;
-    }
+  
+  const draw = (term="") => {
+    const list = PRODUCTS.filter(p => (activeFilter === "all" || p.category === activeFilter) && (term === "" || p.name.toLowerCase().includes(term.toLowerCase())));
+    grid.innerHTML = list.length ? list.map(p => ProductCard(p)).join("") : `<div class="muted" style="text-align:center;grid-column:1/3; padding: 30px;">No stoves found.</div>`;
     attachProductCardHandlers(grid);
   }
+  
   draw();
+  
   $("#shop-search").addEventListener("input", (e)=> draw(e.target.value));
-  filterButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      filterButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeFilter = btn.dataset.filter;
-      draw($("#shop-search").value);
-    });
-  });
-  $$(".filters button[data-filter='all']")[0]?.classList.add("active");
+  
+  filterButtons.forEach(btn => btn.addEventListener("click", () => { 
+      filterButtons.forEach(b => b.classList.remove("active")); 
+      btn.classList.add("active"); 
+      activeFilter = btn.dataset.filter; 
+      draw($("#shop-search").value); 
+  }));
 }
 
-function getProductRating(productId) {
-  const productRatings = RATINGS.filter(r => r.productId === productId);
-  if (productRatings.length === 0) return 0;
-  const total = productRatings.reduce((sum, r) => sum + r.rating, 0);
-  return (total / productRatings.length).toFixed(1);
+function getProductRating(id) {
+  const pr = RATINGS.filter(r => r.productId === id); 
+  if (pr.length === 0) return 0;
+  return (pr.reduce((sum, r) => sum + r.rating, 0) / pr.length).toFixed(1);
 }
 
 function ProductCard(p){
-  const off = p.discountPercent ? `<div class="discount-badge">${p.discountPercent}% OFF</div>` : "";
-  const avgRating = getProductRating(p.id);
-  const ratingStars = avgRating > 0 ? `<div class="star-rating"><i class="fa-solid fa-star"></i> ${avgRating}</div>` : '';
-  const isFavorite = PROFILE.favorites.includes(p.id);
-  const likeBtnClass = isFavorite ? 'liked' : '';
+  const off = p.discountPercent ? `<div class="flash-deal-badge"><i class="fa-solid fa-tag"></i> ${p.discountPercent}% OFF</div>` : "";
+  const avg = getProductRating(p.id); 
+  const ratingHTML = avg > 0 ? `<div class="star-rating"><i class="fa-solid fa-star"></i> ${avg}</div>` : '';
+  const isFav = PROFILE.favorites.includes(p.id); 
+  const likeClass = isFav ? 'liked' : '';
+  
   return `
     <a class="card p-card" href="#/product/${p.id}" data-open="${p.id}">
-      <button class="like-btn ${likeBtnClass}" data-product-id="${p.id}" aria-label="Add to favorites"><i class="fa-solid fa-heart"></i></button>
-      <div class="p-img">
-        <img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}">
-        ${off}
-      </div>
+      ${off}
+      <button class="like-btn ${likeClass}" data-product-id="${p.id}"><i class="fa-solid fa-heart"></i></button>
+      <div class="p-img"><img src="${(p.imageUrls[0]||"")}"></div>
       <div class="p-meta">
         <div class="p-title">${escapeHtml(p.name)}</div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div class="price-line">
-            <div style="font-weight:800; color:var(--primary); font-size:16px;">${money(p.price||0)}</div>
-            ${p.priceMrp ? `<div class="strike">${money(p.priceMrp)}</div>` : ""}
+        <div style="display:flex;align-items:flex-end;justify-content:space-between; margin-top:4px;">
+          <div>
+            <div class="shimmer-text" style="font-size:18px; line-height:1;">${money(p.price||0)}</div>
+            ${p.priceMrp ? `<div class="strike" style="font-size:12px; margin-top:2px;">${money(p.priceMrp)}</div>` : ""}
           </div>
-          ${ratingStars}
+          ${ratingHTML}
         </div>
       </div>
     </a>
@@ -767,284 +1435,378 @@ function ProductCard(p){
 }
 
 function attachProductCardHandlers(scope){
-  scope.querySelectorAll("[data-open]").forEach(el=>{
-    el.addEventListener("click", (e)=>{ e.preventDefault(); routeTo(`#/product/${el.dataset.open}`); });
-  });
-  scope.querySelectorAll(".like-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleFavorite(btn.dataset.productId, btn);
-    });
-  });
+  scope.querySelectorAll("[data-open]").forEach(el=> el.addEventListener("click", (e)=>{ 
+      e.preventDefault(); 
+      routeTo(`#/product/${el.dataset.open}`); 
+  }));
+  
+  scope.querySelectorAll(".like-btn").forEach(btn => btn.addEventListener("click", (e) => { 
+      e.preventDefault(); 
+      e.stopPropagation(); 
+      toggleFavorite(btn.dataset.productId, btn); 
+  }));
 }
 
 function ProductView(id){
-  const p = PRODUCTS.find(x=>x.id===id);
+  const p = PRODUCTS.find(x=>x.id===id); 
   if(!p){ routeTo("#/shop"); return; }
-  setTopbar("Product Details", true); setActiveTab("");
-  const qtyOptions = [1, 2, 3, 4];
-  const avgRating = getProductRating(p.id);
+  
+  setTopbar("Product Details", true); 
+  setActiveTab("");
+  
+  const avgRating = getProductRating(p.id); 
   const isOrdered = ORDERS.some(o => o.customer.email === PROFILE.email && o.items.some(i => i.productId === id));
-  const isFavorite = PROFILE.favorites.includes(p.id);
-  const likeBtnClass = isFavorite ? 'liked' : '';
+  const isFav = PROFILE.favorites.includes(p.id); 
+  const likeClass = isFav ? 'liked' : '';
   
   $("#view").innerHTML = `
-    <section>
-      <div class="hero-img" style="background:#fff; border-radius:0; border-bottom:1px solid var(--line); margin:0 0 16px 0;"><img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}" style="object-fit:contain;"></div>
-      <div style="padding:0 16px 16px">
-        <div style="display:flex;align-items:start;justify-content:space-between;gap:8px">
-          <div>
-            <div class="chip" style="font-size:11px; padding: 4px 8px; margin-bottom: 8px; background:#D1FAE5; border:none; color:var(--success);"><i class="fa-solid fa-bolt"></i> Fast Delivery Available</div>
-            <h2 style="margin:0 0 6px;font-family:Poppins; line-height:1.2;">${escapeHtml(p.name)}</h2>
-            <div class="price-line" style="margin:8px 0">
-              <div style="font-family:Poppins;font-weight:700;font-size:24px; color:var(--primary);">${money(p.price||0)}</div>
-              ${p.priceMrp ? `<div class="strike" style="font-size:16px;">${money(p.priceMrp)}</div>` : ""}
-              ${p.discountPercent ? `<span class="badge-off">${p.discountPercent}% OFF</span>` : ""}
-            </div>
-            ${avgRating > 0 ? `<div class="star-rating" style="margin-bottom:12px;">${avgRating} <i class="fa-solid fa-star"></i> <span style="color:var(--muted); font-size:13px; font-weight:500;">(${RATINGS.filter(r => r.productId === id).length} reviews)</span></div>` : ''}
-            
-            <div style="font-weight:600; margin-bottom:6px; border-bottom:1px solid var(--line); padding-bottom:4px;">Product Highlights</div>
-            <div class="muted" style="max-width:560px; font-size:14px; line-height:1.6; color:#334155;">${formatDesc(p.description)}</div>
-          </div>
-          <button class="icon-round ${likeBtnClass}" id="product-like-btn" aria-label="Add to favorites" style="flex-shrink:0; background:#fff;"><i class="fa-solid fa-heart"></i></button>
+    <section style="padding-bottom:20px;">
+      <div style="position:relative; background:#fff; border-bottom:1px solid var(--line); padding:20px 0;">
+        ${p.discountPercent ? `<div class="flash-deal-badge" style="top:20px; font-size:14px; padding:8px 16px;"><i class="fa-solid fa-fire"></i> DEAL: ${p.discountPercent}% OFF</div>` : ''}
+        <img src="${(p.imageUrls[0]||"")}" style="width:100%; max-height:350px; object-fit:contain; mix-blend-mode:multiply;">
+      </div>
+      
+      <div style="padding:20px 16px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+           <h2 style="margin:0; font-family:Poppins; font-size:22px; line-height:1.3;">${escapeHtml(p.name)}</h2>
+           <button class="icon-round ${likeClass}" id="product-like-btn" style="flex-shrink:0;"><i class="fa-solid fa-heart"></i></button>
         </div>
         
-        <div style="margin:20px 0 8px;font-weight:700">Select Quantity</div>
-        <div class="size-row" id="qty-row" style="display:flex;gap:10px">
-            ${qtyOptions.map((q, i) => `<button class="size-btn ${i === 0 ? 'active' : ''}" data-qty="${q}">${q}</button>`).join("")}
+        <div class="price-line" style="margin:12px 0; align-items:baseline;">
+          <div class="shimmer-text" style="font-size:32px;">${money(p.price||0)}</div>
+          ${p.priceMrp ? `<div class="strike" style="font-size:16px;">MRP ${money(p.priceMrp)}</div>` : ""}
         </div>
-
-        <div style="position:sticky;bottom:calc(84px + var(--safe));margin-top:24px; background:rgba(255,255,255,0.95); padding:10px 0;">
-          <div style="display:flex; gap:10px;">
-            <button class="btn btn-outline" id="add-to-cart" style="flex:1; font-size:20px;" title="Add to Cart"><i class="fa-solid fa-cart-plus"></i></button>
-            <button class="btn" id="direct-buy-btn" style="flex:4; font-size:16px; padding:16px; background:var(--primary); box-shadow: 0 4px 15px rgba(0,90,208,0.3);"><i class="fa-solid fa-qrcode"></i> Buy Now & Pay</button>
-          </div>
-        </div>
-
-        ${isOrdered ? `
-          <div class="card pad" style="margin-top:24px">
-            <h4 style="margin:0 0 10px;font-family:Poppins">Rate this Stove</h4>
-            <div id="rate-stars" class="rate-stars" style="font-size:28px;color:#E2E8F0;">
-              <i class="fa-solid fa-star" data-rating="1"></i>
-              <i class="fa-solid fa-star" data-rating="2"></i>
-              <i class="fa-solid fa-star" data-rating="3"></i>
-              <i class="fa-solid fa-star" data-rating="4"></i>
-              <i class="fa-solid fa-star" data-rating="5"></i>
+        
+        ${avgRating > 0 ? `<div class="star-rating" style="margin-bottom:16px; justify-content:flex-start;">${avgRating} <i class="fa-solid fa-star"></i> <span class="muted" style="font-size:13px; font-weight:500;">(${RATINGS.filter(r => r.productId === id).length} verified reviews)</span></div>` : ''}
+        
+        <div class="urgency-box">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+                <div style="font-weight:800;">Flash Deal Ends In: <span id="prod-timer" style="font-size:16px;">15:00</span></div>
+                <div style="font-size:12px; margin-top:2px;">Only 3 units left in stock for your area!</div>
             </div>
-          </div>
-        ` : ''}
+        </div>
+        
+        <div style="font-weight:700; font-size:16px; margin:24px 0 8px; border-bottom:2px solid var(--line); padding-bottom:6px;">Product Highlights</div>
+        <div class="muted" style="font-size:14px; line-height:1.7; color:#334155;">${formatDesc(p.description)}</div>
+        
+        <div style="margin:24px 0 10px; font-weight:700;">Select Quantity</div>
+        <div class="size-row" id="qty-row" style="display:flex;gap:10px">
+            ${[1, 2, 3, 4].map((q, i) => `<button class="size-btn ${i === 0 ? 'active' : ''}" data-qty="${q}">${q}</button>`).join("")}
+        </div>
+        
+        <div class="sticky-sheet" style="margin:30px -16px 0 -16px; display:flex; gap:10px;">
+            <button class="btn btn-outline" id="add-to-cart" style="flex:1; padding:0;" title="Add to Cart"><i class="fa-solid fa-cart-plus" style="font-size:22px;"></i></button>
+            <button class="btn btn-pulse" id="direct-buy-btn" style="flex:4; font-size:18px;">Buy Now & Pay <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        
+        <div style="text-align:center; font-size:12px; font-weight:600; color:var(--success); padding-top:12px;">
+            <i class="fa-solid fa-shield-halved"></i> 100% Safe Manual Payment
+        </div>
+
+        ${isOrdered ? `<div class="card pad" style="margin-top:30px;"><h4 style="margin:0 0 10px;font-family:Poppins">Rate this Stove</h4><div id="rate-stars" class="rate-stars" style="font-size:28px;color:#E2E8F0;"><i class="fa-solid fa-star" data-rating="1"></i><i class="fa-solid fa-star" data-rating="2"></i><i class="fa-solid fa-star" data-rating="3"></i><i class="fa-solid fa-star" data-rating="4"></i><i class="fa-solid fa-star" data-rating="5"></i></div></div>` : ''}
       </div>
     </section>
   `;
 
+  // Start the 15-minute timer
+  startTimer(900, "prod-timer");
+
   let selectedQty = 1;
   const qtyRow = $("#qty-row");
+  
   if(qtyRow) {
-    qtyRow.querySelectorAll(".size-btn").forEach((b,i)=>{
+    qtyRow.querySelectorAll(".size-btn").forEach((b,i) => {
       if(i===0) b.classList.add("active");
-      b.addEventListener("click", ()=>{ qtyRow.querySelectorAll(".size-btn").forEach(x=>x.classList.remove("active")); b.classList.add("active"); selectedQty = Number(b.dataset.qty); });
+      b.addEventListener("click", () => { 
+          qtyRow.querySelectorAll(".size-btn").forEach(x => x.classList.remove("active")); 
+          b.classList.add("active"); 
+          selectedQty = Number(b.dataset.qty); 
+      });
     });
   }
 
   $("#product-like-btn").addEventListener("click", () => toggleFavorite(p.id, $("#product-like-btn")));
-
-  $("#add-to-cart").addEventListener("click", ()=>{
-    addToCart(p.id, "NA", selectedQty);
-    toast("Added to cart");
+  
+  $("#add-to-cart").addEventListener("click", () => { 
+      addToCart(p.id, "NA", selectedQty); 
+      toast("Added to cart successfully!"); 
+  });
+  
+  $("#direct-buy-btn").addEventListener("click", () => { 
+      sessionStorage.setItem("instachulha_buy_qty", selectedQty); 
+      routeTo(`#/quick-buy/${p.id}`); 
   });
 
-  $("#direct-buy-btn").addEventListener("click", ()=>{
-    sessionStorage.setItem("instachulha_buy_qty", selectedQty);
-    routeTo(`#/quick-buy/${p.id}`);
-  });
+  const rateStars = $("#rate-stars");
+  if(rateStars) {
+    const existingRating = RATINGS.find(r => r.productId === id && r.userEmail === PROFILE.email);
+    
+    if (existingRating) { 
+        for(let i = 1; i <= existingRating.rating; i++) {
+            rateStars.querySelector(`[data-rating="${i}"]`).classList.add("active"); 
+        }
+    }
+    
+    rateStars.querySelectorAll(".fa-star").forEach(star => {
+      star.addEventListener("click", () => {
+        const rating = Number(star.dataset.rating);
+        rateStars.querySelectorAll(".fa-star").forEach(s => s.classList.remove("active"));
+        
+        for(let i=1; i<=rating; i++) {
+            rateStars.querySelector(`[data-rating="${i}"]`).classList.add("active");
+        }
+        submitRating(id, rating, PROFILE.email);
+      });
+    });
+  }
 }
 
-/* ===== QUICK BUY VIEW (Collects Info, then goes to PayUPI) ===== */
+/* ===== QUICK BUY / CHECKOUT ===== */
 function QuickBuyView(id) {
-  const p = PRODUCTS.find(x=>x.id===id);
+  const p = PRODUCTS.find(x=>x.id===id); 
   if(!p){ routeTo("#/shop"); return; }
   
-  setTopbar("Secure Checkout", true); setActiveTab("");
+  setTopbar("Secure Checkout", true); 
+  setActiveTab("");
 
   const qty = parseInt(sessionStorage.getItem("instachulha_buy_qty")) || 1;
   const totalAmount = p.price * qty;
 
   $("#view").innerHTML = `
     <section style="padding:14px">
+      <div style="background:#FFFBEB; border:1px solid #FDE68A; padding:12px; border-radius:12px; color:#D97706; font-size:13px; font-weight:600; margin-bottom:16px; display:flex; gap:10px; align-items:center;">
+          <i class="fa-solid fa-lock" style="font-size:18px;"></i>
+          <div>Your item is reserved for <span id="cart-timer" style="color:#B45309; font-weight:800;">10:00</span> minutes. Complete order now!</div>
+      </div>
+
       <div class="card pad" style="border-top: 4px solid var(--primary);">
-        <h3 style="margin:0 0 10px;font-family:Poppins; color:var(--primary);">Delivery Details</h3>
-        <div class="group"><label>Full Name *</label><input id="qb-name" value="${PROFILE.name||''}" placeholder="Your Name"></div>
-        <div class="group"><label>Phone Number *</label><input id="qb-phone" type="tel" value="${PROFILE.phone||''}" placeholder="10-digit Mobile"></div>
-        <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Where to deliver?</h3>
+        
+        <label>Full Name *</label>
+        <input id="qb-name" value="${PROFILE.name||''}" placeholder="Your Name">
+        
+        <label>Phone Number *</label>
+        <input id="qb-phone" type="tel" value="${PROFILE.phone||''}" placeholder="10-digit Mobile">
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div><label>City *</label><input id="qb-city" value="${PROFILE.city||''}" placeholder="City"></div>
           <div><label>Pincode *</label><input id="qb-pincode" type="number" value="${PROFILE.pincode||''}" placeholder="6-digit PIN"></div>
         </div>
-        <div class="group"><label>Complete Address *</label><textarea id="qb-address" placeholder="House/Flat No, Street...">${PROFILE.address||''}</textarea></div>
+        
+        <label>Complete Address *</label>
+        <textarea id="qb-address" placeholder="House/Flat No, Street, Landmark...">${PROFILE.address||''}</textarea>
       </div>
       
       <div class="card sticky-sheet" style="margin-top:16px">
-        <div class="row" style="margin-bottom:8px;"><div>Product</div><div>${escapeHtml(p.name)} x ${qty}</div></div>
-        <div class="row" style="font-weight:800; font-size:18px;"><div>Total Payable</div><div style="color:var(--primary);">${money(totalAmount)}</div></div>
-        <div style="margin-top:14px">
-            <button class="btn btn-block" id="proceed-pay" style="padding:16px; background:var(--primary); color:#fff; box-shadow: 0 4px 12px rgba(0, 90, 208, 0.3);">Continue to Payment <i class="fa-solid fa-arrow-right" style="margin-left:5px;"></i></button>
+        <div class="row" style="margin-bottom:8px; font-size:14px;">
+            <div class="muted">Item</div>
+            <div style="font-weight:600;">${escapeHtml(p.name)} (x${qty})</div>
         </div>
+        <div class="row" style="margin-bottom:12px; font-size:14px;">
+            <div class="muted">Fast Shipping</div>
+            <div style="color:var(--success); font-weight:700;">FREE</div>
+        </div>
+        <div class="sep" style="margin:8px 0;"></div>
+        <div class="row" style="font-weight:800; font-size:20px;">
+            <div>Total Pay</div>
+            <div class="shimmer-text">${money(totalAmount)}</div>
+        </div>
+        <button class="btn btn-block" id="proceed-pay" style="margin-top:16px; font-size:18px;">Continue to Payment <i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </section>
   `;
 
+  startTimer(600, "cart-timer"); // 10 min cart timer
+
   $("#proceed-pay").addEventListener("click", () => {
-    const name = $("#qb-name").value.trim();
+    const name = $("#qb-name").value.trim(); 
     const phone = $("#qb-phone").value.trim();
-    const city = $("#qb-city").value.trim();
+    const city = $("#qb-city").value.trim(); 
     const pincode = $("#qb-pincode").value.trim();
     const address = $("#qb-address").value.trim();
 
-    if(!name || !phone || !city || !pincode || !address) { alert("Please fill all delivery details."); return; }
-
-    PROFILE.name = name; PROFILE.phone = phone; PROFILE.city = city; PROFILE.pincode = pincode; PROFILE.address = address;
+    if(!name || !phone || !city || !pincode || !address) { 
+        alert("Please fill all details correctly."); 
+        return; 
+    }
+    
+    PROFILE.name = name; 
+    PROFILE.phone = phone; 
+    PROFILE.city = city; 
+    PROFILE.pincode = pincode; 
+    PROFILE.address = address; 
     saveProfile();
 
-    const pendingOrder = {
-      orderId: "INSTA-" + Date.now().toString().slice(-8),
-      items: [{ productId: p.id, name: p.name, price: p.price, qty: qty }],
-      amount: totalAmount,
-      customer: { name, phone, city, pincode, address },
-      isCart: false
+    const pendingOrder = { 
+        orderId: "INSTA-" + Date.now().toString().slice(-8), 
+        items: [{ productId: p.id, name: p.name, price: p.price, qty: qty }], 
+        amount: totalAmount, 
+        customer: { name, phone, city, pincode, address }, 
+        isCart: false 
     };
-
-    writeLocal("instachulha_pending_upi", pendingOrder);
+    
+    writeLocal("instachulha_pending_upi", pendingOrder); 
     routeTo("#/pay-upi");
   });
 }
 
-/* ===== NEW MANUAL UPI PAYMENT PAGE ===== */
+/* ===== NEW MANUAL UPI PAYMENT PAGE (WITH DOWNLOAD QR) ===== */
 function PayUPIView() {
-  const pend = readLocal("instachulha_pending_upi", null);
+  const pend = readLocal("instachulha_pending_upi", null); 
   if(!pend) { routeTo("#/shop"); return; }
-  setTopbar("Complete Payment", true); setActiveTab("");
+  
+  setTopbar("Secure Payment", true); 
+  setActiveTab("");
 
   $("#view").innerHTML = `
       <section style="padding:14px; text-align:center;">
-          <div class="card pad" style="border-top: 4px solid var(--accent);">
-              <h3 style="color:var(--primary); margin-top:0; font-family:Poppins;">Scan & Pay</h3>
-              <p class="muted" style="margin-top:0;">Please pay exactly <b style="color:#0F172A; font-size:18px;">${money(pend.amount)}</b> to confirm order.</p>
+          <div class="urgency-box" style="justify-content:center; text-align:center; animation:none; border-color:var(--accent);">
+            Order reserved. Make payment in <b id="pay-timer" style="font-size:16px; margin:0 4px;">10:00</b> to confirm.
+          </div>
+
+          <div class="card pad" style="border-top: 4px solid var(--accent); position:relative; overflow:hidden;">
+              <h2 style="color:var(--primary); margin:0 0 4px; font-family:Poppins; font-size:24px;">Scan to Pay</h2>
+              <p class="muted" style="margin:0 0 16px;">Pay exactly <b class="shimmer-text" style="font-size:20px; display:inline-block;">${money(pend.amount)}</b></p>
               
-              <div style="background:#F8FAFC; padding:20px; border-radius:16px; margin:16px auto; display:inline-block; border:2px dashed var(--line);">
-                  <img src="${UPI_QR_URL}" style="width:220px; height:220px; object-fit:contain; border-radius:8px;">
+              <div style="background:#F8FAFC; padding:16px; border-radius:16px; margin:0 auto; display:inline-block; border:2px dashed var(--primary); position:relative;">
+                  <img src="${UPI_QR_URL}" style="width:200px; height:200px; object-fit:contain; border-radius:8px;">
               </div>
               
-              <div style="font-weight:700; font-size:16px; display:flex; justify-content:center; align-items:center; gap:10px;">
-                UPI ID: ${escapeHtml(UPI_ID)} 
-                <button onclick="copyUPI()" style="background:#EFF6FF; border:none; padding:6px 12px; border-radius:8px; color:var(--primary); font-weight:600; cursor:pointer;"><i class="fa-regular fa-copy"></i> Copy</button>
+              <button onclick="downloadQR()" class="btn btn-outline" style="width:236px; padding:10px; margin-top:12px; font-size:14px;">
+                  <i class="fa-solid fa-download"></i> Save QR to Gallery
+              </button>
+              
+              <div style="font-weight:700; font-size:16px; display:flex; justify-content:center; align-items:center; gap:10px; margin-top:24px;">
+                <span class="muted" style="font-weight:500; font-size:13px;">UPI ID:</span> ${escapeHtml(UPI_ID)} 
+                <button onclick="copyUPI()" style="background:#EFF6FF; border:1px solid #BFDBFE; padding:6px 12px; border-radius:8px; color:var(--primary); font-weight:700; cursor:pointer;">
+                    <i class="fa-regular fa-copy"></i> Copy
+                </button>
               </div>
               
-              <div style="background:#FFFBEB; padding:16px; border-radius:12px; border:1px solid #FDE68A; margin-top:20px; text-align:left; font-size:13px; color:#92400E;">
-                  <b style="display:block; margin-bottom:6px;"><i class="fa-solid fa-circle-info"></i> Instructions:</b>
-                  1. Scan the QR code above or Copy the UPI ID.<br>
+              <div style="background:#F0FDF4; padding:16px; border-radius:12px; border:1px solid #86EFAC; margin-top:24px; text-align:left; font-size:13px; color:#166534;">
+                  <b style="display:block; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-circle-check"></i> How to pay?</b>
+                  1. <b>Download</b> the QR code or <b>Copy</b> the UPI ID.<br>
                   2. Open PhonePe, GPay, or Paytm.<br>
-                  3. Pay exactly <b>${money(pend.amount)}</b>.<br>
-                  4. Come back here and click "I Have Paid".
+                  3. Scan the image from your gallery / Paste ID.<br>
+                  4. After successful payment, click the green button below.
               </div>
 
-              <div style="margin-top:24px;">
-                <button class="btn btn-block" id="btn-paid" style="padding:16px; background:var(--success); font-size:16px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">I Have Paid (Verify Order) <i class="fa-solid fa-check-double"></i></button>
-                <button class="btn btn-outline btn-block" id="btn-cancel-pay" style="margin-top:12px; padding:16px;">Cancel Order</button>
+              <div class="sticky-sheet" style="margin:24px -18px -18px -18px; border-radius:0 0 var(--radius) var(--radius);">
+                <button class="btn btn-block btn-pulse" id="btn-paid" style="padding:18px; background:var(--success); font-size:18px;">
+                    I Have Paid ${money(pend.amount)} <i class="fa-solid fa-check-double"></i>
+                </button>
+                <button class="btn btn-outline btn-block" id="btn-cancel-pay" style="margin-top:12px; padding:12px; border:none; color:var(--muted);">Cancel Order</button>
               </div>
           </div>
       </section>
   `;
 
-  $("#btn-paid").onclick = () => {
-      const btn = $("#btn-paid");
-      btn.innerHTML = `Processing...`; btn.disabled = true;
+  startTimer(600, "pay-timer");
 
+  $("#btn-paid").onclick = () => {
+      const btn = $("#btn-paid"); 
+      btn.innerHTML = `Verifying...`; 
+      btn.disabled = true; 
+      btn.classList.remove('btn-pulse');
+      
       const orderKey = db.ref('orders').push().key;
-      const finalOrder = {
-        ...pend,
-        firebaseKey: orderKey,
-        createdAt: Date.now(),
-        status: "Payment Verification Pending",
-        paymentMethod: "Manual UPI",
-        trackingUrl: ""
+      const finalOrder = { 
+          ...pend, 
+          firebaseKey: orderKey, 
+          createdAt: Date.now(), 
+          status: "Payment Verification Pending", 
+          paymentMethod: "Manual UPI", 
+          trackingUrl: "" 
       };
       
       db.ref('orders/' + orderKey).set(finalOrder).then(() => {
-        writeLocal("instachulha_last_order", finalOrder);
+        writeLocal("instachulha_last_order", finalOrder); 
         localStorage.removeItem("instachulha_pending_upi");
-        if(pend.isCart) { CART = []; saveCart(); } // Empty cart if it came from cart
+        if(pend.isCart) { 
+            CART = []; 
+            saveCart(); 
+        } 
         routeTo("#/success-upi");
-      }).catch(err => {
-        alert("Error saving order. Check connection.");
-        btn.innerHTML = `I Have Paid`; btn.disabled = false;
+      }).catch(err => { 
+          alert("Error saving order. Check connection."); 
+          btn.innerHTML = `I Have Paid`; 
+          btn.disabled = false; 
       });
   };
-
+  
   $("#btn-cancel-pay").onclick = () => history.back();
 }
 
 function SuccessUPIView() {
-  setTopbar("Order Received", false); setActiveTab("");
+  setTopbar("Order Received", false); 
+  setActiveTab("");
+  
   const last = readLocal("instachulha_last_order", null);
   
   $("#view").innerHTML = `
       <section class="success-wrap">
-        <div class="check-anim" style="background:#FEF3C7; border-color:#FDE68A; color:#D97706; animation:none; transform:scale(1); opacity:1;"><i class="fa-solid fa-clock-rotate-left" style="font-size:40px"></i></div>
+        <div class="check-anim" style="background:#FEF3C7; border-color:#FDE68A; color:#D97706; animation:none; transform:scale(1); opacity:1;">
+            <i class="fa-solid fa-clock-rotate-left" style="font-size:40px"></i>
+        </div>
         <h2 style="font-family:Poppins;margin:16px 0 8px; color:#D97706; text-align:center;">Verifying Payment</h2>
         <div class="muted" style="text-align:center; line-height:1.5;">Thank you! We have received your order request <b>#${escapeHtml(last?.orderId||"")}</b>.</div>
         
         <div class="card pad" style="background:#FFFBEB; border-color:#FDE68A; margin-top:20px; width:100%; text-align:center;">
           <div style="font-size:13px; color:#92400E; font-weight:600;"><i class="fa-solid fa-user-shield"></i> Manual Verification in Progress</div>
-          <div style="font-size:13px; color:#92400E; margin-top:6px;">Our team is manually verifying your payment of <b>${money(last?.amount)}</b>. Once confirmed, you will receive a tracking update in your 'My Orders' section.</div>
+          <div style="font-size:13px; color:#92400E; margin-top:6px;">Our team is verifying your payment of <b>${money(last?.amount)}</b>. Once confirmed, you will receive a tracking update in 'My Orders'.</div>
         </div>
         
-        <div style="margin-top:24px;display:flex;gap:12px;flex-direction:column;width:100%;max-width:480px">
-          <a class="btn btn-block" href="#/account/orders" style="padding:16px;">View My Orders</a>
-          <a class="btn btn-outline btn-block" href="#/shop" style="padding:16px;">Back to Home</a>
+        <div style="margin-top:30px; width:100%;">
+          <a class="btn btn-block" href="#/account/orders" style="padding:16px; background:var(--primary);">Track My Order</a>
         </div>
       </section>
   `;
 }
 
-/* ===== CART & CHECKOUT ===== */
+/* ===== CART ===== */
 function CartView(){
-  setTopbar("Shopping Cart", true); setActiveTab("cart");
+  setTopbar("Shopping Cart", true); 
+  setActiveTab("cart");
+  
   const total = cartTotal();
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
-      ${CART.length===0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-solid fa-cart-shopping" style="font-size:40px; color:var(--line); margin-bottom:16px;"></i><div class="muted">Your cart is empty.</div><div style="margin-top:16px"><a class="btn btn-outline" href="#/shop">Browse Stoves</a></div></div>` : `
+      ${CART.length===0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-solid fa-cart-shopping" style="font-size:50px; color:var(--line); margin-bottom:16px;"></i><div class="muted" style="font-size:16px;">Your cart is empty.</div><div style="margin-top:20px"><a class="btn btn-outline" href="#/shop" style="padding:12px 24px;">Browse Deals</a></div></div>` : `
       <div class="cart-list" id="cart-list">${CART.map(row => CartItem(row)).join("")}</div>
       <div class="card sticky-sheet" style="margin-top:16px">
-      <div class="row"><div class="muted">Subtotal</div><div style="font-weight:600;">${money(total)}</div></div>
-        <div class="row"><div class="muted">Fast Shipping</div><div style="color:var(--success); font-weight:600;">Free</div></div>
-        <div class="row"><div class="muted">Taxes</div><div>₹0</div></div>
+      <div class="row" style="margin-bottom:8px;"><div class="muted">Subtotal</div><div style="font-weight:600;">${money(total)}</div></div>
+        <div class="row" style="margin-bottom:8px;"><div class="muted">Fast Shipping</div><div style="color:var(--success); font-weight:700;">FREE</div></div>
         <div class="sep"></div>
-        <div class="row" style="font-weight:800; font-size:18px; color:var(--primary);"><div>Total</div><div>${money(total)}</div></div>
-        <div style="margin-top:14px"><button class="btn btn-block" id="to-checkout" style="padding:16px;">Proceed to Checkout <i class="fa-solid fa-arrow-right" style="margin-left:4px;"></i></button></div>
+        <div class="row" style="font-weight:800; font-size:20px;"><div>Total</div><div class="shimmer-text">${money(total)}</div></div>
+        <button class="btn btn-block" id="to-checkout" style="padding:16px; margin-top:16px; font-size:16px;">Secure Checkout <i class="fa-solid fa-lock"></i></button>
       </div>`}
     </section>
   `;
+  
   attachCartHandlers();
-  $("#to-checkout")?.addEventListener("click", ()=>{
-    if (ensureProfileBefore("#/checkout")) routeTo("#/checkout");
+  
+  $("#to-checkout")?.addEventListener("click", ()=>{ 
+      if (ensureProfileBefore("#/checkout")) routeTo("#/checkout"); 
   });
 }
 
 function CartItem(it){
-  const p = PRODUCTS.find(x=>x.id===it.productId); if(!p) return "";
+  const p = PRODUCTS.find(x=>x.id===it.productId); 
+  if(!p) return "";
+  
   return `
     <div class="cart-item" data-id="${it.productId}">
-      <img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}">
+      <img src="${(p.imageUrls[0]||"")}">
       <div>
         <div style="font-weight:700; color:var(--primary); line-height:1.2;">${escapeHtml(p.name)}</div>
-        <div class="price-line" style="margin-top:6px">
-          <div style="font-weight:700">${money((p.price||0) * it.qty)}</div>
-        </div>
+        <div class="price-line" style="margin-top:6px"><div style="font-weight:800; font-size:16px;">${money((p.price||0) * it.qty)}</div></div>
         <div class="qty">
           <button class="circle-btn" data-dec>-</button>
           <div style="font-weight:600; width:16px; text-align:center;">${it.qty}</div>
           <button class="circle-btn primary" data-inc>+</button>
-          <button class="circle-btn" data-rem title="Remove" style="margin-left:auto; color:#EF4444; border-color:#FEE2E2; background:#FEF2F2;"><i class="fa-regular fa-trash-can"></i></button>
+          <button class="circle-btn" data-rem style="margin-left:auto; color:#EF4444; border-color:#FEE2E2; background:#FEF2F2;"><i class="fa-regular fa-trash-can"></i></button>
         </div>
       </div>
     </div>
@@ -1053,7 +1815,7 @@ function CartItem(it){
 
 function attachCartHandlers(){
   $$("#cart-list .cart-item").forEach(item=>{
-    const pid=item.dataset.id;
+    const pid = item.dataset.id;
     item.querySelector("[data-inc]").addEventListener("click", ()=> changeQty(pid, +1));
     item.querySelector("[data-dec]").addEventListener("click", ()=> changeQty(pid, -1));
     item.querySelector("[data-rem]").addEventListener("click", ()=> removeFromCart(pid));
@@ -1062,186 +1824,213 @@ function attachCartHandlers(){
 
 function CheckoutView(){
   if (CART.length===0){ routeTo("#/cart"); return; }
-  setTopbar("Checkout", true); setActiveTab("");
+  
+  setTopbar("Checkout", true); 
+  setActiveTab(""); 
+  
   const total = cartTotal();
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
+      <div class="urgency-box" style="margin-top:0;"><i class="fa-solid fa-bolt"></i> Items in cart are selling fast!</div>
+      
       <div class="card pad" style="border-top: 4px solid var(--primary);">
-        <h3 style="margin:0 0 10px;font-family:Poppins; color:var(--primary);">Contact Information</h3>
-        <div class="group"><label>Full Name</label><input id="ch-name" required placeholder="Enter your name"></div>
-        <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label>Email <span class="muted" style="font-weight:normal;">(Optional)</span></label><input id="ch-email" type="email" placeholder="For receipt"></div>
-          <div><label>Phone *</label><input id="ch-phone" type="tel" required placeholder="10-digit number"></div>
+        <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Delivery Details</h3>
+        
+        <label>Full Name</label>
+        <input id="ch-name" required value="${PROFILE.name||''}">
+        
+        <label>Phone *</label>
+        <input id="ch-phone" type="tel" required value="${PROFILE.phone||''}">
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label>City *</label><input id="ch-city" required value="${PROFILE.city||''}"></div>
+          <div><label>Pincode *</label><input id="ch-pincode" type="number" required value="${PROFILE.pincode||''}"></div>
         </div>
         
-        <h3 style="margin:24px 0 10px;font-family:Poppins; color:var(--primary);">Shipping Address</h3>
-        <div class="group"><label>Complete Address *</label><textarea id="ch-address" required placeholder="House No, Building, Street Area..."></textarea></div>
-        <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label>City *</label><input id="ch-city" required></div>
-          <div><label>Pincode *</label><input id="ch-pincode" required type="number"></div>
-        </div>
-        <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label>State</label><input id="ch-state"></div>
-          <div><label>Landmark</label><input id="ch-landmark" placeholder="Near by..."></div>
-        </div>
+        <label>Complete Address *</label>
+        <textarea id="ch-address" required>${PROFILE.address||''}</textarea>
       </div>
+      
       <div class="card sticky-sheet" style="margin-top:16px">
-        <div class="row"><div class="muted">Subtotal</div><div style="font-weight:600;">${money(total)}</div></div>
-        <div class="row"><div class="muted">Shipping</div><div style="color:var(--success); font-weight:600;">Free</div></div>
-        <div class="sep"></div>
-        <div class="row" style="font-weight:800; font-size:18px;"><div>Total</div><div style="color:var(--primary);">${money(total)}</div></div>
-        <div style="margin-top:14px"><button class="btn btn-block" id="pay-online-next" style="padding:16px;"><i class="fa-solid fa-qrcode"></i> Proceed to Online Payment</button></div>
+        <div class="row" style="font-weight:800; font-size:20px;"><div>Total Payable</div><div class="shimmer-text">${money(total)}</div></div>
+        <button class="btn btn-block" id="pay-online-next" style="padding:16px; margin-top:16px;"><i class="fa-solid fa-qrcode"></i> Pay & Place Order</button>
       </div>
     </section>
   `;
-  $("#ch-name").value = PROFILE.name||"";
-  $("#ch-email").value = PROFILE.email||"";
-  $("#ch-phone").value = PROFILE.phone||"";
-  $("#ch-address").value = PROFILE.address||"";
-  $("#ch-city").value = PROFILE.city||"";
-  $("#ch-pincode").value = PROFILE.pincode||"";
-  $("#ch-state").value = PROFILE.state||"";
-  $("#ch-landmark").value = PROFILE.landmark||"";
-
+  
   $("#pay-online-next").addEventListener("click", ()=>{
-    PROFILE.name = $("#ch-name").value.trim();
-    PROFILE.email = $("#ch-email").value.trim();
-    PROFILE.phone = $("#ch-phone").value.trim();
-    PROFILE.address = $("#ch-address").value.trim();
-    PROFILE.city = $("#ch-city").value.trim();
-    PROFILE.pincode = $("#ch-pincode").value.trim();
-    PROFILE.state = $("#ch-state").value.trim();
-    PROFILE.landmark = $("#ch-landmark").value.trim();
+    const n = $("#ch-name").value.trim();
+    const p = $("#ch-phone").value.trim();
+    const a = $("#ch-address").value.trim();
+    const c = $("#ch-city").value.trim();
+    const pc = $("#ch-pincode").value.trim();
     
-    if(!PROFILE.name || !PROFILE.phone || !PROFILE.address || !PROFILE.city || !PROFILE.pincode){ 
-        alert("Please fill all required fields (*)."); return; 
+    if(!n || !p || !a || !c || !pc){ 
+        alert("Please fill all details."); 
+        return; 
     }
-    PROFILE.isComplete = true;
+    
+    PROFILE.name = n; 
+    PROFILE.phone = p; 
+    PROFILE.address = a; 
+    PROFILE.city = c; 
+    PROFILE.pincode = pc; 
+    PROFILE.isComplete = true; 
     saveProfile();
-
-    const items = CART.map(it => {
-      const p = PRODUCTS.find(x=>x.id===it.productId);
-      return { productId: it.productId, name: p?.name, price: p?.price, mrp: p?.priceMrp, qty: it.qty, size: "NA" };
+    
+    const items = CART.map(it => { 
+        const prod = PRODUCTS.find(x=>x.id===it.productId); 
+        return { productId: it.productId, name: prod?.name, price: prod?.price, qty: it.qty }; 
     });
-    const amount = cartTotal();
-    const orderId = "INSTA-" + Date.now().toString().slice(-8); 
-    writeLocal("instachulha_pending_upi", { orderId, items, customer: { ...PROFILE }, amount, isCart: true });
+    
+    writeLocal("instachulha_pending_upi", { 
+        orderId: "INSTA-" + Date.now().toString().slice(-8), 
+        items, 
+        customer: { ...PROFILE }, 
+        amount: cartTotal(), 
+        isCart: true 
+    });
+    
     routeTo("#/pay-upi");
   });
 }
 
 function addToCart(productId, size, qty){
   const idx = CART.findIndex(x=>x.productId===productId);
-  if (idx>-1) CART[idx].qty += qty; else CART.push({ productId, size, qty });
+  if (idx>-1) {
+      CART[idx].qty += qty; 
+  } else {
+      CART.push({ productId, size, qty });
+  }
   saveCart();
 }
+
 function changeQty(productId, delta){
-  const idx = CART.findIndex(x=>x.productId===productId);
+  const idx = CART.findIndex(x=>x.productId===productId); 
   if (idx===-1) return;
-  CART[idx].qty = Math.max(1, CART[idx].qty + delta);
-  saveCart(); render();
-}
-function removeFromCart(productId){
-  CART = CART.filter(x=> x.productId!==productId);
-  saveCart(); render();
+  CART[idx].qty = Math.max(1, CART[idx].qty + delta); 
+  saveCart(); 
+  render();
 }
 
-/* ===== Account, Profile, Orders ===== */
+function removeFromCart(productId){ 
+    CART = CART.filter(x=> x.productId!==productId); 
+    saveCart(); 
+    render(); 
+}
+
+/* ===== Account & Orders ===== */
 function AccountView(){
-  setTopbar("Profile", false); setActiveTab("account");
+  setTopbar("Profile", false); 
+  setActiveTab("account");
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="card pad" style="background: linear-gradient(135deg, var(--primary) 0%, #2563EB 100%); color:#fff; border:none;">
+      <div class="card pad" style="background: linear-gradient(135deg, var(--primary) 0%, #2563EB 100%); color:#fff; border:none; border-radius:20px;">
         <div style="display:flex;align-items:center;gap:16px">
-          <div class="avatar" style="border-color:rgba(255,255,255,0.3);"><img src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}" alt="avatar"></div>
-          <div>
-            <div style="font-weight:700;font-size:20px">${escapeHtml(PROFILE.name || 'Guest User')}</div>
-            <div style="color:rgba(255,255,255,0.8); font-size:14px; margin-top:2px;">${escapeHtml(PROFILE.phone || 'Complete your profile')}</div>
-          </div>
+          <div class="avatar" style="border-color:rgba(255,255,255,0.3);"><img src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}"></div>
+          <div><div style="font-weight:700;font-size:20px">${escapeHtml(PROFILE.name || 'Guest User')}</div><div style="color:rgba(255,255,255,0.8); font-size:14px;">${escapeHtml(PROFILE.phone || 'Complete your profile')}</div></div>
         </div>
       </div>
-      <div class="card pad" style="margin-top:16px">
-        <a href="#/profile" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-regular fa-user" style="color:var(--primary); width:24px;"></i> Edit Profile Details</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
-        <div class="sep" style="margin:4px 0;"></div>
-        <a href="#/account/orders" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-solid fa-box" style="color:var(--primary); width:24px;"></i> My Orders</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
-        <div class="sep" style="margin:4px 0;"></div>
-        <a href="#/favorites" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-regular fa-heart" style="color:var(--primary); width:24px;"></i> Saved Stoves</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+      
+      <div class="card pad" style="margin-top:16px; border-radius:20px;">
+        <a href="#/profile" class="row" style="padding:14px 0; font-weight:600;"><div><i class="fa-regular fa-user" style="color:var(--primary); width:28px; font-size:18px;"></i> Edit Profile</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+        <div class="sep" style="margin:0;"></div>
+        <a href="#/account/orders" class="row" style="padding:14px 0; font-weight:600;"><div><i class="fa-solid fa-box" style="color:var(--primary); width:28px; font-size:18px;"></i> My Orders</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+        <div class="sep" style="margin:0;"></div>
+        <a href="#/favorites" class="row" style="padding:14px 0; font-weight:600;"><div><i class="fa-regular fa-heart" style="color:var(--primary); width:28px; font-size:18px;"></i> Saved Deals</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+      </div>
+      
+      <div class="card pad" style="margin-top:16px; text-align:center; border-radius:20px; cursor:pointer;" onclick="$('#chatbot-toggle').click()">
+        <div style="font-weight:700; color:var(--primary);"><i class="fa-solid fa-headset"></i> Need Help? Chat with AI</div>
       </div>
     </section>
   `;
 }
 
 function ProfileEditView(isSetup=false){
-  setTopbar(isSetup ? "Setup Profile" : "Edit Profile", true); setActiveTab("");
+  setTopbar(isSetup ? "Setup Profile" : "Edit Profile", true); 
+  setActiveTab("");
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
       <div class="profile-head">
-        <div class="avatar"><img id="avatar-img" src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}" alt="avatar"></div>
-        <label class="chip" style="cursor:pointer; margin-top:8px;">Change Photo <input type="file" id="avatar-file" accept="image/*" style="display:none"></label>
+          <div class="avatar"><img id="avatar-img" src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}"></div>
+          <label class="chip" style="cursor:pointer; margin-top:8px;">Change Photo <input type="file" id="avatar-file" accept="image/*" style="display:none"></label>
       </div>
       <div class="card pad">
-        <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Personal Details</h3>
-        <label>Full Name</label><input id="pfv-name" value="${escapeHtml(PROFILE.name||'')}">
-        <label>Phone Number</label><input id="pfv-phone" type="tel" value="${escapeHtml(PROFILE.phone||'')}">
-        <label>Email (Optional)</label><input id="pfv-email" type="email" value="${escapeHtml(PROFILE.email||'')}">
+        <label>Full Name</label>
+        <input id="pfv-name" value="${escapeHtml(PROFILE.name||'')}">
+        <label>Phone Number</label>
+        <input id="pfv-phone" type="tel" value="${escapeHtml(PROFILE.phone||'')}">
         
-        <h3 style="margin:24px 0 16px;font-family:Poppins; color:var(--primary);">Delivery Address</h3>
         <div class="row" style="gap:10px;">
-          <div style="flex:1"><label>Pin Code</label><input id="pfv-pincode" value="${escapeHtml(PROFILE.pincode||'')}"></div>
-          <div style="flex:1"><label>City</label><input id="pfv-city" value="${escapeHtml(PROFILE.city||'')}"></div>
+            <div style="flex:1"><label>Pin Code</label><input id="pfv-pincode" value="${escapeHtml(PROFILE.pincode||'')}"></div>
+            <div style="flex:1"><label>City</label><input id="pfv-city" value="${escapeHtml(PROFILE.city||'')}"></div>
         </div>
-        <div class="row" style="gap:10px;margin-top:10px">
-          <div style="flex:1"><label>State</label><input id="pfv-state" value="${escapeHtml(PROFILE.state||'')}"></div>
-          <div style="flex:1"><label>Landmark</label><input id="pfv-landmark" value="${escapeHtml(PROFILE.landmark||'')}"></div>
-        </div>
+        
         <label style="margin-top:10px">Complete Address</label>
         <textarea id="pfv-address">${escapeHtml(PROFILE.address||'')}</textarea>
-        <div style="margin-top:20px"><button class="btn btn-block" id="pfv-save" style="padding:16px;">${isSetup?'Save & Continue to Checkout':'Save Changes'}</button></div>
+        
+        <button class="btn btn-block" id="pfv-save" style="padding:16px; margin-top:24px;">${isSetup?'Save & Continue':'Save Changes'}</button>
       </div>
     </section>
   `;
-  $("#avatar-file").addEventListener("change", async (e)=>{
-    const f = e.target.files?.[0]; if(!f) return;
-    const url = await compressToDataURL(f, 400, 400, 0.9);
-    PROFILE.avatar = url; saveProfile(); $("#avatar-img").src = url;
+  
+  $("#avatar-file").addEventListener("change", async (e)=>{ 
+      const f = e.target.files?.[0]; 
+      if(!f) return; 
+      const url = await compressToDataURL(f, 400, 400, 0.9); 
+      PROFILE.avatar = url; 
+      saveProfile(); 
+      $("#avatar-img").src = url; 
   });
+  
   $("#pfv-save").addEventListener("click", ()=>{
-    PROFILE.name = $("#pfv-name").value.trim();
-    PROFILE.email = $("#pfv-email").value.trim();
-    PROFILE.phone = $("#pfv-phone").value.trim();
-    PROFILE.pincode = $("#pfv-pincode").value.trim();
-    PROFILE.city = $("#pfv-city").value.trim();
-    PROFILE.state = $("#pfv-state").value.trim();
-    PROFILE.landmark = $("#pfv-landmark").value.trim();
-    PROFILE.address = $("#pfv-address").value.trim();
-    PROFILE.isComplete = hasCompleteProfile();
+    PROFILE.name = $("#pfv-name").value.trim(); 
+    PROFILE.phone = $("#pfv-phone").value.trim(); 
+    PROFILE.pincode = $("#pfv-pincode").value.trim(); 
+    PROFILE.city = $("#pfv-city").value.trim(); 
+    PROFILE.address = $("#pfv-address").value.trim(); 
+    PROFILE.isComplete = hasCompleteProfile(); 
     saveProfile();
-    const next = readLocal("instachulha_next", null);
-    localStorage.removeItem("instachulha_next");
-    toast("Profile saved successfully");
-    if (isSetup && next){ routeTo(next); } else { routeTo("#/account"); }
+    
+    const next = readLocal("instachulha_next", null); 
+    localStorage.removeItem("instachulha_next"); 
+    toast("Profile saved");
+    
+    if (isSetup && next){ 
+        routeTo(next); 
+    } else { 
+        routeTo("#/account"); 
+    }
   });
 }
 
 function FavoritesView() {
-  setTopbar("Saved Stoves", true);
-  setActiveTab("");
-  const favoriteProducts = PRODUCTS.filter(p => PROFILE.favorites.includes(p.id));
+  setTopbar("Saved Deals", true); 
+  setActiveTab(""); 
+  
+  const favs = PRODUCTS.filter(p => PROFILE.favorites.includes(p.id));
+  
   $("#view").innerHTML = `
-    <section style="padding:14px">
-      ${favoriteProducts.length === 0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-regular fa-heart" style="font-size:40px; color:var(--line); margin-bottom:16px;"></i><div class="muted">No saved items yet.</div><div style="margin-top:16px"><a class="btn btn-outline" href="#/shop">Browse Stoves</a></div></div>` : `
-      <div class="grid" id="favorites-grid">${favoriteProducts.map(p => ProductCard(p)).join("")}</div>`}
-    </section>
+      <section style="padding:14px">
+      ${favs.length === 0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-regular fa-heart" style="font-size:40px; color:var(--line); margin-bottom:16px;"></i><div class="muted">No saved items.</div></div>` : `<div class="grid" id="favorites-grid">${favs.map(p => ProductCard(p)).join("")}</div>`}
+      </section>
   `;
   attachProductCardHandlers($("#favorites-grid"));
 }
 
 function OrdersListView(){
-  setTopbar("My Orders", true); setActiveTab("");
+  setTopbar("My Orders", true); 
+  setActiveTab(""); 
+  
   const rows = [...ORDERS].sort((a,b)=> b.createdAt - a.createdAt);
+  
   $("#view").innerHTML = `
     <section style="padding:14px">
-      ${rows.length===0 ? `<div class="card pad" style="text-align:center; padding:30px;"><div class="muted">No orders placed yet.</div></div>` : rows.map(o => `
+      ${rows.length===0 ? `<div class="card pad" style="text-align:center; padding:30px;"><div class="muted">No orders yet.</div></div>` : rows.map(o => `
         <a class="card pad" style="display:block;margin-bottom:16px; border-left: 4px solid var(--primary);" href="#/account/orders/${o.orderId}">
           <div class="row"><strong style="color:var(--primary);">#${escapeHtml(o.orderId)}</strong><span class="muted" style="font-size:12px;">${new Date(o.createdAt).toLocaleDateString()}</span></div>
           <div class="row" style="margin-top:10px;"><div class="muted" style="font-size:14px;">${escapeHtml((o.items || [{name: o.productName}]).map(i=>i.name).join(", "))}</div><div style="font-weight:700;">${money(o.amount)}</div></div>
@@ -1253,448 +2042,452 @@ function OrdersListView(){
 }
 
 function OrderDetailView(orderId){
-  const o = ORDERS.find(x=>x.orderId===orderId);
-  if(!o){ OrdersListView(); return; }
-  setTopbar("Order Detail", true); setActiveTab("");
+  const o = ORDERS.find(x=>x.orderId===orderId); 
+  if(!o){ OrdersListView(); return; } 
   
-  const itemsHTML = o.items ? o.items.map(it=>`<div class="row" style="margin-bottom:8px;"><div>${escapeHtml(it.name)} <span class="muted" style="font-size:13px;">x${it.qty||1}</span></div><div style="font-weight:600;">${money(it.price*(it.qty||1))}</div></div>`).join("") : `<div class="row" style="margin-bottom:8px;"><div>${escapeHtml(o.productName)} <span class="muted" style="font-size:13px;">x1</span></div><div style="font-weight:600;">${money(o.amount)}</div></div>`;
+  setTopbar("Order Status", true); 
+  setActiveTab("");
+  
+  const itemsHTML = o.items ? o.items.map(it=>`<div class="row" style="margin-bottom:8px;"><div>${escapeHtml(it.name)} <span class="muted" style="font-size:13px;">x${it.qty||1}</span></div><div style="font-weight:700;">${money(it.price*(it.qty||1))}</div></div>`).join("") : `<div class="row" style="margin-bottom:8px;"><div>${escapeHtml(o.productName)} <span class="muted" style="font-size:13px;">x1</span></div><div style="font-weight:700;">${money(o.amount)}</div></div>`;
   
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="card pad">
-        <div class="row"><div style="font-weight:700; color:var(--primary);">Order #${escapeHtml(o.orderId)}</div><div class="muted" style="font-size:13px;">${new Date(o.createdAt).toLocaleString()}</div></div>
-        <div class="chip" style="margin-top:12px; font-size:13px; background:#EFF6FF; border:none; color:var(--primary);"><i class="fa-solid fa-circle-info"></i> ${escapeHtml(o.status)}</div>
-        <div class="sep" style="margin:16px 0;"></div>
-        <h4 style="margin:0 0 10px; font-family:Poppins;">Items</h4>
-        ${itemsHTML}
-        <div class="sep" style="margin:16px 0;"></div>
-        <div class="row" style="font-size:16px;"><strong>Total Amount</strong><strong style="color:var(--primary);">${money(o.amount)}</strong></div>
-        <div class="muted" style="font-size:13px; margin-top:6px;">Payment Method: ${escapeHtml(o.paymentMethod || "Online/UPI")}</div>
-        ${o.trackingUrl ? `
-          <div class="card pad" style="margin-top:16px; background:#F8FAFC; text-align:center;">
-             <a href="${escapeHtml(o.trackingUrl)}" target="_blank" class="btn" style="padding:12px;"><i class="fa-solid fa-truck-fast"></i> Track Shipment</a>
-          </div>
-        ` : ''}
+      <div class="card pad" style="border-radius:20px;">
+        <div style="text-align:center; padding-bottom:16px; border-bottom:1px solid var(--line);">
+           <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">Order ID</div>
+           <div style="font-weight:800; font-size:20px; color:var(--primary);">#${escapeHtml(o.orderId)}</div>
+           <div class="chip" style="margin-top:10px; font-size:13px; background:#FEFCE8; border-color:#FEF08A; color:#A16207;"><i class="fa-solid fa-clock"></i> ${escapeHtml(o.status)}</div>
+        </div>
+        <div style="padding:16px 0;">
+            <h4 style="margin:0 0 10px; font-family:Poppins;">Order Summary</h4>
+            ${itemsHTML}
+        </div>
+        <div style="padding-top:16px; border-top:1px solid var(--line);">
+            <div class="row" style="font-size:18px;"><strong>Total Paid</strong><strong style="color:var(--success);">${money(o.amount)}</strong></div>
+            <div class="muted" style="font-size:13px; margin-top:4px;">Via ${escapeHtml(o.paymentMethod || "Online/UPI")}</div>
+        </div>
+        ${o.trackingUrl ? `<a href="${escapeHtml(o.trackingUrl)}" target="_blank" class="btn btn-block" style="margin-top:20px;"><i class="fa-solid fa-truck-fast"></i> Track Live Shipment</a>` : ''}
       </div>
     </section>
   `;
 }
 
 function submitRating(productId, rating, userEmail) {
-  const existingRating = RATINGS.find(r => r.productId === productId && r.userEmail === userEmail);
-  const ratingData = { productId, userEmail, rating };
-  
-  if (existingRating) {
-    db.ref('ratings/' + existingRating.firebaseKey).update(ratingData).then(() => toast("Rating updated!"));
-  } else {
-    const newRatingKey = db.ref('ratings').push().key;
-    db.ref('ratings/' + newRatingKey).set({ ...ratingData, firebaseKey: newRatingKey }).then(() => toast("Rating submitted!"));
+  const ex = RATINGS.find(r => r.productId === productId && r.userEmail === userEmail);
+  if (ex) { 
+      db.ref('ratings/' + ex.firebaseKey).update({ rating }).then(() => toast("Rating updated!")); 
+  } else { 
+      const k = db.ref('ratings').push().key; 
+      db.ref('ratings/' + k).set({ productId, userEmail, rating, firebaseKey: k }).then(() => toast("Rating submitted!")); 
   }
 }
 
-function toggleFavorite(productId, buttonElement) {
-  if (PROFILE.favorites.includes(productId)) {
-    PROFILE.favorites = PROFILE.favorites.filter(id => id !== productId);
-    buttonElement?.classList.remove('liked');
-    toast("Removed from favorites");
-  } else {
-    PROFILE.favorites.push(productId);
-    buttonElement?.classList.add('liked');
-    toast("Added to favorites");
+function toggleFavorite(productId, btn) {
+  if (PROFILE.favorites.includes(productId)) { 
+      PROFILE.favorites = PROFILE.favorites.filter(id => id !== productId); 
+      btn?.classList.remove('liked'); 
+      toast("Removed from saved."); 
+  } else { 
+      PROFILE.favorites.push(productId); 
+      btn?.classList.add('liked'); 
+      toast("Deal Saved!"); 
   }
   saveProfile();
 }
 
-/* ===== Admin Routing & Login ===== */
+/* ===== Admin & Logic ===== */
 let IS_ADMIN_AUTHED = sessionStorage.getItem("instachulha_admin_authed") === "1";
-function isAdminRoute(){ return location.hash.replace(/^#/, "").startsWith("/admin"); }
-function adminGo(title, showBack=true){ $("#admin-title").textContent = title; $("#admin-back").style.display = showBack ? "inline-grid" : "none"; }
-function showAdmin(id){
-  $$("#admin-app > .admin-wrap > div").forEach(el => el.style.display="none");
-  $("#"+id).style.display = "block";
+
+function isAdminRoute(){ 
+    return location.hash.replace(/^#/, "").startsWith("/admin"); 
 }
+
+function adminGo(title, showBack=true){ 
+    $("#admin-title").textContent = title; 
+    $("#admin-back").style.display = showBack ? "inline-grid" : "none"; 
+}
+
+function showAdmin(id){ 
+    $$("#admin-app > .admin-wrap > div").forEach(el => el.style.display="none"); 
+    $("#"+id).style.display = "block"; 
+}
+
 function setAdminView(){
-  if (!IS_ADMIN_AUTHED){
-    showAdmin("admin-login");
-    adminGo("Admin Login", false);
-    return;
+  if (!IS_ADMIN_AUTHED){ 
+      showAdmin("admin-login"); 
+      adminGo("Admin Login", false); 
+      return; 
   }
-  const { parts } = parseRoute();
-  const sub = parts[1] || "dashboard";
-  if (sub==="dashboard"){ showAdmin("admin-dashboard"); adminGo("Admin Dashboard", false); }
-  else if (sub==="banners"){ showAdmin("admin-banners"); adminGo("Settings & QR Setup"); renderAdminBanners(); }
-  else if (sub==="add"){ showAdmin("admin-add"); adminGo("Add New Stove"); }
-  else if (sub==="manage"){ showAdmin("admin-manage"); adminGo("Manage Inventory (Table)"); renderManageTable(); }
-  else if (sub==="manage-cards"){ showAdmin("admin-manage-cards"); adminGo("Manage Inventory (Cards)"); renderManageCards(); }
-  else if (sub==="orders"){ showAdmin("admin-orders"); adminGo("Manage Orders"); renderOrdersAdmin(); }
+  const sub = parseRoute().parts[1] || "dashboard";
+  
+  if (sub==="dashboard"){ showAdmin("admin-dashboard"); adminGo("Dashboard", false); }
+  else if (sub==="banners"){ showAdmin("admin-banners"); adminGo("Setup & UPI"); renderAdminBanners(); }
+  else if (sub==="add"){ showAdmin("admin-add"); adminGo("Add Stove"); }
+  else if (sub==="manage"){ showAdmin("admin-manage"); adminGo("Inventory Table"); renderManageTable(); }
+  else if (sub==="manage-cards"){ showAdmin("admin-manage-cards"); adminGo("Inventory"); renderManageCards(); }
+  else if (sub==="orders"){ showAdmin("admin-orders"); adminGo("Orders"); renderOrdersAdmin(); }
   else if (sub==="customers"){ showAdmin("admin-customers"); adminGo("Customers"); renderCustomersAdmin(); }
-  else { showAdmin("admin-dashboard"); adminGo("Admin Dashboard", false); }
+  else { showAdmin("admin-dashboard"); adminGo("Dashboard", false); }
 }
-$("#admin-login-form")?.addEventListener("submit", (e)=>{
-  e.preventDefault();
-  const id = $("#adm-id").value.trim();
-  const pw = $("#adm-pw").value.trim();
-  if (id.toLowerCase()===ADMIN_ID.toLowerCase() && pw===ADMIN_PW){
-    IS_ADMIN_AUTHED = true;
-    sessionStorage.setItem("instachulha_admin_authed","1");
-    routeTo("#/admin/dashboard");
-  } else { alert("Invalid credentials."); }
-});
-$("#admin-logout")?.addEventListener("click", ()=>{
-  IS_ADMIN_AUTHED = false;
-  sessionStorage.removeItem("instachulha_admin_authed");
-  routeTo("#/admin");
+
+$("#admin-login-form")?.addEventListener("submit", (e)=>{ 
+    e.preventDefault(); 
+    if ($("#adm-id").value.trim().toLowerCase()===ADMIN_ID.toLowerCase() && $("#adm-pw").value.trim()===ADMIN_PW){ 
+        IS_ADMIN_AUTHED = true; 
+        sessionStorage.setItem("instachulha_admin_authed","1"); 
+        routeTo("#/admin/dashboard"); 
+    } else { 
+        alert("Invalid."); 
+    } 
 });
 
-/* Admin: Settings & UPI Setup */
+$("#admin-logout")?.addEventListener("click", ()=>{ 
+    IS_ADMIN_AUTHED = false; 
+    sessionStorage.removeItem("instachulha_admin_authed"); 
+    routeTo("#/admin"); 
+});
+
 function renderAdminBanners() {
-  $("#banner-text").value = BANNER_TEXT;
-  $("#hero-thumbs").innerHTML = HERO_IMAGE_URL ? `<div class="thumb"><img src="${HERO_IMAGE_URL}" /></div>` : "";
+  $("#banner-text").value = BANNER_TEXT; 
+  $("#hero-thumbs").innerHTML = HERO_IMAGE_URL ? `<div class="thumb"><img src="${HERO_IMAGE_URL}"></div>` : "";
   
-  $("#upi-id-input").value = UPI_ID !== "admin@bank" ? UPI_ID : "";
-  $("#upi-thumbs").innerHTML = UPI_QR_URL !== "https://placehold.co/300x300?text=Admin:+Upload+QR+Code" ? `<div class="thumb"><img src="${UPI_QR_URL}" /></div>` : "";
+  $("#upi-id-input").value = UPI_ID !== "admin@bank" ? UPI_ID : ""; 
+  $("#upi-thumbs").innerHTML = UPI_QR_URL && !UPI_QR_URL.includes("placehold") ? `<div class="thumb"><img src="${UPI_QR_URL}"></div>` : "";
 }
 
-$("#upi-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const upiId = $("#upi-id-input").value.trim();
-  const file = $("#upi-upload").files[0];
-  let updates = {};
-  
-  if (upiId) updates.upiId = upiId;
-  if (file) {
-      // 800x800 for high quality QR
-      const dataUrl = await compressToDataURL(file, 800, 800, 0.9);
-      updates.upiQr = dataUrl;
-  }
-  
-  if(Object.keys(updates).length > 0) {
-      db.ref('config').update(updates)
-        .then(() => toast("UPI Settings Saved!"))
-        .catch(err => alert("Failed to save."));
-  } else {
-      toast("Nothing to save.");
-  }
+$("#upi-form")?.addEventListener("submit", async (e) => { 
+    e.preventDefault(); 
+    const upiId = $("#upi-id-input").value.trim(); 
+    const file = $("#upi-upload").files[0]; 
+    let updates = {}; 
+    if (upiId) updates.upiId = upiId; 
+    if (file) { updates.upiQr = await compressToDataURL(file, 800, 800, 0.9); } 
+    if(Object.keys(updates).length > 0) { 
+        db.ref('config').update(updates).then(() => toast("Saved!")); 
+    } 
 });
 
-$("#banner-form")?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const text = $("#banner-text").value.trim();
-  db.ref('config/bannerText').set(text).then(() => toast("Banner text saved."));
-});
-$("#banner-remove")?.addEventListener("click", () => {
-  db.ref('config/bannerText').set("").then(() => toast("Banner text removed."));
-});
-$("#hero-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const file = $("#hero-upload").files[0];
-  if (!file) { alert("Please select an image."); return; }
-  const dataUrl = await compressToDataURL(file, 1200, 1200, 0.85);
-  db.ref('config/heroImage').set(dataUrl).then(() => toast("Hero image saved."));
+$("#banner-form")?.addEventListener("submit", (e) => { 
+    e.preventDefault(); 
+    db.ref('config/bannerText').set($("#banner-text").value.trim()).then(() => toast("Saved.")); 
 });
 
-/* ===== Admin: Uploads and Save ===== */
+$("#banner-remove")?.addEventListener("click", () => { 
+    db.ref('config/bannerText').set("").then(() => toast("Removed.")); 
+});
+
+$("#hero-form")?.addEventListener("submit", async (e) => { 
+    e.preventDefault(); 
+    const file = $("#hero-upload").files[0]; 
+    if (!file) return; 
+    db.ref('config/heroImage').set(await compressToDataURL(file, 1200, 1200, 0.85)).then(() => toast("Saved.")); 
+});
+
 let pendingUploads = []; 
-$("#pf-upload")?.addEventListener("change", async (e)=>{
-  const files = Array.from(e.target.files||[]);
-  if (!files.length) return;
-  $("#pf-save").disabled = true; $("#pf-save").textContent = "Processing...";
-  try{
-    for (const f of files){
-      const dataUrl = await compressToDataURL(f, 1200, 1200, 0.85);
-      pendingUploads.push(dataUrl);
+
+$("#pf-upload")?.addEventListener("change", async (e)=>{ 
+    const files = Array.from(e.target.files||[]); 
+    if (!files.length) return; 
+    
+    $("#pf-save").disabled = true; 
+    $("#pf-save").textContent = "Processing..."; 
+    
+    for (const f of files) {
+        pendingUploads.push(await compressToDataURL(f, 1200, 1200, 0.85)); 
     }
-    renderThumbs();
-  }catch(err){ console.error(err); alert("Image processing failed. Try a smaller file."); }
-  finally{ $("#pf-save").disabled = false; $("#pf-save").textContent = "Save Product"; }
+    
+    renderThumbs(); 
+    $("#pf-save").disabled = false; 
+    $("#pf-save").textContent = "Save Product"; 
 });
 
-$("#upi-upload")?.addEventListener("change", async (e) => {
-  const f = e.target.files[0];
-  if(!f) return;
-  const dataUrl = await compressToDataURL(f, 800, 800, 0.9);
-  $("#upi-thumbs").innerHTML = `<div class="thumb"><img src="${dataUrl}"></div>`;
+$("#upi-upload")?.addEventListener("change", async (e) => { 
+    const f = e.target.files[0]; 
+    if(!f) return; 
+    $("#upi-thumbs").innerHTML = `<div class="thumb"><img src="${await compressToDataURL(f, 800, 800, 0.9)}"></div>`; 
 });
 
-function renderThumbs(){ const t = $("#pf-thumbs"); if(t) t.innerHTML = pendingUploads.map(u=>`<div class="thumb"><img src="${u}"></div>`).join(""); }
-async function compressToDataURL(file, maxW=1200, maxH=1200, quality=0.85){
-  const img = await fileToImage(file);
-  const [w,h] = fitRect(img.naturalWidth, img.naturalHeight, maxW, maxH);
-  const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
-  canvas.getContext("2d").drawImage(img,0,0,w,h);
-  return canvas.toDataURL("image/jpeg", quality);
+function renderThumbs(){ 
+    const t = $("#pf-thumbs"); 
+    if(t) t.innerHTML = pendingUploads.map(u=>`<div class="thumb"><img src="${u}"></div>`).join(""); 
 }
-function fitRect(w,h,maxW,maxH){ const r = Math.min(maxW/w, maxH/h, 1); return [Math.round(w*r), Math.round(h*r)]; }
-function fileToImage(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
 
-$("#pf-reset")?.addEventListener("click", ()=>{
-  $("#pf-id").value=""; $("#pf-name").value=""; $("#pf-desc").value="";
-  $("#pf-category").value="";
-  $("#pf-price").value=""; $("#pf-mrp").value=""; $("#pf-disc").value="";
-  $("#pf-upload").value=""; pendingUploads=[]; renderThumbs();
+async function compressToDataURL(file, maxW, maxH, quality){ 
+    const img = await fileToImage(file); 
+    const [w,h] = [Math.round(img.naturalWidth*Math.min(maxW/img.naturalWidth, maxH/img.naturalHeight, 1)), Math.round(img.naturalHeight*Math.min(maxW/img.naturalWidth, maxH/img.naturalHeight, 1))]; 
+    const canvas = document.createElement("canvas"); 
+    canvas.width = w; 
+    canvas.height = h; 
+    canvas.getContext("2d").drawImage(img,0,0,w,h); 
+    return canvas.toDataURL("image/jpeg", quality); 
+}
+
+function fileToImage(file){ 
+    return new Promise((res,rej)=>{ 
+        const fr=new FileReader(); 
+        fr.onload=()=>{ const img=new Image(); img.onload=()=>res(img); img.src=fr.result; }; 
+        fr.readAsDataURL(file); 
+    }); 
+}
+
+$("#pf-reset")?.addEventListener("click", ()=>{ 
+    $("#pf-id").value=""; 
+    $("#pf-name").value=""; 
+    $("#pf-desc").value=""; 
+    $("#pf-category").value=""; 
+    $("#pf-price").value=""; 
+    $("#pf-mrp").value=""; 
+    $("#pf-disc").value=""; 
+    $("#pf-upload").value=""; 
+    pendingUploads=[]; 
+    renderThumbs(); 
 });
+
 $("#pf-save")?.addEventListener("click", ()=>{
-  const id = $("#pf-id").value;
-  const name = $("#pf-name").value.trim();
-  const description = $("#pf-desc").value.trim();
+  const id = $("#pf-id").value; 
+  const name = $("#pf-name").value.trim(); 
+  const description = $("#pf-desc").value.trim(); 
   const category = $("#pf-category").value.trim();
-  let priceMrp = Number($("#pf-mrp").value||0);
-  let discountPercent = Number($("#pf-disc").value||0);
-  let price = Number($("#pf-price").value||0);
-
-  if (!price && priceMrp && discountPercent) price = Math.round(priceMrp*(100-discountPercent)/100);
-  if (!priceMrp && price && discountPercent) priceMrp = Math.round(price*100/(100-discountPercent));
-  if (!discountPercent && priceMrp && price) discountPercent = Math.max(0, Math.min(99, Math.round((priceMrp-price)/priceMrp*100)));
-
-  if(!name || !price || !category){ alert("Please fill name, category and sale price."); return; }
-  if(pendingUploads.length === 0){ alert("Please upload at least one image."); return; }
   
-  const productData = {
-    name, description, category, priceMrp, discountPercent, price, imageUrls: pendingUploads.slice(),
-    createdAt: Date.now()
+  let priceMrp = Number($("#pf-mrp").value||0), discountPercent = Number($("#pf-disc").value||0), price = Number($("#pf-price").value||0);
+  
+  if (!price && priceMrp && discountPercent) price = Math.round(priceMrp*(100-discountPercent)/100); 
+  if (!priceMrp && price && discountPercent) priceMrp = Math.round(price*100/(100-discountPercent)); 
+  if (!discountPercent && priceMrp && price) discountPercent = Math.max(0, Math.min(99, Math.round((priceMrp-price)/priceMrp*100)));
+  
+  if(!name || !price || !category){ 
+      alert("Fill required fields."); 
+      return; 
+  }
+  
+  const data = { 
+      name, description, category, priceMrp, discountPercent, price, imageUrls: pendingUploads.slice(), createdAt: Date.now() 
   };
   
-  let productKey;
-  if (id) {
-    productKey = PRODUCTS.find(p => p.id === id)?.firebaseKey;
-    if (productKey) {
-      db.ref('products/' + productKey).update(productData).then(() => alert("Stove updated."));
-    }
-  } else {
-    productKey = db.ref('products').push().key;
-    db.ref('products/' + productKey).set({ ...productData, id: uid(), firebaseKey: productKey }).then(() => alert("New stove added."));
+  if (id) { 
+      const k = PRODUCTS.find(p => p.id === id)?.firebaseKey; 
+      if (k) db.ref('products/' + k).update(data).then(() => toast("Updated.")); 
+  } else { 
+      const k = db.ref('products').push().key; 
+      db.ref('products/' + k).set({ ...data, id: uid(), firebaseKey: k }).then(() => toast("Added.")); 
   }
-
-  $("#pf-reset").click();
+  
+  $("#pf-reset").click(); 
+  routeTo('#/admin/manage-cards');
 });
-
-/* Admin: Manage */
-function renderManageTable(){
-  const tbody = $("#admin-table tbody");
-  tbody.innerHTML = PRODUCTS.map(p=>`
-    <tr>
-      <td><img src="${(p.imageUrls[0]||"")}" style="width:46px;height:46px;object-fit:cover;border-radius:8px;border:1px solid var(--line)"></td>
-      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
-      <td class="muted">${p.priceMrp? money(p.priceMrp):"—"}</td>
-      <td style="color:var(--success); font-weight:600;">${p.discountPercent? p.discountPercent+"%":"—"}</td>
-      <td style="font-weight:700;">${money(p.price||0)}</td>
-      <td>
-        <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" data-edit="${p.id}"><i class="fa-solid fa-pen"></i></button>
-        <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; color:#EF4444; border-color:#EF4444;" data-del="${p.id}"><i class="fa-solid fa-trash"></i></button>
-      </td>
-    </tr>
-  `).join("");
-  tbody.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=> loadToAddForm(b.dataset.edit));
-  tbody.querySelectorAll("[data-del]").forEach(b=> b.onclick = ()=> delProduct(b.dataset.del));
-}
 
 function renderManageCards(){
   const list = $("#mpc-list");
   list.innerHTML = PRODUCTS.map(p=>`
     <div class="card pad" style="display:flex;align-items:center;gap:12px">
-      <img src="${(p.imageUrls[0]||"")}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
+      <img src="${(p.imageUrls[0]||"")}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">
       <div style="flex:1">
-        <div style="font-weight:700">${escapeHtml(p.name)}</div>
-        <div class="price-line" style="margin-top:4px;">
-          <div style="font-weight:700; color:var(--primary);">${money(p.price||0)}</div>
-          ${p.priceMrp? `<div class="strike">${money(p.priceMrp)}</div>`:""}
-        </div>
+          <div style="font-weight:700">${escapeHtml(p.name)}</div>
+          <div class="price-line" style="margin-top:4px;">
+              <div style="font-weight:700; color:var(--primary);">${money(p.price||0)}</div>
+          </div>
       </div>
-      <button class="icon-round" title="Edit" data-edit="${p.id}"><i class="fa-solid fa-pen" style="color:var(--primary)"></i></button>
-      <button class="icon-round" title="Delete" data-del="${p.id}"><i class="fa-solid fa-trash" style="color:#ef4444"></i></button>
+      <button class="icon-round" data-edit="${p.id}"><i class="fa-solid fa-pen"></i></button>
+      <button class="icon-round" data-del="${p.id}" style="color:#ef4444"><i class="fa-solid fa-trash"></i></button>
     </div>
   `).join("");
-  list.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=> loadToAddForm(b.dataset.edit, "#/admin/manage-cards"));
+  
+  list.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=> loadToAddForm(b.dataset.edit)); 
   list.querySelectorAll("[data-del]").forEach(b=> b.onclick = ()=> delProduct(b.dataset.del));
 }
-function loadToAddForm(id, backTo){
-  const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-  routeTo("#/admin/add");
-  setTimeout(()=>{
-    $("#pf-id").value = p.id; $("#pf-name").value = p.name; $("#pf-desc").value = p.description||"";
-    $("#pf-category").value = p.category||"";
-    $("#pf-mrp").value = p.priceMrp||""; $("#pf-disc").value = p.discountPercent||""; $("#pf-price").value = p.price||"";
-    pendingUploads = p.imageUrls.slice(); renderThumbs(); window.scrollTo({ top: 0, behavior: "smooth" });
-    if (backTo) sessionStorage.setItem("instachulha_admin_back", backTo);
-  }, 0);
-}
-function delProduct(id){
-  const p = PRODUCTS.find(x => x.id === id);
-  if (!p || !p.firebaseKey) return;
-  if (confirm("Delete this stove?")) {
-    db.ref('products/' + p.firebaseKey).remove().then(() => toast("Deleted."));
-  }
+
+function loadToAddForm(id){ 
+    const p = PRODUCTS.find(x=>x.id===id); 
+    if(!p) return; 
+    
+    routeTo("#/admin/add"); 
+    
+    setTimeout(()=>{ 
+        $("#pf-id").value = p.id; 
+        $("#pf-name").value = p.name; 
+        $("#pf-desc").value = p.description||""; 
+        $("#pf-category").value = p.category||""; 
+        $("#pf-mrp").value = p.priceMrp||""; 
+        $("#pf-disc").value = p.discountPercent||""; 
+        $("#pf-price").value = p.price||""; 
+        pendingUploads = p.imageUrls.slice(); 
+        renderThumbs(); 
+        window.scrollTo(0,0); 
+    }, 0); 
 }
 
-/* Orders admin */
+function delProduct(id){ 
+    const p = PRODUCTS.find(x => x.id === id); 
+    if (p && p.firebaseKey && confirm("Delete?")) {
+        db.ref('products/' + p.firebaseKey).remove().then(() => toast("Deleted.")); 
+    }
+}
+
 function renderOrdersAdmin() {
-  const el = $("#orders-admin");
+  const el = $("#orders-admin"); 
   const rows = [...ORDERS].sort((a,b)=> b.createdAt - a.createdAt);
+  
   el.innerHTML = rows.length===0 ? `<div class="muted">No orders yet.</div>` : `
     <table class="table">
-      <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th>Tracking</th><th style="width:100px">Action</th></tr></thead>
-      <tbody>
-        ${rows.map(o=>`
-          <tr data-key="${o.firebaseKey}">
-            <td style="font-weight:600; color:var(--primary);">#${escapeHtml(o.orderId)}</td>
-            <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString()}</td>
-            <td style="font-weight:700;">${money(o.amount)}</td>
-            <td>
-              <select class="adm-status" style="padding:6px; border-radius:8px;">
-                ${["Payment Verification Pending","Order Verified (Paid)","Dispatched","Out for Delivery","Delivered","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
-              </select>
-            </td>
-            <td><input class="adm-track" value="${escapeHtml(o.trackingUrl||"")}" placeholder="URL..." style="padding:6px; border-radius:8px;"></td>
-            <td><button class="btn btn-outline adm-save" style="padding:6px 12px; font-size:12px;">Save</button></td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-  el.querySelectorAll(".adm-save").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const row = btn.closest("tr");
-      const key = row.dataset.key;
-      const newStatus = row.querySelector(".adm-status").value;
-      const newTracking = row.querySelector(".adm-track").value.trim();
-      const updates = { status: newStatus, trackingUrl: newTracking };
-      btn.textContent = "...";
-      db.ref('orders/' + key).update(updates)
-        .then(() => { toast("Status updated."); btn.textContent = "Save"; })
-        .catch(err => { alert("Failed to update"); btn.textContent = "Save"; });
-    });
-  });
+        <thead>
+            <tr><th>Order</th><th>Total</th><th>Status</th><th>Track URL</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            ${rows.map(o=>`
+            <tr data-key="${o.firebaseKey}">
+                <td><b>#${escapeHtml(o.orderId)}</b><br><small>${new Date(o.createdAt).toLocaleString()}</small><br><small style="color:var(--primary)">${o.customer.phone}</small></td>
+                <td><b>${money(o.amount)}</b></td>
+                <td>
+                    <select class="adm-status" style="padding:6px;">
+                        ${["Payment Verification Pending","Order Verified (Paid)","Dispatched","Delivered","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
+                    </select>
+                </td>
+                <td><input class="adm-track" value="${escapeHtml(o.trackingUrl||"")}" style="padding:6px;width:100px;"></td>
+                <td><button class="btn btn-outline adm-save" style="padding:6px;">Save</button></td>
+            </tr>`).join("")}
+        </tbody>
+    </table>`;
+  
+  el.querySelectorAll(".adm-save").forEach(btn=> btn.addEventListener("click", ()=>{ 
+      const row = btn.closest("tr"); 
+      btn.textContent="..."; 
+      db.ref('orders/' + row.dataset.key).update({ 
+          status: row.querySelector(".adm-status").value, 
+          trackingUrl: row.querySelector(".adm-track").value.trim() 
+      }).then(() => { 
+          toast("Updated"); 
+          btn.textContent="Save"; 
+      }); 
+  }));
 }
 
 function rebuildCustomers() {
-  const map = {};
-  for (const o of ORDERS){
-    const key = (o.customer?.phone || o.customer?.email || o.customer?.name || "").toLowerCase();
-    if(!key) continue;
-    if(!map[key]){
-      map[key] = { key, name: o.customer?.name || "", phone: o.customer?.phone || "", pincode: o.customer?.pincode || "", orders: 0, total: 0, last: 0 };
-    }
-    map[key].orders += 1;
-    map[key].total += o.amount || 0;
-    map[key].last = Math.max(map[key].last, o.createdAt || 0);
+  const map = {}; 
+  for (const o of ORDERS){ 
+      const key = (o.customer?.phone || "").toLowerCase(); 
+      if(!key) continue; 
+      if(!map[key]) map[key] = { key, name: o.customer?.name || "", phone: o.customer?.phone || "", pincode: o.customer?.pincode || "", orders: 0, total: 0 }; 
+      map[key].orders += 1; 
+      map[key].total += o.amount || 0; 
   }
-  CUSTOMERS = Object.values(map).sort((a,b)=> b.last-a.last);
+  CUSTOMERS = Object.values(map);
 }
+
 function renderCustomersAdmin() {
-  const el = $("#customers-admin");
+  const el = $("#customers-admin"); 
   el.innerHTML = CUSTOMERS.length===0 ? `<div class="muted">No customers yet.</div>` : `
     <table class="table">
-      <thead><tr><th>Name</th><th>Phone</th><th>City/Pin</th><th>Orders</th><th>Total Spend</th></tr></thead>
-      <tbody>
-        ${CUSTOMERS.map(c=>`
-          <tr>
-            <td style="font-weight:600;">${escapeHtml(c.name)}</td>
-            <td>${escapeHtml(c.phone)}</td>
-            <td style="font-size:12px;">${escapeHtml(c.pincode)}</td>
-            <td style="text-align:center;"><span class="chip-sm">${c.orders}</span></td>
-            <td style="font-weight:700; color:var(--primary);">${money(c.total)}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+        <thead>
+            <tr><th>Name</th><th>Phone</th><th>Orders</th><th>Spend</th></tr>
+        </thead>
+        <tbody>
+            ${CUSTOMERS.map(c=>`
+            <tr>
+                <td><b>${escapeHtml(c.name)}</b></td>
+                <td>${escapeHtml(c.phone)}</td>
+                <td>${c.orders}</td>
+                <td style="color:var(--primary);"><b>${money(c.total)}</b></td>
+            </tr>`).join("")}
+        </tbody>
+    </table>`;
 }
 
-/* ===== InstaChulha AI Chatbot Logic ===== */
-const chatbotToggle = $("#chatbot-toggle");
-const chatbotPopup = $("#chatbot-popup");
-const chatbotClose = $("#chatbot-close");
-const chatbotBody = $("#chatbot-body");
+/* Chatbot */
+const chatbotToggle = $("#chatbot-toggle"); 
+const chatbotPopup = $("#chatbot-popup"); 
+const chatbotClose = $("#chatbot-close"); 
+const chatbotBody = $("#chatbot-body"); 
 const chatbotQuestions = $("#chatbot-questions");
 
-const FAQ_DATA = [
-  {q: "Is this a good alternative to LPG Gas?", a: "Yes! With the current gas supply issues and 25-day lock-in periods, our electric cooktops are the safest, fastest, and most reliable alternative for daily cooking."},
-  {q: "How fast is the delivery right now?", a: "Due to the emergency demand, we are prioritizing local deliveries. You can expect your order within 2 to 4 days."},
-  {q: "Will this increase my electricity bill a lot?", a: "Not at all. Our smart induction stoves are highly energy-efficient. Cooking on induction actually costs less per meal compared to the current inflated prices of LPG cylinders."},
-  {q: "How does the payment system work?", a: "We use a 100% secure Manual UPI system. You scan our official QR code from your UPI app, make the payment, and we verify it instantly to dispatch your order."},
-  {q: "Which utensils work on these stoves?", a: "Induction cooktops require flat-bottom steel or iron utensils."},
-  {q: "How can I track my order?", a: "Once you place an order, you can go to the 'Profile' section and click on 'My Orders' to see the live status and tracking link of your shipment."},
-  {q: "Is there any warranty on the products?", a: "Yes, all our branded electric stoves come with a standard 1-year manufacturer warranty. Please keep your invoice safe."},
+const FAQ_DATA = [ 
+    {q: "Is this a good alternative to LPG Gas?", a: "Yes! Avoid the 25-day lock-in periods. Our electric cooktops are fast, safe, and reliable."}, 
+    {q: "How fast is delivery?", a: "We prioritize local deliveries within 2-4 days."}, 
+    {q: "How do I pay?", a: "Scan our secure QR code and pay directly via PhonePe/GPay."}, 
+    {q: "Warranty details?", a: "1-year manufacturer warranty is included."} 
 ];
 
-function renderChatbotQuestions() {
-  chatbotQuestions.innerHTML = FAQ_DATA.map((faq, index) => `<button class="question-chip" data-question-index="${index}">${escapeHtml(faq.q)}</button>`).join('');
-  $$('#chatbot-questions .question-chip').forEach(btn => btn.addEventListener('click', handleQuestionClick));
+function renderChatbotQuestions() { 
+    chatbotQuestions.innerHTML = FAQ_DATA.map((faq, index) => `<button class="question-chip" data-question-index="${index}">${escapeHtml(faq.q)}</button>`).join(''); 
+    $$('#chatbot-questions .question-chip').forEach(btn => btn.addEventListener('click', handleQuestionClick)); 
 }
 
-function handleQuestionClick(e) {
-  const btn = e.target.closest('.question-chip');
-  if (btn) {
-    const index = parseInt(btn.dataset.questionIndex);
-    addMessage(FAQ_DATA[index].q, true);
-    chatbotQuestions.innerHTML = ''; 
-    addMessage('InstaChulha AI is typing...', false, 'typing-placeholder');
-    setTimeout(() => {
-      const typingPlaceholder = $('.typing-placeholder');
-      if (typingPlaceholder) typingPlaceholder.remove(); 
-      addMessage(FAQ_DATA[index].a);
-      setTimeout(() => { addMessage("Do you have any other questions? Close and reopen the chat to see the menu.", false); }, 500);
-    }, 800);
-  }
+function handleQuestionClick(e) { 
+    const btn = e.target.closest('.question-chip'); 
+    if (btn) { 
+        const i = parseInt(btn.dataset.questionIndex); 
+        addMessage(FAQ_DATA[i].q, true); 
+        chatbotQuestions.innerHTML = ''; 
+        addMessage('Typing...', false, 'typing-placeholder'); 
+        
+        setTimeout(() => { 
+            $('.typing-placeholder')?.remove(); 
+            addMessage(FAQ_DATA[i].a); 
+            setTimeout(() => addMessage("Need more help? Reopen chat.", false), 500); 
+        }, 800); 
+    } 
 }
 
-function addMessage(text, isUser = false, className = '') {
-  const msgDiv = document.createElement('div');
-  msgDiv.classList.add('chatbot-msg-container');
-  if (isUser) msgDiv.classList.add('user-msg'); else msgDiv.classList.add('bot-msg');
-  
-  const msgContent = document.createElement('div');
-  msgContent.classList.add('chatbot-msg');
-  if (!isUser) msgContent.classList.add('bot');
-  if (className) msgContent.classList.add(className);
-  
-  msgContent.innerHTML = escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  msgDiv.appendChild(msgContent);
-  chatbotBody.appendChild(msgDiv);
-  chatbotBody.scrollTop = chatbotBody.scrollHeight;
+function addMessage(text, isUser = false, className = '') { 
+    const d = document.createElement('div'); 
+    d.classList.add('chatbot-msg-container', isUser ? 'user-msg' : 'bot-msg'); 
+    
+    const m = document.createElement('div'); 
+    m.classList.add('chatbot-msg'); 
+    if(!isUser) m.classList.add('bot'); 
+    if(className) m.classList.add(className); 
+    
+    m.innerHTML = escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+    d.appendChild(m); 
+    chatbotBody.appendChild(d); 
+    chatbotBody.scrollTop = chatbotBody.scrollHeight; 
 }
 
-chatbotToggle.addEventListener('click', () => {
-  chatbotPopup.classList.toggle('visible');
-  if (chatbotPopup.classList.contains('visible')) {
-    chatbotBody.innerHTML = '';
-    addMessage("Hello! Welcome to **InstaChulha**. Are you worried about the gas crisis? Select a question below to see how we can help:");
-    renderChatbotQuestions();
-  }
+chatbotToggle.addEventListener('click', () => { 
+    chatbotPopup.classList.toggle('visible'); 
+    if(chatbotPopup.classList.contains('visible')) { 
+        chatbotBody.innerHTML = ''; 
+        addMessage("Hi! How can we help you switch to smart cooking?"); 
+        renderChatbotQuestions(); 
+    } 
 });
+
 chatbotClose.addEventListener('click', () => chatbotPopup.classList.remove('visible'));
 
-/* ===== Render ===== */
+/* Render Loop */
 function render(){
   const { parts } = parseRoute();
-
-  if (isAdminRoute() || location.hash === "#/admin") {
-    $("#store-app").style.display = "none";
-    $("#admin-app").style.display = "block";
-    setAdminView(); return;
+  
+  if (isAdminRoute() || location.hash === "#/admin") { 
+      $("#store-app").style.display = "none"; 
+      $("#admin-app").style.display = "block"; 
+      setAdminView(); 
+      return; 
   }
-  $("#admin-app").style.display = "none";
+  
+  $("#admin-app").style.display = "none"; 
   $("#store-app").style.display = "block";
-
-  if (!dataFetched.products || !dataFetched.orders || !dataFetched.ratings || !dataFetched.config) {
-    showLoader(); return;
+  
+  if (!dataFetched.products || !dataFetched.orders || !dataFetched.ratings || !dataFetched.config) { 
+      showLoader(); 
+      return; 
   }
   
   const [root_p, id, subid] = parts;
-  if (!root_p || root_p==="shop") ShopView();
-  else if (root_p==="home") HomeView();
-  else if (root_p==="product" && id) ProductView(id);
-  else if (root_p==="quick-buy" && id) QuickBuyView(id);
-  else if (root_p==="cart") CartView();
-  else if (root_p==="checkout") CheckoutView();
+  
+  if (!root_p || root_p==="shop") ShopView(); 
+  else if (root_p==="home") HomeView(); 
+  else if (root_p==="product" && id) ProductView(id); 
+  else if (root_p==="quick-buy" && id) QuickBuyView(id); 
+  else if (root_p==="cart") CartView(); 
+  else if (root_p==="checkout") CheckoutView(); 
   else if (root_p==="pay-upi") PayUPIView(); 
   else if (root_p==="success-upi") SuccessUPIView(); 
-  else if (root_p==="account" && id==="orders" && subid) OrderDetailView(subid);
-  else if (root_p==="account" && id==="orders") OrdersListView();
-  else if (root_p==="favorites") FavoritesView();
-  else if (root_p==="account") AccountView();
-  else if (root_p==="profile" && id==="setup") ProfileEditView(true);
-  else if (root_p==="profile") ProfileEditView(false);
+  else if (root_p==="account" && id==="orders" && subid) OrderDetailView(subid); 
+  else if (root_p==="account" && id==="orders") OrdersListView(); 
+  else if (root_p==="favorites") FavoritesView(); 
+  else if (root_p==="account") AccountView(); 
+  else if (root_p==="profile" && id==="setup") ProfileEditView(true); 
+  else if (root_p==="profile") ProfileEditView(false); 
   else ShopView();
 }
 
