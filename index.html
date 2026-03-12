@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Deewali Decore</title>
+<title>InstaChulha | Smart Electric Stoves</title>
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -24,23 +24,24 @@
 
 <style>
   :root{
-    --primary:#FF6600;
-    --bg:#F6F6F6;
-    --surface:#FFFFFF;
-    --line:#EAEAEA;
-    --muted:#6B7280;
-    --accent:#FF6600;
-    --accentText:#FFFFFF;
-    --success:#18A957;
-    --radius:16px;
-    --shadow:0 1px 2px rgba(10,10,10,.06), 0 8px 24px rgba(10,10,10,.05);
-    --shadow-sm:0 1px 3px rgba(10,10,10,.08);
+    /* InstaChulha Brand Colors */
+    --primary: #005AD0;     /* Electric Blue - Trust, Safety, Tech */
+    --accent: #FF6600;      /* Vibrant Orange - Speed, Heat, Urgency */
+    --bg: #F8FAFC;          /* Clean Light Gray/Blue background */
+    --surface: #FFFFFF;     /* White cards */
+    --line: #E2E8F0;        /* Soft borders */
+    --muted: #64748B;       /* Secondary text */
+    --accentText: #FFFFFF;  /* Text on orange buttons */
+    --success: #10B981;     /* Green for success */
+    --radius: 16px;
+    --shadow: 0 2px 4px rgba(0,90,208,.04), 0 8px 24px rgba(0,90,208,.06);
+    --shadow-sm: 0 1px 3px rgba(0,90,208,.08);
     --safe: env(safe-area-inset-bottom, 0px);
-    --container:740px;
+    --container: 740px;
   }
   *{box-sizing:border-box}
   html, body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--primary);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.35}
+  body{margin:0;background:var(--bg);color:#0F172A;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.35}
   img{max-width:100%;display:block}
   button{font:inherit;cursor:pointer}
   a{color:inherit;text-decoration:none}
@@ -48,30 +49,26 @@
   #app{min-height:100dvh;display:flex;flex-direction:column}
   .wrap{max-width:var(--container);margin:0 auto}
 
-  .topbar{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--line)}
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.95);backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--line)}
   .topbar-inner{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px}
-  .title{font-family:Poppins,sans-serif;font-size:20px;font-weight:700;margin:0; color: #111;}
-  .icon-round{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;display:inline-grid;place-items:center;color:#111;box-shadow:var(--shadow-sm)}
+  
+  /* Brand Title styling */
+  .title{font-family:Poppins,sans-serif;font-size:22px;font-weight:700;font-style:italic;margin:0; color: var(--primary);}
+  .title span { color: var(--accent); } /* Two-tone logo effect */
+  
+  .icon-round{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;display:inline-grid;place-items:center;color:var(--primary);box-shadow:var(--shadow-sm)}
 
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.92);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding-bottom:var(--safe)}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding-bottom:var(--safe)}
   .tabbar-inner{max-width:var(--container);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:8px 8px calc(10px + var(--safe))}
-  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:#9CA3AF;padding:6px 4px;border-radius:10px}
-  .tab.active{color:#FF6600;background:#f9f9f9}
-  .tab span{font-size:12px}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:#94A3B8;padding:6px 4px;border-radius:10px; transition: 0.2s;}
+  .tab.active{color:var(--accent);background:#FFF3EB;}
+  .tab span{font-size:12px; font-weight: 500;}
   main{flex:1;min-height:0;padding-bottom:96px}
   
-  .loader{
-    text-align:center;
-    padding:30px;
-    color:var(--muted);
-  }
+  .loader{text-align:center;padding:30px;color:var(--muted);}
   .loader .dot{
-    display:inline-block;
-    width:8px;height:8px;
-    background:var(--muted);
-    border-radius:999px;
-    margin:0 2px;
-    animation: bounce 1.4s infinite ease-in-out both;
+    display:inline-block;width:8px;height:8px;background:var(--primary);
+    border-radius:999px;margin:0 2px;animation: bounce 1.4s infinite ease-in-out both;
   }
   .loader .dot:nth-child(1){animation-delay:-.32s}
   .loader .dot:nth-child(2){animation-delay:-.16s}
@@ -83,90 +80,96 @@
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .card.pad{padding:16px}
   .muted{color:var(--muted)}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:14px}
-  input, textarea, select{width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;font:inherit}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:14px; font-weight:500; color: var(--primary);}
+  .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  
+  input, textarea, select{width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;background:#F8FAFC;font:inherit;color:#0F172A;}
+  input:focus, textarea:focus { outline: 2px solid var(--primary); background: #fff; }
   textarea{min-height:92px;resize:vertical}
-  label{font-size:13px;color:#111;margin:10px 0 6px;display:block}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;border:none;border-radius:14px;padding:14px 16px;background:var(--accent);color:var(--accentText)}
-  .btn:active{transform:translateY(1px)}
-  .btn-outline{background:#fff;color:#111;border:1px solid var(--line)}
+  label{font-size:13px;color:#334155;margin:10px 0 6px;display:block;font-weight:600;}
+  
+  /* Primary Action Button (Orange) */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:15px;border:none;border-radius:14px;padding:14px 16px;background:var(--accent);color:var(--accentText);box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3); transition: 0.2s;}
+  .btn:active{transform:translateY(2px); box-shadow: 0 2px 6px rgba(255, 102, 0, 0.3);}
+  
+  /* Secondary Action Button (Blue Outline) */
+  .btn-outline{background:transparent;color:var(--primary);border:1px solid var(--primary);box-shadow:none;}
+  .btn-outline:active{background: #EFF6FF;}
+  
   .btn-block{width:100%}
-  .star-rating{color:#FFD700;font-size:18px;margin-left:auto}
+  .star-rating{color:#FFD700;font-size:16px;margin-left:auto;font-weight:600;display:flex;align-items:center;gap:4px;}
   .star-rating .fa-regular{color:#ccc}
   .rate-stars .fa-star{cursor:pointer;transition:color .2s}
   .rate-stars .active{color:#FFD700}
+  
   .size-btn{
     display:inline-flex;align-items:center;justify-content:center;
-    height:56px;min-width:56px;
-    padding:0 12px;
-    border-radius:12px;border:1px solid var(--line);
-    background:var(--surface);
-    font-weight:600;
-    box-shadow:var(--shadow-sm);
-    transition:transform .2s, box-shadow .2s;
+    height:56px;min-width:56px;padding:0 12px;border-radius:12px;border:1px solid var(--line);
+    background:var(--surface);font-weight:600;box-shadow:var(--shadow-sm);transition:0.2s;
   }
   .size-btn.active, .size-btn:active{
-    transform:translateY(1px);
-    box-shadow:0 1px 2px rgba(10,10,10,.06);
-    background:#fafafa;
-    border-color:#ccc;
-    border:2px solid #000;
+    transform:translateY(1px);box-shadow:0 1px 2px rgba(10,10,10,.06);
+    background:#EFF6FF;border-color:var(--primary);border:2px solid var(--primary); color:var(--primary);
   }
 
   .price-line{display:flex;align-items:center;gap:8px}
-  .strike{color:#9CA3AF;text-decoration:line-through}
-  .badge-off{background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:4px 8px}
+  .strike{color:#94A3B8;text-decoration:line-through;font-size:14px;}
+  .badge-off{background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:4px 8px;font-weight:700;letter-spacing:0.5px;}
 
   .filters{display:flex;gap:10px;overflow:auto;padding:8px 0}
+  .filters::-webkit-scrollbar { display: none; }
   .grid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
   @media(min-width:680px){.grid{grid-template-columns:repeat(3,1fr)}}
-  .p-card{overflow:hidden;position:relative}
-  .p-img{border-bottom:1px solid var(--line);position:relative;width:100%;aspect-ratio:1/1}
+  
+  .p-card{overflow:hidden;position:relative; transition:0.2s;}
+  .p-card:active { transform: scale(0.98); }
+  .p-img{border-bottom:1px solid var(--line);position:relative;width:100%;aspect-ratio:1/1; background: #fff;}
   .p-img img{width:100%;height:100%;object-fit:cover}
   .p-meta{padding:12px}
-  .p-title{font-weight:600}
-  .discount-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:6px 10px}
+  .p-title{font-weight:600; font-size: 15px; line-height: 1.3; margin-bottom: 6px; color: #0F172A;}
+  .discount-badge{position:absolute;top:10px;right:10px;background:var(--accent);color:var(--accentText);border-radius:999px;font-size:12px;padding:6px 10px;font-weight:700;}
 
-  .hero-img{margin:12px;border-radius:18px;overflow:hidden;max-height:450px;display:flex}
-  .hero-img img{width:100%;aspect-ratio:1/1.6;object-fit:cover;object-position:center top;}
+  .hero-img{margin:12px;border-radius:18px;overflow:hidden;max-height:400px;display:flex}
+  .hero-img img{width:100%;aspect-ratio:1/1.2;object-fit:cover;object-position:center top;}
 
   .cart-list{display:flex;flex-direction:column;gap:12px}
   .cart-item{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;padding:10px;border-radius:14px;border:1px solid var(--line);background:#fff}
   .cart-item img{width:76px;height:76px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
   .qty{display:flex;align-items:center;gap:10px;margin-top:8px}
-  .circle-btn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;background:#F3F4F6;color:#111}
-  .circle-btn.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent)}
+  .circle-btn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;background:#F8FAFC;color:var(--primary); font-weight:600;}
+  .circle-btn.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent);}
 
-  .sticky-sheet{position:sticky;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:saturate(120%) blur(6px);border-top:1px solid var(--line);padding:12px;border-bottom-left-radius:12px;border-bottom-right-radius:12px}
+  .sticky-sheet{position:sticky;bottom:0;background:rgba(255,255,255,.95);backdrop-filter:saturate(120%) blur(6px);border-top:1px solid var(--line);padding:14px;border-bottom-left-radius:12px;border-bottom-right-radius:12px}
   .row{display:flex;align-items:center;justify-content:space-between}
   .sep{height:1px;background:var(--line);margin:10px 0}
 
   .success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 14px}
   .check-anim{
-    width:92px;height:92px;border-radius:999px;background:#E9FAF1;border:2px solid #CFF7DF;display:grid;place-items:center;color:#18A957;
+    width:92px;height:92px;border-radius:999px;background:#D1FAE5;border:2px solid #A7F3D0;display:grid;place-items:center;color:var(--success);
     animation:pop .35s ease-out forwards, glow 1.2s ease-in-out 0.3s infinite alternate;
   }
   @keyframes pop{from{transform:scale(.7);opacity:.2}to{transform:scale(1);opacity:1}}
-  @keyframes glow{from{box-shadow:0 0 0 rgba(24,169,87,.0)}to{box-shadow:0 0 18px rgba(24,169,87,.35)}}
+  @keyframes glow{from{box-shadow:0 0 0 rgba(16,185,129,.0)}to{box-shadow:0 0 18px rgba(16,185,129,.35)}}
   .confetti{position:relative;width:100%;height:0;overflow:visible}
   .confetti span{position:absolute;width:8px;height:14px;border-radius:2px;animation:fall 1.2s linear forwards}
   @keyframes fall{to{transform:translateY(220px) rotate(360deg);opacity:.2}}
 
-  .toast{position:fixed;left:50%;bottom:calc(84px + var(--safe));transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+  .toast{position:fixed;left:50%;bottom:calc(84px + var(--safe));transform:translateX(-50%);background:#0F172A;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s; z-index: 100;}
   .toast.show{opacity:1}
   
-  /* Animated Banner */
+  /* Animated Banner - Emergency Theme */
   .animated-banner-wrap {
-    background: var(--accent);
+    background: var(--accent); /* Orange for Urgency */
     color: var(--accentText);
     overflow: hidden;
     white-space: nowrap;
     position: relative;
-    height: 36px;
-    line-height: 36px;
+    height: 38px;
+    line-height: 38px;
     text-align: center;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
   .animated-banner-text {
     display: inline-block;
@@ -184,23 +187,24 @@
   .admin-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
   .admin-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);border-top:1px solid var(--line);backdrop-filter:saturate(120%) blur(6px);padding:10px 12px calc(10px + var(--safe))}
   .admin-cta-inner{max-width:920px;margin:0 auto;display:flex;gap:10px}
-  .btn-black{background:var(--accent);color:var(--accentText);border:1px solid var(--accent);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
-  .btn-white{background:#fff;color:var(--accent);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
+  .btn-black{background:var(--primary);color:var(--accentText);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
+  .btn-white{background:#fff;color:var(--primary);border:1px solid var(--primary);border-radius:14px;padding:14px 16px;font-weight:700;flex:1}
 
-  .table{width:100%;border-collapse:collapse}
-  .table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
-  .chip-sm{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#fafafa}
+  .table{width:100%;border-collapse:collapse;font-size:14px;}
+  .table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:middle}
+  .chip-sm{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#F8FAFC;color:var(--primary);font-weight:600;}
 
-  .dropzone{border:2px dashed #d4d4d4;border-radius:14px;padding:18px;text-align:center;background:#fafafa;color:#6b7280}
+  .dropzone{border:2px dashed #94A3B8;border-radius:14px;padding:24px;text-align:center;background:#F8FAFC;color:var(--muted); cursor:pointer;}
+  .dropzone:hover{border-color:var(--primary); background:#EFF6FF;}
   .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
   .thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
   .thumb img{width:100%;height:100%;object-fit:cover}
 
   .profile-head{display:flex;flex-direction:column;align-items:center;gap:8px;margin:12px 0 16px}
-  .avatar{width:96px;height:96px;border-radius:999px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .avatar{width:96px;height:96px;border-radius:999px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.1)}
   .avatar img{width:100%;height:100%;object-fit:cover}
-  .like-btn{position:absolute;top:10px;left:10px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.7);backdrop-filter:blur(4px);display:grid;place-items:center;color:#9ca3af;font-size:18px;box-shadow:var(--shadow-sm);transition:color .2s}
-  .like-btn.liked{color:red}
+  .like-btn{position:absolute;top:10px;left:10px;width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.8);backdrop-filter:blur(4px);display:grid;place-items:center;color:#9ca3af;font-size:18px;box-shadow:var(--shadow-sm);transition:color .2s}
+  .like-btn.liked{color:#EF4444;} /* Red heart for favorites */
 
   /* Chatbot styles */
   .chatbot-icon {
@@ -208,29 +212,27 @@
     bottom: calc(96px + var(--safe));
     right: 16px;
     z-index: 50;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     border-radius: 999px;
-    background: var(--accent);
+    background: var(--primary); /* Blue bot icon */
     color: var(--accentText);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 14px rgba(0, 90, 208, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 26px;
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
   }
-  .chatbot-icon:hover {
-    transform: scale(1.05);
-  }
+  .chatbot-icon:hover { transform: scale(1.05); }
   .chatbot-popup {
     position: fixed;
-    bottom: calc(160px + var(--safe));
+    bottom: calc(170px + var(--safe));
     right: 16px;
-    width: 320px;
+    width: 340px;
     max-width: 90%;
-    max-height: 400px; 
+    max-height: 450px; 
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -249,136 +251,91 @@
     pointer-events: auto;
   }
   .chatbot-header {
-    background: var(--accent);
+    background: var(--primary); /* Blue Header */
     color: var(--accentText);
-    padding: 12px 16px;
+    padding: 14px 16px;
     border-top-left-radius: var(--radius);
     border-top-right-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-family: Poppins, sans-serif;
   }
   .chatbot-body {
     flex: 1;
     padding: 16px;
-    overflow-y: auto; /* Enable scroll */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: #F8FAFC;
   }
-  .chatbot-msg-container.user-msg {
-    align-self: flex-end;
-  }
-  .chatbot-msg-container.bot-msg {
-    align-self: flex-start;
-  }
+  .chatbot-msg-container.user-msg { align-self: flex-end; }
+  .chatbot-msg-container.bot-msg { align-self: flex-start; }
   .chatbot-msg {
     background: var(--primary);
     color: var(--accentText);
-    padding: 10px 14px;
+    padding: 12px 16px;
     border-radius: 18px;
-    max-width: 80%;
+    max-width: 85%;
     word-wrap: break-word;
     box-shadow: var(--shadow-sm);
+    font-size: 14px;
+    border-bottom-right-radius: 4px;
   }
   .chatbot-msg.bot {
-    background: var(--bg);
-    color: #111;
+    background: #FFFFFF;
+    color: #0F172A;
     border: 1px solid var(--line);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 18px;
   }
   .chatbot-footer {
     padding: 16px;
     border-top: 1px solid var(--line);
+    background: #fff;
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
   }
-  .chatbot-questions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .chatbot-questions { display: flex; flex-direction: column; gap: 8px; }
   .chatbot-questions .question-chip {
     padding: 10px 14px;
-    background: var(--bg);
-    border: 1px solid var(--line);
+    background: #FFFFFF;
+    border: 1px solid var(--primary);
     border-radius: 12px;
     cursor: pointer;
-    color: #111;
-    font-size: 14px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 600;
     transition: background 0.2s;
     text-align: left;
   }
   .chatbot-questions .question-chip:hover {
-    background: #f0f0f0;
+    background: var(--primary);
+    color: #fff;
   }
-
-  /* ==== Red + white theme overrides (non-breaking) ==== */
-  :root{
-    --bg: #FFFFFF;          /* white background */
-    --surface: #FFFFFF;     /* cards/surfaces */
-    --line: #F0F0F0;        /* borders */
-    --muted: #DC143C;       /* muted text (red) */
-    --accent: #DC143C;      /* buttons/accents (red) */
-    --accentText: #FFFFFF;  /* text on accent (white) */
-    --primary: #DC143C;     /* user-bubble/chat primary (red) */
-  }
-  body{ background:var(--bg); color:#DC143C; }
-  .title{ color:#DC143C !important; }
-  .icon-round{ background:var(--surface); border-color:var(--line); color:#DC143C; }
-
-  .tabbar{ background:rgba(255,255,255,.92); border-top:1px solid var(--line); }
-  .tab{ color:#DC143C; }
-  .tab.active{ color:#DC143C; background:#f9f9f9; }
-
-  .card{ background:var(--surface); border-color:var(--line); color:#DC143C; }
-  .chip{ background:var(--surface); color:#DC143C; border-color:var(--line); }
-  input, textarea, select{ background:var(--surface); color:#DC143C; border-color:var(--line); }
-  input::placeholder, textarea::placeholder{ color:#DC143C; }
-  label{ color:#DC143C; }
-
-  .btn{ background:var(--accent); color:var(--accentText); border:1px solid var(--line); }
-  .btn-outline{ background:transparent; color:#DC143C; border:1px solid var(--line); }
-
-  .cart-item{ background:var(--surface); border-color:var(--line); color:#DC143C; }
-  .circle-btn{ background:var(--surface); color:#DC143C; border-color:var(--line); }
-  .circle-btn.primary{ background:var(--accent); color:var(--accentText); }
-
-  .sticky-sheet{ background:rgba(255,255,255,.94); border-top:1px solid var(--line); }
-  .like-btn{ background:rgba(220,20,60,.12); color:#DC143C; }
-
-  /* Admin red surfaces */
-  .admin-card{ background:var(--surface); color:#DC143C; border-color:var(--line); }
-  .admin-cta{ background:rgba(255,255,255,.95); border-top:1px solid var(--line); }
-  .btn-white{ background:transparent; color:#DC143C; border-color:var(--line); }
-  .dropzone{ background:#fff; color:#DC143C; border-color:#DC143C; }
-
-  .chip-sm{ background:#fff; color:#DC143C; border-color:var(--line); }
-
-  /* Chatbot tweaks for red */
-  .chatbot-popup{ background:var(--surface); border-color:var(--line); }
-  .chatbot-msg.bot{ background:#fff; color:#DC143C; border:1px solid var(--line); }
-  .chatbot-questions .question-chip{ background:var(--surface); color:#DC143C; border-color:var(--line); }
-  .chatbot-questions .question-chip:hover{ background:#f9f9f9; }
 </style>
 </head>
 <body>
 
 <div id="store-app">
   <div class="animated-banner-wrap" id="animated-banner-wrap" style="display:none">
-    <div class="animated-banner-text" id="animated-banner-text"></div>
+    <div class="animated-banner-text" id="animated-banner-text">🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.</div>
   </div>
   <div id="app" class="wrap">
     <header class="topbar">
       <div class="topbar-inner">
         <button id="back-btn" class="icon-round" aria-label="Back" style="display:none"><i class="fa-solid fa-arrow-left"></i></button>
-        <h1 id="page-title" class="title">Deewali Decore</h1>
+        <h1 id="page-title" class="title"><i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span></h1>
       </div>
     </header>
     <main id="view" aria-live="polite"></main>
     <nav class="tabbar">
       <div class="tabbar-inner">
-        <a class="tab" data-tab="home" href="#/home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a class="tab" data-tab="shop" href="#/shop"><i class="fa-solid fa-magnifying-glass"></i><span>Shop</span></a>
+        <a class="tab" data-tab="home" href="#/home"><i class="fa-solid fa-bolt"></i><span>Home</span></a>
+        <a class="tab" data-tab="shop" href="#/shop"><i class="fa-solid fa-fire-burner"></i><span>Stoves</span></a>
         <a class="tab" data-tab="cart" href="#/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></a>
-        <a class="tab" data-tab="account" href="#/account"><i class="fa-regular fa-user"></i><span>Account</span></a>
+        <a class="tab" data-tab="account" href="#/account"><i class="fa-regular fa-user"></i><span>Profile</span></a>
       </div>
     </nav>
   </div>
@@ -429,7 +386,7 @@
       <h4 style="margin:0 0 10px">Animated Banner</h4>
       <form id="banner-form">
         <label>Banner Text</label>
-        <input id="banner-text" type="text" placeholder="e.g., Get 20% off on Diwali decorations!">
+        <input id="banner-text" type="text" placeholder="e.g., Gas crisis special! Get 50% OFF today.">
         <div style="margin-top:10px">
           <button type="submit" class="btn">Save Banner Text</button>
           <button type="button" class="btn btn-outline" id="banner-remove">Remove Banner</button>
@@ -440,8 +397,8 @@
       <form id="hero-form">
         <label>Hero Image</label>
         <div class="dropzone" id="hero-dz" onclick="document.getElementById('hero-upload').click()">
-          <div><i class="fa-solid fa-cloud-arrow-up"></i></div>
-          <div style="font-weight:700">Click to upload</div>
+          <div><i class="fa-solid fa-cloud-arrow-up" style="font-size:24px; margin-bottom:8px;"></i></div>
+          <div style="font-weight:700">Click to upload banner</div>
         </div>
         <input id="hero-upload" type="file" accept="image/*" style="display:none">
         <div class="thumbs" id="hero-thumbs" style="margin-top:10px"></div>
@@ -452,33 +409,33 @@
     </div>
 
     <div id="admin-add" class="admin-card" style="display:none">
-      <h3 style="margin:0 0 8px;font-family:Poppins">Add New Product</h3>
+      <h3 style="margin:0 0 8px;font-family:Poppins">Add New Stove/Product</h3>
       <form id="product-form">
         <input type="hidden" id="pf-id">
-        <label>Product Name</label><input id="pf-name" required placeholder="e.g., Brass Diya Set">
-        <label>Description</label><textarea id="pf-desc" placeholder="Short description..."></textarea>
-        <label>Category</label><input id="pf-category" required placeholder="e.g., Lighting, Rangoli, Diyas">
+        <label>Product Name</label><input id="pf-name" required placeholder="e.g., 2000W Smart Induction Cooktop">
+        <label>Description</label><textarea id="pf-desc" placeholder="Highlight fast cooking, safety, and electricity savings..."></textarea>
+        <label>Category</label><input id="pf-category" required placeholder="e.g., Induction, Infrared, Hot Plate">
 
         <div class="row" style="gap:10px">
           <div style="flex:1">
             <label>MRP (Strike-through)</label>
-            <input id="pf-mrp" type="number" min="0" placeholder="e.g., 1999">
+            <input id="pf-mrp" type="number" min="0" placeholder="e.g., 3499">
           </div>
           <div style="flex:1">
             <label>Discount %</label>
-            <input id="pf-disc" type="number" min="0" max="99" placeholder="e.g., 30">
+            <input id="pf-disc" type="number" min="0" max="99" placeholder="e.g., 40">
           </div>
           <div style="flex:1">
             <label>Sale Price</label>
-            <input id="pf-price" type="number" min="0" placeholder="e.g., 1399">
+            <input id="pf-price" type="number" min="0" placeholder="e.g., 2099">
           </div>
         </div>
 
         <label>Product Images</label>
         <div class="dropzone" id="dz" onclick="document.getElementById('pf-upload').click()">
-          <div><i class="fa-solid fa-cloud-arrow-up"></i></div>
-          <div style="font-weight:700">Click to upload</div>
-          <div class="muted" style="font-size:12px">JPG/PNG • Auto-compress • Max side 1200px</div>
+          <div><i class="fa-solid fa-image" style="font-size:24px; margin-bottom:8px;"></i></div>
+          <div style="font-weight:700">Click to upload product images</div>
+          <div class="muted" style="font-size:12px; margin-top:4px;">JPG/PNG • Auto-compress • Max side 1200px</div>
         </div>
         <input id="pf-upload" type="file" accept="image/*" multiple style="display:none">
         <div class="thumbs" id="pf-thumbs"></div>
@@ -534,12 +491,12 @@
 </div>
 
 <button class="chatbot-icon" id="chatbot-toggle">
-  <i class="fa-solid fa-comment-dots"></i>
+  <i class="fa-solid fa-robot"></i>
 </button>
 <div class="chatbot-popup" id="chatbot-popup">
   <div class="chatbot-header">
-    <div style="font-weight:600">Deewali Decore AI</div>
-    <button class="icon-round" style="background:transparent;border:none;color:var(--accentText);width:28px;height:28px" id="chatbot-close">
+    <div style="font-weight:600"><i class="fa-solid fa-bolt" style="color:var(--accent);"></i> InstaChulha Assistant</div>
+    <button class="icon-round" style="background:transparent;border:none;color:var(--accentText);width:28px;height:28px;box-shadow:none;" id="chatbot-close">
       <i class="fa-solid fa-xmark"></i>
     </button>
   </div>
@@ -552,7 +509,7 @@
 const ADMIN_ID = "Madhav@store";
 const ADMIN_PW = "Madhav@1234";
 let HERO_IMAGE_URL = "";
-let BANNER_TEXT = "";
+let BANNER_TEXT = "🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF."; // Default
 
 /* ===== Utilities ===== */
 const $ = s => document.querySelector(s);
@@ -562,20 +519,20 @@ const uid = () => 'p_' + Math.random().toString(36).slice(2) + Date.now().toStri
 const readLocal = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch { return d; } };
 const writeLocal = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 const escapeHtml = (s="") => s.replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
-const toast = (msg) => { const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=> t.classList.remove("show"), 1400); };
+const toast = (msg) => { const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=> t.classList.remove("show"), 1600); };
 const routeTo = (hash) => { location.hash = hash; };
 
-/* ===== Profile & Data ===== */
-let PROFILE = readLocal("deewali_profile", {
+/* ===== Profile & Data (Updated Keys for new store) ===== */
+let PROFILE = readLocal("instachulha_profile", {
   name:"", email:"", phone:"", address:"", pincode:"", city:"", state:"", district:"", landmark:"", avatar:"", isComplete:false,
   favorites: []
 });
-const saveProfile = () => writeLocal("deewali_profile", PROFILE);
-const hasCompleteProfile = () => !!(PROFILE.name && PROFILE.email && PROFILE.phone && PROFILE.address && PROFILE.pincode);
+const saveProfile = () => writeLocal("instachulha_profile", PROFILE);
+const hasCompleteProfile = () => !!(PROFILE.name && PROFILE.phone && PROFILE.address && PROFILE.pincode); // Email made optional for faster checkout
 
 let PRODUCTS = []; // Fetched from Firebase
-let CART = readLocal("deewali_cart", []);
-const saveCart = () => writeLocal("deewali_cart", CART);
+let CART = readLocal("instachulha_cart", []);
+const saveCart = () => writeLocal("instachulha_cart", CART);
 const cartTotal = () => CART.reduce((a,c)=>{ const p=PRODUCTS.find(x=>x.id===c.productId); return a+(p? (p.price||0)*c.qty : 0); },0);
 
 let ORDERS = []; // Fetched from Firebase
@@ -596,12 +553,11 @@ function showLoader() {
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>
-      <div>Loading...</div>
+      <div style="margin-top:12px; font-weight:600;">Loading InstaChulha...</div>
     </div>
   `;
 }
 
-// *** Mool Sudhaar Yahan Hai: Ensure data is fetched before rendering views ***
 function checkAndRender() {
   if (dataFetched.products && dataFetched.orders && dataFetched.ratings && dataFetched.config) {
     render();
@@ -613,7 +569,7 @@ productsRef.on('value', snapshot => {
   PRODUCTS = data ? Object.values(data) : [];
   PRODUCTS.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   dataFetched.products = true;
-  checkAndRender(); // Essential call to re-render the view with fetched products
+  checkAndRender(); 
 });
 
 ordersRef.on('value', snapshot => {
@@ -634,8 +590,9 @@ ratingsRef.on('value', snapshot => {
 
 appConfigRef.on('value', snapshot => {
   const config = snapshot.val() || {};
-  HERO_IMAGE_URL = config.heroImage || "";
-  BANNER_TEXT = config.bannerText || "";
+  if(config.heroImage) HERO_IMAGE_URL = config.heroImage;
+  if(config.bannerText !== undefined) BANNER_TEXT = config.bannerText;
+  
   if (BANNER_TEXT) {
     $("#animated-banner-text").textContent = BANNER_TEXT;
     $("#animated-banner-wrap").style.display = "block";
@@ -652,7 +609,15 @@ function parseRoute(){
   const parts = h.split("?")[0].split("/").filter(Boolean);
   return { parts };
 }
-function setTopbar(title, showBack){ $("#page-title").textContent=title; $("#back-btn").style.display = showBack? "inline-grid":"none"; }
+function setTopbar(title, showBack){ 
+    // If title is empty, show default logo title, else show specific page title
+    if(!title) {
+        $("#page-title").innerHTML = `<i class="fa-solid fa-power-off" style="font-size: 18px; color: var(--accent);"></i> Insta<span>Chulha</span>`;
+    } else {
+        $("#page-title").textContent = title; 
+    }
+    $("#back-btn").style.display = showBack? "inline-grid":"none"; 
+}
 function setActiveTab(name){ $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name)); }
 $("#back-btn").addEventListener("click", ()=> history.back());
 $("#admin-back").addEventListener("click", ()=> history.back());
@@ -662,7 +627,7 @@ window.addEventListener("popstate", render);
 /* ===== Profile Gate ===== */
 function ensureProfileBefore(nextHash){
   if (!hasCompleteProfile()){
-    writeLocal("deewali_next", nextHash || "#/checkout");
+    writeLocal("instachulha_next", nextHash || "#/checkout");
     routeTo("#/profile/setup");
     return false;
   }
@@ -671,46 +636,49 @@ function ensureProfileBefore(nextHash){
 
 /* ===== Store Views ===== */
 function HomeView(){
-  setTopbar("Home", false); setActiveTab("home");
+  setTopbar("", false); setActiveTab("home");
   const viewElement = $("#view");
   viewElement.innerHTML = `
     <section style="padding:14px">
-      <div class="card" style="overflow:hidden">
+      <div class="card" style="overflow:hidden; background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);">
         ${HERO_IMAGE_URL ? `<div class="hero-img"><img src="${HERO_IMAGE_URL}" alt="Hero" /></div>` : ''}
-        <div class="pad" style="padding:16px">
-          <h2 style="margin:0 0 6px;font-family:Poppins">Illuminate Your Diwali with Elegance.</h2>
-          <p class="muted" style="margin:0 0 12px">Premium decorative items for festive celebrations.</p>
-          <button class="btn" onclick="routeTo('#/shop')">Shop Now</button>
+        <div class="pad" style="padding:20px 16px; text-align:center;">
+          <h2 style="margin:0 0 8px;font-family:Poppins; color:var(--primary); font-size: 24px;">Gas ki tension khatam,<br><span style="color:var(--accent);">Smart cooking shuru.</span></h2>
+          <p class="muted" style="margin:0 auto 16px; max-width: 280px;">Switch to fast, safe, and reliable electric cooktops. Stop waiting for cylinder bookings!</p>
+          <button class="btn btn-block" onclick="routeTo('#/shop')" style="font-size: 16px; padding: 16px;"><i class="fa-solid fa-bolt"></i> Explore Electric Stoves</button>
         </div>
       </div>
-      <h3 style="margin:16px 4px 8px;font-family:Poppins">Featured</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 4px 12px;">
+        <h3 style="margin:0;font-family:Poppins">Trending Alternatives</h3>
+        <a href="#/shop" style="color:var(--primary); font-weight:600; font-size:14px;">View All</a>
+      </div>
       <div class="grid" id="home-grid"></div>
     </section>
   `;
   const grid = $("#home-grid");
-  const featuredProducts = PRODUCTS.slice(0, 6); // Display first 6 products as featured
+  const featuredProducts = PRODUCTS.slice(0, 6); 
 
   if (featuredProducts.length > 0) {
     grid.innerHTML = featuredProducts.map(p => ProductCard(p)).join("");
-    // Ensure handlers are attached so products are clickable!
     attachProductCardHandlers(grid);
   } else {
-    grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3">No featured products found. Please add products in the Admin panel.</div>`;
+    grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3; padding: 20px;">No electric stoves found. Admin, please add products.</div>`;
   }
 }
+
 function ShopView(){
-  setTopbar("Shop", false); setActiveTab("shop");
+  setTopbar("Shop Stoves", false); setActiveTab("shop");
   const categories = [...new Set(PRODUCTS.map(p => p.category).filter(Boolean))];
   const filtersHtml = categories.map(c => `<button class="chip" data-filter="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
   $("#view").innerHTML = `
     <section style="padding:14px">
       <div class="filters">
-        <button class="chip" data-filter="all">All</button>
+        <button class="chip" data-filter="all">All Items</button>
         ${filtersHtml}
       </div>
-      <div class="card" style="padding:10px 12px;margin:8px 0 12px;display:flex;gap:10px;align-items:center">
-        <i class="fa-solid fa-magnifying-glass" style="color:#9CA3AF"></i>
-        <input id="shop-search" placeholder="Search decorative items..." style="border:none;padding:10px 0;outline:none">
+      <div class="card" style="padding:6px 12px;margin:8px 0 16px;display:flex;gap:10px;align-items:center; border: 2px solid var(--line);">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--primary)"></i>
+        <input id="shop-search" placeholder="Search induction, infrared, hot plate..." style="border:none;padding:10px 0;outline:none; background:transparent;">
       </div>
       <div class="grid" id="shop-grid"></div>
     </section>
@@ -727,7 +695,7 @@ function ShopView(){
     });
     grid.innerHTML = list.map(p => ProductCard(p)).join("");
     if (list.length === 0) {
-      grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3">No products found.</div>`;
+      grid.innerHTML = `<div class="muted" style="text-align:center;grid-column:1/3; padding: 30px;">No stoves found matching your search.</div>`;
     }
     attachProductCardHandlers(grid);
   }
@@ -743,21 +711,23 @@ function ShopView(){
   });
   $$(".filters button[data-filter='all']")[0]?.classList.add("active");
 }
+
 function getProductRating(productId) {
   const productRatings = RATINGS.filter(r => r.productId === productId);
   if (productRatings.length === 0) return 0;
   const total = productRatings.reduce((sum, r) => sum + r.rating, 0);
   return (total / productRatings.length).toFixed(1);
 }
+
 function ProductCard(p){
   const off = p.discountPercent ? `<div class="discount-badge">${p.discountPercent}% OFF</div>` : "";
   const avgRating = getProductRating(p.id);
-  const ratingStars = avgRating > 0 ? `<div class="star-rating">${avgRating} <i class="fa-solid fa-star"></i></div>` : '';
+  const ratingStars = avgRating > 0 ? `<div class="star-rating"><i class="fa-solid fa-star"></i> ${avgRating}</div>` : '';
   const isFavorite = PROFILE.favorites.includes(p.id);
   const likeBtnClass = isFavorite ? 'liked' : '';
   return `
     <a class="card p-card" href="#/product/${p.id}" data-open="${p.id}">
-      <button class="like-btn" data-product-id="${p.id}" aria-label="Add to favorites"><i class="fa-solid fa-heart"></i></button>
+      <button class="like-btn ${likeBtnClass}" data-product-id="${p.id}" aria-label="Add to favorites"><i class="fa-solid fa-heart"></i></button>
       <div class="p-img">
         <img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}">
         ${off}
@@ -766,7 +736,7 @@ function ProductCard(p){
         <div class="p-title">${escapeHtml(p.name)}</div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div class="price-line">
-            <div style="font-weight:700">${money(p.price||0)}</div>
+            <div style="font-weight:800; color:var(--primary); font-size:16px;">${money(p.price||0)}</div>
             ${p.priceMrp ? `<div class="strike">${money(p.priceMrp)}</div>` : ""}
           </div>
           ${ratingStars}
@@ -775,6 +745,7 @@ function ProductCard(p){
     </a>
   `;
 }
+
 function attachProductCardHandlers(scope){
   scope.querySelectorAll("[data-open]").forEach(el=>{
     el.addEventListener("click", (e)=>{ e.preventDefault(); routeTo(`#/product/${el.dataset.open}`); });
@@ -785,15 +756,14 @@ function attachProductCardHandlers(scope){
       e.stopPropagation();
       toggleFavorite(btn.dataset.productId, btn);
     });
-    const isFavorite = PROFILE.favorites.includes(btn.dataset.productId);
-    btn.classList.toggle('liked', isFavorite);
   });
 }
+
 function ProductView(id){
   const p = PRODUCTS.find(x=>x.id===id);
   if(!p){ routeTo("#/shop"); return; }
-  setTopbar("", true); setActiveTab(""); $("#page-title").textContent = "";
-  const qtyOptions = [1, 2, 5, 10];
+  setTopbar("Product Details", true); setActiveTab("");
+  const qtyOptions = [1, 2, 3, 4]; // People rarely buy 10 induction stoves at once
   const avgRating = getProductRating(p.id);
   const isOrdered = ORDERS.some(o => o.customer.email === PROFILE.email && o.items.some(i => i.productId === id));
   const isFavorite = PROFILE.favorites.includes(p.id);
@@ -801,30 +771,38 @@ function ProductView(id){
   
   $("#view").innerHTML = `
     <section>
-      <div class="hero-img"><img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}"></div>
+      <div class="hero-img" style="background:#fff; border-radius:0; border-bottom:1px solid var(--line); margin:0 0 16px 0;"><img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}" style="object-fit:contain;"></div>
       <div style="padding:0 16px 16px">
         <div style="display:flex;align-items:start;justify-content:space-between;gap:8px">
           <div>
-            <h2 style="margin:0 0 6px;font-family:Poppins">${escapeHtml(p.name)}</h2>
-            <div class="price-line" style="margin:6px 0">
-              <div style="font-family:Poppins;font-weight:700;font-size:22px">${money(p.price||0)}</div>
-              ${p.priceMrp ? `<div class="strike">${money(p.priceMrp)}</div>` : ""}
+            <div class="chip" style="font-size:11px; padding: 4px 8px; margin-bottom: 8px; background:#D1FAE5; border:none; color:var(--success);"><i class="fa-solid fa-bolt"></i> Fast Delivery Available</div>
+            <h2 style="margin:0 0 6px;font-family:Poppins; line-height:1.2;">${escapeHtml(p.name)}</h2>
+            <div class="price-line" style="margin:8px 0">
+              <div style="font-family:Poppins;font-weight:700;font-size:24px; color:var(--primary);">${money(p.price||0)}</div>
+              ${p.priceMrp ? `<div class="strike" style="font-size:16px;">${money(p.priceMrp)}</div>` : ""}
               ${p.discountPercent ? `<span class="badge-off">${p.discountPercent}% OFF</span>` : ""}
             </div>
-            ${avgRating > 0 ? `<div class="star-rating">${avgRating} <i class="fa-solid fa-star"></i> (${RATINGS.filter(r => r.productId === id).length} reviews)</div>` : ''}
-            <div class="muted" style="max-width:560px">${escapeHtml(p.description||"")}</div>
+            ${avgRating > 0 ? `<div class="star-rating" style="margin-bottom:12px;">${avgRating} <i class="fa-solid fa-star"></i> <span style="color:var(--muted); font-size:13px; font-weight:500;">(${RATINGS.filter(r => r.productId === id).length} reviews)</span></div>` : ''}
+            
+            <div class="card pad" style="background:#F8FAFC; border:1px dashed var(--primary); margin: 16px 0;">
+              <div style="font-weight:700; color:var(--primary); margin-bottom:6px;"><i class="fa-solid fa-fire-burner"></i> The Perfect Gas Alternative</div>
+              <div class="muted" style="font-size:13px;">Save up to 40% on your monthly cooking costs compared to current LPG cylinder prices.</div>
+            </div>
+
+            <div style="font-weight:600; margin-bottom:6px;">Description</div>
+            <div class="muted" style="max-width:560px; font-size:14px; line-height:1.5;">${escapeHtml(p.description||"")}</div>
           </div>
-          <button class="icon-round ${likeBtnClass}" id="product-like-btn" aria-label="Add to favorites"><i class="fa-solid fa-heart"></i></button>
+          <button class="icon-round ${likeBtnClass}" id="product-like-btn" aria-label="Add to favorites" style="flex-shrink:0; background:#fff;"><i class="fa-solid fa-heart"></i></button>
         </div>
-        <div style="margin:16px 0 8px;font-weight:700">Quantity</div>
+        <div style="margin:20px 0 8px;font-weight:700">Quantity</div>
         <div class="size-row" id="qty-row" style="display:flex;gap:10px">
             ${qtyOptions.map((q, i) => `<button class="size-btn ${i === 0 ? 'active' : ''}" data-qty="${q}">${q}</button>`).join("")}
         </div>
-        <div style="position:sticky;bottom:calc(84px + var(--safe));margin-top:16px"><button class="btn btn-block" id="add-to-cart">Add to Cart</button></div>
+        <div style="position:sticky;bottom:calc(84px + var(--safe));margin-top:24px"><button class="btn btn-block" id="add-to-cart" style="font-size:16px; padding:16px;"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button></div>
         ${isOrdered ? `
-          <div class="card pad" style="margin-top:16px">
-            <h4 style="margin:0 0 10px;font-family:Poppins">Rate this product</h4>
-            <div id="rate-stars" class="rate-stars" style="font-size:24px;color:#ccc">
+          <div class="card pad" style="margin-top:24px">
+            <h4 style="margin:0 0 10px;font-family:Poppins">Rate this Stove</h4>
+            <div id="rate-stars" class="rate-stars" style="font-size:28px;color:#E2E8F0;">
               <i class="fa-solid fa-star" data-rating="1"></i>
               <i class="fa-solid fa-star" data-rating="2"></i>
               <i class="fa-solid fa-star" data-rating="3"></i>
@@ -871,6 +849,7 @@ function ProductView(id){
     toast("Added to cart");
   });
 }
+
 function submitRating(productId, rating, userEmail) {
   const existingRating = RATINGS.find(r => r.productId === productId && r.userEmail === userEmail);
   const ratingData = { productId, userEmail, rating };
@@ -886,6 +865,7 @@ function submitRating(productId, rating, userEmail) {
       .catch(err => alert("Failed to submit rating."));
   }
 }
+
 function toggleFavorite(productId, buttonElement) {
   if (PROFILE.favorites.includes(productId)) {
     PROFILE.favorites = PROFILE.favorites.filter(id => id !== productId);
@@ -904,15 +884,15 @@ function CartView(){
   const total = cartTotal();
   $("#view").innerHTML = `
     <section style="padding:14px">
-      ${CART.length===0 ? `<div class="card pad" style="text-align:center;padding:26px"><div class="muted">Your cart is empty.</div><div style="margin-top:10px"><a class="btn btn-outline" href="#/shop">Browse Decorations</a></div></div>` : `
+      ${CART.length===0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-solid fa-cart-shopping" style="font-size:40px; color:var(--line); margin-bottom:16px;"></i><div class="muted">Your cart is empty.</div><div style="margin-top:16px"><a class="btn btn-outline" href="#/shop">Browse Stoves</a></div></div>` : `
       <div class="cart-list" id="cart-list">${CART.map(row => CartItem(row)).join("")}</div>
       <div class="card sticky-sheet" style="margin-top:16px">
-      <div class="row"><div class="muted">Subtotal</div><div>${money(total)}</div></div>
-        <div class="row"><div class="muted">Shipping</div><div>Free</div></div>
+      <div class="row"><div class="muted">Subtotal</div><div style="font-weight:600;">${money(total)}</div></div>
+        <div class="row"><div class="muted">Fast Shipping</div><div style="color:var(--success); font-weight:600;">Free</div></div>
         <div class="row"><div class="muted">Taxes</div><div>₹0</div></div>
         <div class="sep"></div>
-        <div class="row" style="font-weight:800"><div>Total</div><div>${money(total)}</div></div>
-        <div style="margin-top:10px"><button class="btn btn-block" id="to-checkout">Proceed to Checkout</button></div>
+        <div class="row" style="font-weight:800; font-size:18px; color:var(--primary);"><div>Total</div><div>${money(total)}</div></div>
+        <div style="margin-top:14px"><button class="btn btn-block" id="to-checkout" style="padding:16px;">Proceed to Checkout <i class="fa-solid fa-arrow-right" style="margin-left:4px;"></i></button></div>
       </div>`}
     </section>
   `;
@@ -921,27 +901,29 @@ function CartView(){
     if (ensureProfileBefore("#/checkout")) routeTo("#/checkout");
   });
 }
+
 function CartItem(it){
   const p = PRODUCTS.find(x=>x.id===it.productId); if(!p) return "";
   return `
     <div class="cart-item" data-id="${it.productId}">
       <img src="${(p.imageUrls[0]||"")}" alt="${escapeHtml(p.name)}">
       <div>
-        <div style="font-weight:700">${escapeHtml(p.name)}</div>
-        <div class="price-line" style="margin-top:4px">
+        <div style="font-weight:700; color:var(--primary); line-height:1.2;">${escapeHtml(p.name)}</div>
+        <div class="price-line" style="margin-top:6px">
           <div style="font-weight:700">${money((p.price||0) * it.qty)}</div>
           ${p.priceMrp ? `<div class="strike">${money((p.priceMrp||0) * it.qty)}</div>` : ""}
         </div>
         <div class="qty">
           <button class="circle-btn" data-dec>-</button>
-          <div>${it.qty}</div>
+          <div style="font-weight:600; width:16px; text-align:center;">${it.qty}</div>
           <button class="circle-btn primary" data-inc>+</button>
-          <button class="circle-btn" data-rem title="Remove"><i class="fa-regular fa-trash-can"></i></button>
+          <button class="circle-btn" data-rem title="Remove" style="margin-left:auto; color:#EF4444; border-color:#FEE2E2; background:#FEF2F2;"><i class="fa-regular fa-trash-can"></i></button>
         </div>
       </div>
     </div>
   `;
 }
+
 function attachCartHandlers(){
   $$("#cart-list .cart-item").forEach(item=>{
     const pid=item.dataset.id;
@@ -950,39 +932,41 @@ function attachCartHandlers(){
     item.querySelector("[data-rem]").addEventListener("click", ()=> removeFromCart(pid));
   });
 }
+
 function CheckoutView(){
   if (CART.length===0){ routeTo("#/cart"); return; }
   setTopbar("Checkout", true); setActiveTab("");
   const total = cartTotal();
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="card pad">
-        <h3 style="margin:0 0 10px;font-family:Poppins">Contact Information</h3>
-        <div class="group"><label>Full Name</label><input id="ch-name" required></div>
+      <div class="card pad" style="border-top: 4px solid var(--primary);">
+        <h3 style="margin:0 0 10px;font-family:Poppins; color:var(--primary);">Contact Information</h3>
+        <div class="group"><label>Full Name</label><input id="ch-name" required placeholder="Enter your name"></div>
         <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label>Email</label><input id="ch-email" type="email" required></div>
-          <div><label>Phone</label><input id="ch-phone" type="tel" required></div>
+          <div><label>Email <span class="muted" style="font-weight:normal;">(Optional)</span></label><input id="ch-email" type="email" placeholder="For receipt"></div>
+          <div><label>Phone *</label><input id="ch-phone" type="tel" required placeholder="10-digit number"></div>
         </div>
-        <h3 style="margin:16px 0 8px;font-family:Poppins">Shipping Address</h3>
-        <div class="group"><label>Address</label><input id="ch-address" required></div>
+        
+        <h3 style="margin:24px 0 10px;font-family:Poppins; color:var(--primary);">Shipping Address</h3>
+        <div class="group"><label>Complete Address *</label><textarea id="ch-address" required placeholder="House No, Building, Street Area..."></textarea></div>
         <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><label>City</label><input id="ch-city"></div>
-          <div><label>Pincode</label><input id="ch-pincode" required></div>
+          <div><label>City *</label><input id="ch-city" required></div>
+          <div><label>Pincode *</label><input id="ch-pincode" required type="number"></div>
         </div>
         <div class="group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div><label>State</label><input id="ch-state"></div>
-          <div><label>District</label><input id="ch-district"></div>
+          <div><label>Landmark</label><input id="ch-landmark" placeholder="Near by..."></div>
         </div>
-        <div class="group"><label>Landmark</label><input id="ch-landmark"></div>
-        <div class="muted" style="font-size:12px;margin-top:6px">Your details will be saved for faster checkout next time.</div>
+        <div class="card pad" style="background:#FFFBEB; border-color:#FDE68A; margin-top:16px;">
+           <div style="font-size:13px; color:#D97706; font-weight:600;"><i class="fa-solid fa-truck-fast"></i> We are prioritizing local deliveries due to the gas crisis. Ensure your phone number is correct.</div>
+        </div>
       </div>
       <div class="card sticky-sheet" style="margin-top:16px">
-        <div class="row"><div class="muted">Subtotal</div><div>${money(total)}</div></div>
-        <div class="row"><div class="muted">Shipping</div><div>Free</div></div>
-        <div class="row"><div class="muted">Taxes</div><div>₹0</div></div>
+        <div class="row"><div class="muted">Subtotal</div><div style="font-weight:600;">${money(total)}</div></div>
+        <div class="row"><div class="muted">Shipping</div><div style="color:var(--success); font-weight:600;">Free</div></div>
         <div class="sep"></div>
-        <div class="row" style="font-weight:800"><div>Total</div><div>${money(total)}</div></div>
-        <div style="margin-top:10px"><button class="btn btn-block" id="cod-next">Cash on Delivery</button></div>
+        <div class="row" style="font-weight:800; font-size:18px;"><div>Total</div><div style="color:var(--primary);">${money(total)}</div></div>
+        <div style="margin-top:14px"><button class="btn btn-block" id="cod-next" style="padding:16px;"><i class="fa-solid fa-money-bill-wave"></i> Order via Cash on Delivery</button></div>
       </div>
     </section>
   `;
@@ -993,7 +977,6 @@ function CheckoutView(){
   $("#ch-city").value = PROFILE.city||"";
   $("#ch-pincode").value = PROFILE.pincode||"";
   $("#ch-state").value = PROFILE.state||"";
-  $("#ch-district").value = PROFILE.district||"";
   $("#ch-landmark").value = PROFILE.landmark||"";
 
   $("#cod-next").addEventListener("click", ()=>{
@@ -1004,10 +987,12 @@ function CheckoutView(){
     PROFILE.city = $("#ch-city").value.trim();
     PROFILE.pincode = $("#ch-pincode").value.trim();
     PROFILE.state = $("#ch-state").value.trim();
-    PROFILE.district = $("#ch-district").value.trim();
     PROFILE.landmark = $("#ch-landmark").value.trim();
-    PROFILE.isComplete = hasCompleteProfile();
-    if(!PROFILE.isComplete){ alert("Please fill name, email, phone, address and pincode."); return; }
+    
+    if(!PROFILE.name || !PROFILE.phone || !PROFILE.address || !PROFILE.city || !PROFILE.pincode){ 
+        alert("Please fill all required fields (*)."); return; 
+    }
+    PROFILE.isComplete = true;
     saveProfile();
 
     const items = CART.map(it => {
@@ -1015,92 +1000,103 @@ function CheckoutView(){
       return { productId: it.productId, name: p?.name, price: p?.price, mrp: p?.priceMrp, qty: it.qty, size: "NA" };
     });
     const amount = cartTotal();
-    const orderId = "DDC-" + Date.now().toString().slice(-8);
-    writeLocal("deewali_pending_cod", { orderId, items, customer: { ...PROFILE }, amount, status:"COD - Pending" });
+    const orderId = "INSTA-" + Date.now().toString().slice(-8); // New Order ID Prefix
+    writeLocal("instachulha_pending_cod", { orderId, items, customer: { ...PROFILE }, amount, status:"COD - Pending" });
     routeTo("#/cod/review");
   });
 }
+
 function CODReviewView(){
   setTopbar("Confirm Order", true); setActiveTab("");
-  const pend = readLocal("deewali_pending_cod", null);
+  const pend = readLocal("instachulha_pending_cod", null);
   if(!pend){ routeTo("#/cart"); return; }
   const items = pend.items||[];
   $("#view").innerHTML = `
     <section style="padding:14px">
       <div class="card pad">
-        <h3 style="margin:0 0 10px;font-family:Poppins">Order Review</h3>
+        <h3 style="margin:0 0 10px;font-family:Poppins; color:var(--primary);">Order Review</h3>
         ${items.map(it=>`
-          <div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)">
-            <div>${escapeHtml(it.name)} <span class="muted">x${it.qty}</span></div>
+          <div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)">
+            <div><div style="font-weight:600;">${escapeHtml(it.name)}</div> <span class="muted" style="font-size:13px;">Qty: ${it.qty}</span></div>
             <div class="price-line">
               <div style="font-weight:700">${money((it.price||0)*it.qty)}</div>
-              ${it.mrp ? `<div class="strike">${money((it.mrp||0)*it.qty)}</div>`:""}
             </div>
           </div>
         `).join("")}
-        <div class="row" style="margin-top:10px"><div><strong>Total</strong></div><div><strong>${money(pend.amount)}</strong></div></div>
+        <div class="row" style="margin-top:14px; font-size:18px;"><div><strong>Total to Pay</strong></div><div style="color:var(--primary);"><strong>${money(pend.amount)}</strong></div></div>
       </div>
-      <div class="card pad" style="margin-top:12px">
-        <h3 style="margin:0 0 8px;font-family:Poppins">Shipping Details</h3>
-        <div>${escapeHtml(pend.customer.name)}</div>
-        <div class="muted">${escapeHtml(pend.customer.address)} — ${escapeHtml(pend.customer.pincode)}</div>
-        <div class="muted">${escapeHtml(pend.customer.city)} ${escapeHtml(pend.customer.state)} ${escapeHtml(pend.customer.district||"")}</div>
-        <div class="muted">Phone: ${escapeHtml(pend.customer.phone)}</div>
+      <div class="card pad" style="margin-top:16px">
+        <h3 style="margin:0 0 8px;font-family:Poppins; color:var(--primary);">Delivery Details</h3>
+        <div style="font-weight:600;">${escapeHtml(pend.customer.name)}</div>
+        <div class="muted" style="margin-top:4px;">${escapeHtml(pend.customer.address)}</div>
+        <div class="muted">${escapeHtml(pend.customer.city)}, ${escapeHtml(pend.customer.state)} — ${escapeHtml(pend.customer.pincode)}</div>
+        <div class="muted" style="margin-top:4px;"><i class="fa-solid fa-phone" style="font-size:12px;"></i> ${escapeHtml(pend.customer.phone)}</div>
       </div>
-      <div style="margin-top:16px">
-        <button class="btn btn-block" id="confirm-cod">Confirm Your Order</button>
+      <div style="margin-top:24px">
+        <button class="btn btn-block" id="confirm-cod" style="padding:16px; font-size:16px;">Confirm Your Order</button>
       </div>
     </section>
   `;
   $("#confirm-cod").addEventListener("click", finalizeCOD);
 }
+
 function CODSuccessView(){
-  setTopbar("Order Confirmed", true); setActiveTab("");
-  const last = readLocal("deewali_last_order", null);
+  setTopbar("Order Confirmed", false); setActiveTab("");
+  const last = readLocal("instachulha_last_order", null);
   $("#view").innerHTML = `
     <section class="success-wrap">
-      <div class="check-anim"><i class="fa-solid fa-check" style="font-size:36px"></i></div>
+      <div class="check-anim"><i class="fa-solid fa-check" style="font-size:40px"></i></div>
       <div class="confetti" id="confetti"></div>
-      <h2 style="font-family:Poppins;margin:12px 0 8px">Your order is confirmed!</h2>
-      <div class="muted" style="text-align:center">Order <b>#${escapeHtml(last?.orderId||"")}</b> will be delivered with Cash on Delivery.</div>
-      <div style="margin-top:16px;display:flex;gap:10px;flex-direction:column;width:100%;max-width:480px">
-        <a class="btn btn-block" href="#/confirm">View Summary</a>
-        <a class="btn btn-outline btn-block" href="#/shop">Back to Shop</a>
+      <h2 style="font-family:Poppins;margin:16px 0 8px; color:var(--primary); text-align:center;">Your order is confirmed!</h2>
+      <div class="muted" style="text-align:center; line-height:1.5;">Order <b>#${escapeHtml(last?.orderId||"")}</b> will be dispatched shortly.<br>Please keep <b>${money(last?.amount)}</b> ready for Cash on Delivery.</div>
+      
+      <div class="card pad" style="background:#EFF6FF; border-color:#BFDBFE; margin-top:20px; width:100%; text-align:center;">
+        <div style="font-weight:600; color:var(--primary);">Smart choice!</div>
+        <div class="muted" style="font-size:13px; margin-top:4px;">You no longer have to worry about gas cylinder lock-in periods.</div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;gap:12px;flex-direction:column;width:100%;max-width:480px">
+        <a class="btn btn-block" href="#/confirm">View Receipt</a>
+        <a class="btn btn-outline btn-block" href="#/shop">Back to Home</a>
       </div>
     </section>
   `;
   popConfetti();
   playSuccessSound();
 }
+
 function ConfirmView(){
-  setTopbar("Order Confirmation", true); setActiveTab("");
-  const last = readLocal("deewali_last_order", null);
+  setTopbar("Order Summary", true); setActiveTab("");
+  const last = readLocal("instachulha_last_order", null);
   const items = last?.items || []; const orderId = last?.orderId || "—"; const addr = last?.customer?.address || "";
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="card pad" style="text-align:center">
-        <div class="check-anim"><i class="fa-solid fa-check" style="font-size:36px"></i></div>
-        <h2 style="margin:6px 0;font-family:Poppins">Thank you! COD order placed.</h2>
-        <div class="muted">Your order <b>#${escapeHtml(orderId)}</b> will be delivered with Cash on Delivery.</div>
+      <div class="card pad" style="text-align:center; background: linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 100%);">
+        <div class="check-anim" style="margin:0 auto; width:64px; height:64px;"><i class="fa-solid fa-check" style="font-size:24px"></i></div>
+        <h2 style="margin:12px 0 6px;font-family:Poppins; color:var(--success);">COD Order Placed</h2>
+        <div class="muted">Order <b>#${escapeHtml(orderId)}</b></div>
       </div>
-      <div class="card pad" style="margin-top:12px">
-        <h3 style="margin:0 0 10px;font-family:Poppins">Order Summary</h3>
+      <div class="card pad" style="margin-top:16px">
+        <h3 style="margin:0 0 12px;font-family:Poppins; color:var(--primary);">Items Ordered</h3>
         <div class="summary-list">
           ${items.map(it => {
             const img = (PRODUCTS.find(x=>x.id===it.productId)?.imageUrls?.[0]||"");
-            return `<div class="summary-row">
-              <img src="${img}" alt="">
-              <div><div style="font-weight:700">${escapeHtml(it.name)}</div><div class="muted" style="font-size:13px">Qty ${it.qty}</div></div>
+            return `<div class="row" style="margin-bottom:10px; align-items:start;">
+              <img src="${img}" style="width:48px; height:48px; border-radius:8px; border:1px solid var(--line); object-fit:cover;" alt="">
+              <div style="flex:1; margin-left:12px;">
+                <div style="font-weight:600; line-height:1.2;">${escapeHtml(it.name)}</div>
+                <div class="muted" style="font-size:13px; margin-top:4px;">Qty: ${it.qty}</div>
+              </div>
               <div style="font-weight:700">${money((it.price||0)*it.qty)}</div>
             </div>`;
           }).join("")}
         </div>
-        <div class="row" style="margin-top:10px"><div style="font-weight:700">Total</div><div style="font-weight:800">${money(items.reduce((a,c)=> a + (c.price||0)*c.qty, 0))}</div></div>
+        <div class="sep"></div>
+        <div class="row" style="margin-top:10px"><div style="font-weight:700">Total Amount (COD)</div><div style="font-weight:800; color:var(--primary); font-size:18px;">${money(items.reduce((a,c)=> a + (c.price||0)*c.qty, 0))}</div></div>
       </div>
-      <div class="card pad" style="margin-top:12px"><div style="font-weight:700">Shipping Address</div><div class="muted" style="margin-top:4px">${escapeHtml(addr)}</div></div>
-      <div style="margin:16px 0;display:flex;flex-direction:column;gap:10px">
-        <a class="btn btn-block" href="#/account/orders">Track Order</a>
-        <a class="btn btn-outline btn-block" href="#/shop">Back to Shop</a>
+      <div class="card pad" style="margin-top:12px"><div style="font-weight:700; margin-bottom:6px;">Delivery Address</div><div class="muted" style="font-size:14px; line-height:1.5;">${escapeHtml(addr)}</div></div>
+      <div style="margin:24px 0;display:flex;flex-direction:column;gap:12px">
+        <a class="btn btn-block" href="#/account/orders">Track My Order</a>
       </div>
     </section>
   `;
@@ -1108,52 +1104,60 @@ function ConfirmView(){
 
 /* Account, Profile, Orders */
 function AccountView(){
-  setTopbar("My Account", false); setActiveTab("account");
+  setTopbar("Profile", false); setActiveTab("account");
   $("#view").innerHTML = `
     <section style="padding:14px">
-      <div class="card pad">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="avatar"><img src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=deewali'}" alt="avatar"></div>
+      <div class="card pad" style="background: linear-gradient(135deg, var(--primary) 0%, #2563EB 100%); color:#fff; border:none;">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="avatar" style="border-color:rgba(255,255,255,0.3);"><img src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}" alt="avatar"></div>
           <div>
-            <div style="font-weight:700;font-size:18px">${escapeHtml(PROFILE.name || 'Guest')}</div>
-            <div class="muted">${escapeHtml(PROFILE.email || 'guest@deewalidecore.com')}</div>
+            <div style="font-weight:700;font-size:20px">${escapeHtml(PROFILE.name || 'Guest User')}</div>
+            <div style="color:rgba(255,255,255,0.8); font-size:14px; margin-top:2px;">${escapeHtml(PROFILE.phone || 'Complete your profile')}</div>
           </div>
         </div>
       </div>
-      <div class="card pad" style="margin-top:12px">
-        <a href="#/profile" class="row" style="padding:10px 0"><div><i class="fa-regular fa-user"></i> &nbsp;Edit Profile</div><i class="fa-solid fa-chevron-right"></i></a>
-        <div class="sep"></div>
-        <a href="#/account/orders" class="row" style="padding:10px 0"><div><i class="fa-regular fa-clipboard"></i> &nbsp;Order History</div><i class="fa-solid fa-chevron-right"></i></a>
-        <div class="sep"></div>
-        <a href="#/favorites" class="row" style="padding:10px 0"><div><i class="fa-regular fa-heart"></i> &nbsp;My Favorites</div><i class="fa-solid fa-chevron-right"></i></a>
+      <div class="card pad" style="margin-top:16px">
+        <a href="#/profile" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-regular fa-user" style="color:var(--primary); width:24px;"></i> Edit Profile Details</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+        <div class="sep" style="margin:4px 0;"></div>
+        <a href="#/account/orders" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-solid fa-box" style="color:var(--primary); width:24px;"></i> My Orders</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+        <div class="sep" style="margin:4px 0;"></div>
+        <a href="#/favorites" class="row" style="padding:12px 0; font-weight:500;"><div><i class="fa-regular fa-heart" style="color:var(--primary); width:24px;"></i> Saved Stoves</div><i class="fa-solid fa-chevron-right" style="color:var(--muted); font-size:14px;"></i></a>
+      </div>
+      
+      <div class="card pad" style="margin-top:16px; text-align:center;">
+        <div style="font-weight:600; color:var(--muted); font-size:14px;">Need Help?</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Tap the Chatbot icon on the bottom right.</div>
       </div>
     </section>
   `;
 }
+
 function ProfileEditView(isSetup=false){
-  setTopbar("Account", true); setActiveTab("");
+  setTopbar(isSetup ? "Setup Profile" : "Edit Profile", true); setActiveTab("");
   $("#view").innerHTML = `
     <section style="padding:14px">
       <div class="profile-head">
-        <div class="avatar"><img id="avatar-img" src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=deewali'}" alt="avatar"></div>
-        <label class="chip" style="cursor:pointer">Change Photo <input type="file" id="avatar-file" accept="image/*" style="display:none"></label>
+        <div class="avatar"><img id="avatar-img" src="${PROFILE.avatar || 'https://i.pravatar.cc/200?u=insta'}" alt="avatar"></div>
+        <label class="chip" style="cursor:pointer; margin-top:8px;">Change Photo <input type="file" id="avatar-file" accept="image/*" style="display:none"></label>
       </div>
       <div class="card pad">
-        <h3 style="margin:0 0 12px;font-family:Poppins">Profile Information</h3>
-        <label>Name</label><input id="pfv-name" value="${escapeHtml(PROFILE.name||'')}">
-        <label>Email</label><input id="pfv-email" type="email" value="${escapeHtml(PROFILE.email||'')}">
+        <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Personal Details</h3>
+        <label>Full Name</label><input id="pfv-name" value="${escapeHtml(PROFILE.name||'')}">
         <label>Phone Number</label><input id="pfv-phone" type="tel" value="${escapeHtml(PROFILE.phone||'')}">
-        <div class="row" style="gap:10px;margin-top:10px">
+        <label>Email (Optional)</label><input id="pfv-email" type="email" value="${escapeHtml(PROFILE.email||'')}">
+        
+        <h3 style="margin:24px 0 16px;font-family:Poppins; color:var(--primary);">Delivery Address</h3>
+        <div class="row" style="gap:10px;">
           <div style="flex:1"><label>Pin Code</label><input id="pfv-pincode" value="${escapeHtml(PROFILE.pincode||'')}"></div>
           <div style="flex:1"><label>City</label><input id="pfv-city" value="${escapeHtml(PROFILE.city||'')}"></div>
         </div>
         <div class="row" style="gap:10px;margin-top:10px">
           <div style="flex:1"><label>State</label><input id="pfv-state" value="${escapeHtml(PROFILE.state||'')}"></div>
-          <div style="flex:1"><label>District</label><input id="pfv-district" value="${escapeHtml(PROFILE.district||'')}"></div>
+          <div style="flex:1"><label>Landmark</label><input id="pfv-landmark" value="${escapeHtml(PROFILE.landmark||'')}"></div>
         </div>
-        <label style="margin-top:10px">Landmark</label><input id="pfv-landmark" value="${escapeHtml(PROFILE.landmark||'')}">
-        <label style="margin-top:10px">Address</label><input id="pfv-address" value="${escapeHtml(PROFILE.address||'')}">
-        <div style="margin-top:14px"><button class="btn btn-block" id="pfv-save">${isSetup?'Save & Continue':'Save Changes'}</button></div>
+        <label style="margin-top:10px">Complete Address</label>
+        <textarea id="pfv-address">${escapeHtml(PROFILE.address||'')}</textarea>
+        <div style="margin-top:20px"><button class="btn btn-block" id="pfv-save" style="padding:16px;">${isSetup?'Save & Continue to Checkout':'Save Changes'}</button></div>
       </div>
     </section>
   `;
@@ -1169,44 +1173,46 @@ function ProfileEditView(isSetup=false){
     PROFILE.pincode = $("#pfv-pincode").value.trim();
     PROFILE.city = $("#pfv-city").value.trim();
     PROFILE.state = $("#pfv-state").value.trim();
-    PROFILE.district = $("#pfv-district").value.trim();
     PROFILE.landmark = $("#pfv-landmark").value.trim();
     PROFILE.address = $("#pfv-address").value.trim();
     PROFILE.isComplete = hasCompleteProfile();
     saveProfile();
-    const next = readLocal("deewali_next", null);
-    localStorage.removeItem("deewali_next");
-    toast("Profile saved");
+    const next = readLocal("instachulha_next", null);
+    localStorage.removeItem("instachulha_next");
+    toast("Profile saved successfully");
     if (isSetup && next){ routeTo(next); } else { routeTo("#/account"); }
   });
 }
+
 function FavoritesView() {
-  setTopbar("My Favorites", true);
+  setTopbar("Saved Stoves", true);
   setActiveTab("");
   const favoriteProducts = PRODUCTS.filter(p => PROFILE.favorites.includes(p.id));
   $("#view").innerHTML = `
     <section style="padding:14px">
-      ${favoriteProducts.length === 0 ? `<div class="card pad" style="text-align:center;padding:26px"><div class="muted">You have no favorites yet.</div><div style="margin-top:10px"><a class="btn btn-outline" href="#/shop">Browse Decorations</a></div></div>` : `
+      ${favoriteProducts.length === 0 ? `<div class="card pad" style="text-align:center;padding:40px 20px;"><i class="fa-regular fa-heart" style="font-size:40px; color:var(--line); margin-bottom:16px;"></i><div class="muted">No saved items yet.</div><div style="margin-top:16px"><a class="btn btn-outline" href="#/shop">Browse Stoves</a></div></div>` : `
       <div class="grid" id="favorites-grid">${favoriteProducts.map(p => ProductCard(p)).join("")}</div>`}
     </section>
   `;
   attachProductCardHandlers($("#favorites-grid"));
 }
+
 function OrdersListView(){
-  setTopbar("Order History", true); setActiveTab("");
+  setTopbar("My Orders", true); setActiveTab("");
   const rows = [...ORDERS].sort((a,b)=> b.createdAt - a.createdAt);
   $("#view").innerHTML = `
     <section style="padding:14px">
-      ${rows.length===0 ? `<div class="card pad">No orders yet.</div>` : rows.map(o => `
-        <a class="card pad" style="display:block;margin-bottom:12px" href="#/account/orders/${o.orderId}">
-          <div class="row"><strong>#${escapeHtml(o.orderId)}</strong><span class="muted">${new Date(o.createdAt).toLocaleString()}</span></div>
-          <div class="row" style="margin-top:6px"><div class="muted">${escapeHtml(o.items.map(i=>i.name + " x" + i.qty).join(", "))}</div><div><strong>${money(o.amount)}</strong></div></div>
-          <div class="chip" style="margin-top:8px">${escapeHtml(o.status)}</div>
+      ${rows.length===0 ? `<div class="card pad" style="text-align:center; padding:30px;"><div class="muted">No orders placed yet.</div></div>` : rows.map(o => `
+        <a class="card pad" style="display:block;margin-bottom:16px; border-left: 4px solid var(--primary);" href="#/account/orders/${o.orderId}">
+          <div class="row"><strong style="color:var(--primary);">#${escapeHtml(o.orderId)}</strong><span class="muted" style="font-size:12px;">${new Date(o.createdAt).toLocaleDateString()}</span></div>
+          <div class="row" style="margin-top:10px;"><div class="muted" style="font-size:14px;">${escapeHtml(o.items.map(i=>i.name).join(", "))}</div><div style="font-weight:700;">${money(o.amount)}</div></div>
+          <div class="chip" style="margin-top:12px; font-size:12px; background:#EFF6FF; border:none; color:var(--primary);">${escapeHtml(o.status)}</div>
         </a>
       `).join("")}
     </section>
   `;
 }
+
 function OrderDetailView(orderId){
   const o = ORDERS.find(x=>x.orderId===orderId);
   if(!o){ OrdersListView(); return; }
@@ -1214,15 +1220,19 @@ function OrderDetailView(orderId){
   $("#view").innerHTML = `
     <section style="padding:14px">
       <div class="card pad">
-        <div class="row"><div><strong>Order</strong> #${escapeHtml(o.orderId)}</div><div class="muted">${new Date(o.createdAt).toLocaleString()}</div></div>
-        <div class="sep"></div>
-        ${o.items.map(it=>`<div class="row"><div>${escapeHtml(it.name)} <span class="muted">x${it.qty}</span></div><div>${money(it.price*it.qty)}</div></div>`).join("")}
-        <div class="sep"></div>
-        <div class="row"><strong>Total</strong><strong>${money(o.amount)}</strong></div>
-        <div class="chip" style="margin-top:8px">Payment: Cash on Delivery</div>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn btn-outline" href="#/account/orders">Back to Orders</a>
-        </div>
+        <div class="row"><div style="font-weight:700; color:var(--primary);">Order #${escapeHtml(o.orderId)}</div><div class="muted" style="font-size:13px;">${new Date(o.createdAt).toLocaleString()}</div></div>
+        <div class="chip" style="margin-top:12px; font-size:13px; background:#EFF6FF; border:none; color:var(--primary);"><i class="fa-solid fa-circle-info"></i> ${escapeHtml(o.status)}</div>
+        <div class="sep" style="margin:16px 0;"></div>
+        <h4 style="margin:0 0 10px; font-family:Poppins;">Items</h4>
+        ${o.items.map(it=>`<div class="row" style="margin-bottom:8px;"><div>${escapeHtml(it.name)} <span class="muted" style="font-size:13px;">x${it.qty}</span></div><div style="font-weight:600;">${money(it.price*it.qty)}</div></div>`).join("")}
+        <div class="sep" style="margin:16px 0;"></div>
+        <div class="row" style="font-size:16px;"><strong>Total Amount</strong><strong style="color:var(--primary);">${money(o.amount)}</strong></div>
+        <div class="muted" style="font-size:13px; margin-top:6px;">Payment Method: Cash on Delivery</div>
+        ${o.trackingUrl ? `
+          <div class="card pad" style="margin-top:16px; background:#F8FAFC; text-align:center;">
+             <a href="${escapeHtml(o.trackingUrl)}" target="_blank" class="btn" style="padding:12px;"><i class="fa-solid fa-truck-fast"></i> Track Shipment</a>
+          </div>
+        ` : ''}
       </div>
     </section>
   `;
@@ -1247,7 +1257,7 @@ function removeFromCart(productId){
 
 /* ===== COD Finalization ===== */
 function finalizeCOD() {
-  const pend = readLocal("deewali_pending_cod", null);
+  const pend = readLocal("instachulha_pending_cod", null);
   if(!pend){
     alert("No pending order.");
     return;
@@ -1257,28 +1267,35 @@ function finalizeCOD() {
     ...pend,
     firebaseKey: orderKey,
     createdAt: Date.now(),
-    status: "COD - Placed",
+    status: "Order Confirmed",
     trackingUrl: ""
   };
+  
+  const btn = $("#confirm-cod");
+  btn.textContent = "Processing...";
+  btn.disabled = true;
+
   db.ref('orders/' + orderKey).set(orderData)
     .then(() => {
-      console.log("Order saved to Firebase:", orderData.orderId);
-      writeLocal("deewali_last_order", orderData);
-      localStorage.removeItem("deewali_pending_cod");
+      writeLocal("instachulha_last_order", orderData);
+      localStorage.removeItem("instachulha_pending_cod");
       CART = [];
       saveCart();
       routeTo("#/cod/success");
     })
     .catch(err => {
       console.error("Firebase save failed:", err);
-      alert("Failed to place order. Please try again.");
+      alert("Failed to place order. Please check connection and try again.");
+      btn.textContent = "Confirm Your Order";
+      btn.disabled = false;
     });
 }
+
 function popConfetti(){
   const c = $("#confetti"); if(!c) return;
   c.innerHTML = "";
-  const colors = ["#ff9900","#ff6600","#ff8c00","#ffb366","#ffa500"];
-  for(let i=0;i<24;i++){
+  const colors = ["#005AD0","#FF6600","#10B981","#F59E0B","#3B82F6"];
+  for(let i=0;i<30;i++){
     const s = document.createElement("span");
     s.style.left = (4 + Math.random()*92) + "%";
     s.style.background = colors[Math.floor(Math.random()*colors.length)];
@@ -1286,14 +1303,16 @@ function popConfetti(){
     c.appendChild(s);
   }
 }
+
 function playSuccessSound(){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
     const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "triangle";
-    o.frequency.setValueAtTime(660, ctx.currentTime);
+    o.type = "sine";
+    o.frequency.setValueAtTime(880, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime+0.1);
     g.gain.setValueAtTime(0.001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+0.1);
     g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
     o.connect(g).connect(ctx.destination);
     o.start(); o.stop(ctx.currentTime+0.42);
@@ -1302,7 +1321,7 @@ function playSuccessSound(){
 }
 
 /* ===== Admin Routing & Login ===== */
-let IS_ADMIN_AUTHED = sessionStorage.getItem("deewali_admin_authed") === "1";
+let IS_ADMIN_AUTHED = sessionStorage.getItem("instachulha_admin_authed") === "1";
 function isAdminRoute(){ return location.hash.replace(/^#/, "").startsWith("/admin"); }
 function adminGo(title, showBack=true){ $("#admin-title").textContent = title; $("#admin-back").style.display = showBack ? "inline-grid" : "none"; }
 function showAdmin(id){
@@ -1319,9 +1338,9 @@ function setAdminView(){
   const sub = parts[1] || "dashboard";
   if (sub==="dashboard"){ showAdmin("admin-dashboard"); adminGo("Admin Dashboard", false); }
   else if (sub==="banners"){ showAdmin("admin-banners"); adminGo("Manage Banners & Hero"); renderAdminBanners(); }
-  else if (sub==="add"){ showAdmin("admin-add"); adminGo("Add New Product"); }
-  else if (sub==="manage"){ showAdmin("admin-manage"); adminGo("Manage Products (Table)"); renderManageTable(); }
-  else if (sub==="manage-cards"){ showAdmin("admin-manage-cards"); adminGo("Manage Products (Cards)"); renderManageCards(); }
+  else if (sub==="add"){ showAdmin("admin-add"); adminGo("Add New Stove"); }
+  else if (sub==="manage"){ showAdmin("admin-manage"); adminGo("Manage Inventory (Table)"); renderManageTable(); }
+  else if (sub==="manage-cards"){ showAdmin("admin-manage-cards"); adminGo("Manage Inventory (Cards)"); renderManageCards(); }
   else if (sub==="orders"){ showAdmin("admin-orders"); adminGo("Manage Orders"); renderOrdersAdmin(); }
   else if (sub==="customers"){ showAdmin("admin-customers"); adminGo("Customers"); renderCustomersAdmin(); }
   else { showAdmin("admin-dashboard"); adminGo("Admin Dashboard", false); }
@@ -1332,15 +1351,16 @@ $("#admin-login-form")?.addEventListener("submit", (e)=>{
   const pw = $("#adm-pw").value.trim();
   if (id.toLowerCase()===ADMIN_ID.toLowerCase() && pw===ADMIN_PW){
     IS_ADMIN_AUTHED = true;
-    sessionStorage.setItem("deewali_admin_authed","1");
+    sessionStorage.setItem("instachulha_admin_authed","1");
     routeTo("#/admin/dashboard");
   } else { alert("Invalid credentials."); }
 });
 $("#admin-logout")?.addEventListener("click", ()=>{
   IS_ADMIN_AUTHED = false;
-  sessionStorage.removeItem("deewali_admin_authed");
+  sessionStorage.removeItem("instachulha_admin_authed");
   routeTo("#/admin");
 });
+
 /* Admin: Banners & Hero */
 function renderAdminBanners() {
   $("#banner-text").value = BANNER_TEXT;
@@ -1369,7 +1389,7 @@ $("#hero-form")?.addEventListener("submit", async (e) => {
 });
 
 /* ===== Admin: Uploads and Save ===== */
-let pendingUploads = []; // Data URLs
+let pendingUploads = []; 
 $("#pf-upload")?.addEventListener("change", async (e)=>{
   const files = Array.from(e.target.files||[]);
   if (!files.length) return;
@@ -1425,20 +1445,17 @@ $("#pf-save")?.addEventListener("click", ()=>{
     productKey = PRODUCTS.find(p => p.id === id)?.firebaseKey;
     if (productKey) {
       db.ref('products/' + productKey).update(productData)
-        .then(() => alert("Product updated."))
-        .catch(err => alert("Failed to update product: " + err.message));
+        .then(() => alert("Stove updated."))
+        .catch(err => alert("Failed to update: " + err.message));
     }
   } else {
     productKey = db.ref('products').push().key;
     db.ref('products/' + productKey).set({ ...productData, id: uid(), firebaseKey: productKey })
-      .then(() => alert("New product saved."))
-      .catch(err => alert("Failed to save product: " + err.message));
+      .then(() => alert("New stove added to inventory."))
+      .catch(err => alert("Failed to save: " + err.message));
   }
 
-  $("#pf-id").value=""; $("#pf-name").value=""; $("#pf-desc").value="";
-  $("#pf-category").value="";
-  $("#pf-price").value=""; $("#pf-mrp").value=""; $("#pf-disc").value="";
-  $("#pf-upload").value=""; pendingUploads=[]; renderThumbs();
+  $("#pf-reset").click();
 });
 
 /* Admin: Manage (table) */
@@ -1447,13 +1464,13 @@ function renderManageTable(){
   tbody.innerHTML = PRODUCTS.map(p=>`
     <tr>
       <td><img src="${(p.imageUrls[0]||"")}" style="width:46px;height:46px;object-fit:cover;border-radius:8px;border:1px solid var(--line)"></td>
-      <td>${escapeHtml(p.name)}</td>
-      <td>${p.priceMrp? money(p.priceMrp):"—"}</td>
-      <td>${p.discountPercent? p.discountPercent+"%":"—"}</td>
-      <td>${money(p.price||0)}</td>
+      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+      <td class="muted">${p.priceMrp? money(p.priceMrp):"—"}</td>
+      <td style="color:var(--success); font-weight:600;">${p.discountPercent? p.discountPercent+"%":"—"}</td>
+      <td style="font-weight:700;">${money(p.price||0)}</td>
       <td>
-        <button class="btn btn-outline" data-edit="${p.id}"><i class="fa-solid fa-pen"></i>&nbsp;Edit</button>
-        <button class="btn btn-outline" style="color:#E11D48;border-color:#E11D48" data-del="${p.id}"><i class="fa-solid fa-trash"></i>&nbsp;Delete</button>
+        <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" data-edit="${p.id}"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; color:#EF4444; border-color:#EF4444;" data-del="${p.id}"><i class="fa-solid fa-trash"></i></button>
       </td>
     </tr>
   `).join("");
@@ -1469,14 +1486,13 @@ function renderManageCards(){
       <img src="${(p.imageUrls[0]||"")}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">
       <div style="flex:1">
         <div style="font-weight:700">${escapeHtml(p.name)}</div>
-        <div class="price-line">
-          <div>${money(p.price||0)}</div>
+        <div class="price-line" style="margin-top:4px;">
+          <div style="font-weight:700; color:var(--primary);">${money(p.price||0)}</div>
           ${p.priceMrp? `<div class="strike">${money(p.priceMrp)}</div>`:""}
-          ${p.discountPercent? `<span class="badge-off">${p.discountPercent}% OFF</span>`:""}
         </div>
       </div>
-      <button class="icon-round" title="Edit" data-edit="${p.id}" style="width:36px;height:36px"><i class="fa-solid fa-pen" style="color:#2563eb"></i></button>
-      <button class="icon-round" title="Delete" data-del="${p.id}" style="width:36px;height:36px"><i class="fa-solid fa-trash" style="color:#ef4444"></i></button>
+      <button class="icon-round" title="Edit" data-edit="${p.id}"><i class="fa-solid fa-pen" style="color:var(--primary)"></i></button>
+      <button class="icon-round" title="Delete" data-del="${p.id}"><i class="fa-solid fa-trash" style="color:#ef4444"></i></button>
     </div>
   `).join("");
   list.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=> loadToAddForm(b.dataset.edit, "#/admin/manage-cards"));
@@ -1490,19 +1506,16 @@ function loadToAddForm(id, backTo){
     $("#pf-category").value = p.category||"";
     $("#pf-mrp").value = p.priceMrp||""; $("#pf-disc").value = p.discountPercent||""; $("#pf-price").value = p.price||"";
     pendingUploads = p.imageUrls.slice(); renderThumbs(); window.scrollTo({ top: 0, behavior: "smooth" });
-    if (backTo) sessionStorage.setItem("deewali_admin_back", backTo);
+    if (backTo) sessionStorage.setItem("instachulha_admin_back", backTo);
   }, 0);
 }
 function delProduct(id){
   const p = PRODUCTS.find(x => x.id === id);
-  if (!p || !p.firebaseKey) {
-    alert("Product not found or has no Firebase key.");
-    return;
-  }
-  if (confirm("Delete this product?")) {
+  if (!p || !p.firebaseKey) return;
+  if (confirm("Delete this stove from inventory?")) {
     db.ref('products/' + p.firebaseKey).remove()
       .then(() => toast("Product deleted."))
-      .catch(err => alert("Failed to delete product: " + err.message));
+      .catch(err => alert("Failed to delete: " + err.message));
   }
 }
 
@@ -1512,20 +1525,20 @@ function renderOrdersAdmin() {
   const rows = [...ORDERS].sort((a,b)=> b.createdAt - a.createdAt);
   el.innerHTML = rows.length===0 ? `<div class="muted">No orders yet.</div>` : `
     <table class="table">
-      <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th>Tracking</th><th style="width:120px">Save</th></tr></thead>
+      <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th>Tracking</th><th style="width:100px">Action</th></tr></thead>
       <tbody>
         ${rows.map(o=>`
           <tr data-key="${o.firebaseKey}">
-            <td>#${escapeHtml(o.orderId)}</td>
-            <td>${new Date(o.createdAt).toLocaleString()}</td>
-            <td>${money(o.amount)}</td>
+            <td style="font-weight:600; color:var(--primary);">#${escapeHtml(o.orderId)}</td>
+            <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString()}</td>
+            <td style="font-weight:700;">${money(o.amount)}</td>
             <td>
-              <select class="adm-status">
-                ${["COD - Placed","Processing","Shipped","Out for Delivery","Delivered (COD)","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
+              <select class="adm-status" style="padding:6px; border-radius:8px;">
+                ${["COD - Pending","Order Confirmed","Dispatched","Out for Delivery","Delivered","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
               </select>
             </td>
-            <td><input class="adm-track" value="${escapeHtml(o.trackingUrl||"")}" placeholder="https://..."></td>
-            <td><button class="btn btn-outline adm-save">Save</button></td>
+            <td><input class="adm-track" value="${escapeHtml(o.trackingUrl||"")}" placeholder="URL..." style="padding:6px; border-radius:8px;"></td>
+            <td><button class="btn btn-outline adm-save" style="padding:6px 12px; font-size:12px;">Save</button></td>
           </tr>
         `).join("")}
       </tbody>
@@ -1538,9 +1551,10 @@ function renderOrdersAdmin() {
       const newStatus = row.querySelector(".adm-status").value;
       const newTracking = row.querySelector(".adm-track").value.trim();
       const updates = { status: newStatus, trackingUrl: newTracking };
+      btn.textContent = "...";
       db.ref('orders/' + key).update(updates)
-        .then(() => toast("Order updated."))
-        .catch(err => alert("Failed to update order: " + err.message));
+        .then(() => { toast("Status updated."); btn.textContent = "Save"; })
+        .catch(err => { alert("Failed to update"); btn.textContent = "Save"; });
     });
   });
 }
@@ -1549,7 +1563,7 @@ function renderOrdersAdmin() {
 function rebuildCustomers() {
   const map = {};
   for (const o of ORDERS){
-    const key = (o.customer?.email || o.customer?.phone || o.customer?.name || "").toLowerCase();
+    const key = (o.customer?.phone || o.customer?.email || o.customer?.name || "").toLowerCase();
     if(!key) continue;
     if(!map[key]){
       map[key] = {
@@ -1574,16 +1588,15 @@ function renderCustomersAdmin() {
   const el = $("#customers-admin");
   el.innerHTML = CUSTOMERS.length===0 ? `<div class="muted">No customers yet.</div>` : `
     <table class="table">
-      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total</th><th>Last</th></tr></thead>
+      <thead><tr><th>Name</th><th>Phone</th><th>City/Pin</th><th>Orders</th><th>Total Spend</th></tr></thead>
       <tbody>
         ${CUSTOMERS.map(c=>`
           <tr>
-            <td>${escapeHtml(c.name)}</td>
-            <td>${escapeHtml(c.email)}</td>
+            <td style="font-weight:600;">${escapeHtml(c.name)}</td>
             <td>${escapeHtml(c.phone)}</td>
-            <td>${c.orders}</td>
-            <td>${money(c.total)}</td>
-            <td>${c.last? new Date(c.last).toLocaleString():"—"}</td>
+            <td style="font-size:12px;">${escapeHtml(c.pincode)}</td>
+            <td style="text-align:center;"><span class="chip-sm">${c.orders}</span></td>
+            <td style="font-weight:700; color:var(--primary);">${money(c.total)}</td>
           </tr>
         `).join("")}
       </tbody>
@@ -1591,24 +1604,22 @@ function renderCustomersAdmin() {
   `;
 }
 
-/* ===== AI Chatbot Logic (FIXED) ===== */
+/* ===== InstaChulha AI Chatbot Logic ===== */
 const chatbotToggle = $("#chatbot-toggle");
 const chatbotPopup = $("#chatbot-popup");
 const chatbotClose = $("#chatbot-close");
 const chatbotBody = $("#chatbot-body");
 const chatbotQuestions = $("#chatbot-questions");
 
+// NEW FAQ for Induction/Gas Crisis
 const FAQ_DATA = [
-  {q: "How can I place an order?", a: "You can place an order by browsing our decorative items, adding your favorites to the cart, and proceeding to checkout."},
-  {q: "What are your payment options?", a: "We currently accept only Cash on Delivery (COD). Please have the exact amount ready."},
-  {q: "How long will my order take to arrive?", a: "Delivery times vary based on your location and current demand. We'll provide an estimated delivery time once you place your order."},
-  {q: "Do you have a minimum order value?", a: "Yes, there is a minimum order value of ₹500 for delivery."},
-  {q: "Can I schedule a delivery for a later time?", a: "At this time, we only offer immediate delivery services."},
-  {q: "Where can I see my past orders?", a: "You can view your complete order history in the \"My Account\" section of the app."},
-  {q: "How can I update my delivery address?", a: "You can edit your profile and saved addresses in the \"My Account\" section."},
-  {q: "Are there any special offers or discounts?", a: "All our current offers and discounts will be displayed on the home screen banner and the product pages. Keep an eye out for special deals!"},
-  {q: "Do you offer custom decorative items?", a: "We offer a wide range of standard and customizable decorative options. Please check the product descriptions for details."},
-  {q: "How can I contact customer support?", a: "For any other questions, please reach out to us by email at `support@deewalidecore.com`."},
+  {q: "Is this a good alternative to LPG Gas?", a: "Yes! With the current gas supply issues and 25-day lock-in periods, our electric cooktops are the safest, fastest, and most reliable alternative for daily cooking."},
+  {q: "How fast is the delivery right now?", a: "Due to the emergency demand, we are prioritizing local deliveries. You can expect your order within 2 to 4 days."},
+  {q: "Will this increase my electricity bill a lot?", a: "Not at all. Our smart induction stoves are highly energy-efficient. Cooking on induction actually costs less per meal compared to the current inflated prices of LPG cylinders."},
+  {q: "Do you offer Cash on Delivery (COD)?", a: "Yes, we 100% support Cash on Delivery to build trust. You can order now and pay when the product reaches your door."},
+  {q: "Which utensils work on these stoves?", a: "Induction cooktops require flat-bottom steel or iron utensils. If you choose an 'Infrared Stove' from our shop, it works with all types of utensils (including aluminum and clay)."},
+  {q: "How can I track my order?", a: "Once you place an order, you can go to the 'Profile' section and click on 'My Orders' to see the live status and tracking link of your shipment."},
+  {q: "Is there any warranty on the products?", a: "Yes, all our branded electric stoves come with a standard 1-year manufacturer warranty. Please keep your invoice safe."},
 ];
 
 function renderChatbotQuestions() {
@@ -1616,7 +1627,6 @@ function renderChatbotQuestions() {
     <button class="question-chip" data-question-index="${index}">${escapeHtml(faq.q)}</button>
   `).join('');
   
-  // Attach event listener to each newly rendered question chip
   $$('#chatbot-questions .question-chip').forEach(btn => {
     btn.addEventListener('click', handleQuestionClick);
   });
@@ -1629,59 +1639,39 @@ function handleQuestionClick(e) {
     const question = FAQ_DATA[index].q;
     const answer = FAQ_DATA[index].a;
     
-    // 1. Add user message
     addMessage(question, true);
-    
-    // 2. Clear questions immediately (to simulate chat flow)
     chatbotQuestions.innerHTML = ''; 
-    
-    // 3. Add a placeholder for bot typing (optional, for better UX)
-    addMessage('Deewali Decore AI is typing...', false, 'typing-placeholder');
+    addMessage('InstaChulha AI is typing...', false, 'typing-placeholder');
 
-    // 4. Add bot answer after a short delay
     setTimeout(() => {
       const typingPlaceholder = $('.typing-placeholder');
-      if (typingPlaceholder) {
-        typingPlaceholder.remove(); // Remove placeholder
-      }
+      if (typingPlaceholder) typingPlaceholder.remove(); 
       addMessage(answer);
       
-      // 5. Offer to ask another question
       setTimeout(() => {
-        addMessage("Do you have any other questions? Please open the chatbot again to see the list.", false);
-        // Add a back-to-questions button if desired:
-        // chatbotBody.innerHTML += '<button class="btn btn-outline" style="margin-top:10px" onclick="renderChatbotQuestions()">Ask Another Question</button>';
+        addMessage("Do you have any other questions? Close and reopen the chat to see the menu.", false);
       }, 500);
-      
-    }, 1000); // 1 second delay
+    }, 800);
   }
 }
 
 function addMessage(text, isUser = false, className = '') {
   const msgDiv = document.createElement('div');
   msgDiv.classList.add('chatbot-msg-container');
-  if (isUser) {
-    msgDiv.classList.add('user-msg');
-  } else {
-    msgDiv.classList.add('bot-msg');
-  }
+  if (isUser) msgDiv.classList.add('user-msg');
+  else msgDiv.classList.add('bot-msg');
   
   const msgContent = document.createElement('div');
   msgContent.classList.add('chatbot-msg');
-  if (!isUser) {
-    msgContent.classList.add('bot');
-  }
+  if (!isUser) msgContent.classList.add('bot');
+  if (className) msgContent.classList.add(className);
   
-  if (className) {
-    msgContent.classList.add(className);
-  }
-  
-  msgContent.textContent = text;
+  // Basic markdown for bolding
+  let formattedText = escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  msgContent.innerHTML = formattedText;
   
   msgDiv.appendChild(msgContent);
   chatbotBody.appendChild(msgDiv);
-  
-  // Scroll to bottom
   chatbotBody.scrollTop = chatbotBody.scrollHeight;
 }
 
@@ -1689,14 +1679,8 @@ chatbotToggle.addEventListener('click', () => {
   chatbotPopup.classList.toggle('visible');
   if (chatbotPopup.classList.contains('visible')) {
     chatbotBody.innerHTML = '';
-    
-    // Initial bot message
-    addMessage("Hello! I'm Deewali Decore AI. Please select a question to begin:");
-    
-    // Render the initial questions
+    addMessage("Hello! Welcome to **InstaChulha**. Are you worried about the gas crisis? Select a question below to see how we can help:");
     renderChatbotQuestions();
-    
-    // Scroll to bottom to ensure questions are visible
     chatbotBody.scrollTop = chatbotBody.scrollHeight;
   }
 });
@@ -1704,7 +1688,6 @@ chatbotToggle.addEventListener('click', () => {
 chatbotClose.addEventListener('click', () => {
   chatbotPopup.classList.remove('visible');
 });
-
 
 /* ===== Render ===== */
 function render(){
@@ -1721,7 +1704,6 @@ function render(){
   $("#admin-app").style.display = "none";
   $("#store-app").style.display = "block";
 
-  // Display loader until essential data is fetched
   if (!dataFetched.products || !dataFetched.orders || !dataFetched.ratings || !dataFetched.config) {
     showLoader();
     return;
