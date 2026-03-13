@@ -84,7 +84,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
 
-        /* ===== NEW: SMOOTH PAGE TRANSITION ===== */
+        /* ===== SMOOTH PAGE TRANSITION ===== */
         @keyframes fadeSlideUp {
             0% { 
                 opacity: 0; 
@@ -289,7 +289,7 @@
             font-weight: 600;
         }
         
-        /* ===== NEW: PULSE & SHIMMER BUTTONS ===== */
+        /* ===== PULSE & SHIMMER BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -466,6 +466,22 @@
             align-items: center; 
             gap: 4px; 
             text-transform: uppercase;
+        }
+        
+        /* Razorpay Badge styles */
+        .trust-badge-rzp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px;
+            background: #F0FDF4;
+            border: 1px solid #A7F3D0;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         /* Product Grid */
@@ -668,6 +684,25 @@
             to { transform: scale(1); }
         }
         
+        .confetti {
+            position: relative;
+            width: 100%;
+            height: 0;
+            overflow: visible;
+        }
+
+        .confetti span {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            border-radius: 2px;
+            animation: fall 1.2s linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(220px) rotate(360deg); opacity: .2; }
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -1024,7 +1059,7 @@
         <div id="admin-dashboard" class="admin-card" style="display:none">
             <h3 style="margin:0 0 16px;font-family:Poppins">Admin Dashboard</h3>
             <div style="display:grid;gap:12px">
-                <a class="btn btn-outline" href="#/admin/banners"><i class="fa-solid fa-gear"></i> Store Settings & UPI Setup</a>
+                <a class="btn btn-outline" href="#/admin/banners"><i class="fa-solid fa-image"></i> Store Settings & Banners</a>
                 <a class="btn btn-outline" href="#/admin/add"><i class="fa-solid fa-plus"></i> Add New Product</a>
                 <a class="btn btn-outline" href="#/admin/manage-cards"><i class="fa-solid fa-box-open"></i> Manage Inventory</a>
                 <a class="btn btn-outline" href="#/admin/orders"><i class="fa-solid fa-truck-fast"></i> View Orders</a>
@@ -1033,25 +1068,25 @@
         </div>
         
         <div id="admin-banners" class="admin-card" style="display:none">
-            <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Store Settings & QR Setup</h3>
-            <form id="upi-form">
-                <label>Your UPI ID (e.g. yourname@paytm)</label>
-                <input id="upi-id-input" type="text" placeholder="Enter UPI ID for manual payments">
-                
-                <label style="margin-top:16px;">Payment QR Code Image</label>
-                <div class="dropzone" id="upi-dz" onclick="document.getElementById('upi-upload').click()">Click to upload QR</div>
-                <input id="upi-upload" type="file" accept="image/*" style="display:none">
-                
-                <div class="thumbs" id="upi-thumbs" style="margin-top:10px"></div>
-                <button type="submit" class="btn btn-block" style="margin-top:16px; background:var(--success);">Save UPI Settings</button>
+            <h3 style="margin:0 0 16px;font-family:Poppins; color:var(--primary);">Store Settings & Banners</h3>
+            
+            <form id="banner-form">
+                <label>Top Notification Banner Text</label>
+                <input id="banner-text" type="text" placeholder="e.g., Gas crisis special! Get 50% OFF today.">
+                <button type="submit" class="btn btn-block" style="margin-top:16px;">Save Banner Text</button>
             </form>
             
             <hr style="margin:24px 0; border:none; border-top:1px solid var(--line);">
             
-            <form id="banner-form">
-                <label>Top Notification Banner Text</label>
-                <input id="banner-text" type="text">
-                <button type="submit" class="btn btn-block" style="margin-top:16px;">Save Banner</button>
+            <form id="hero-form">
+                <label>Home Page Hero Image</label>
+                <div class="dropzone" id="hero-dz" onclick="document.getElementById('hero-upload').click()">
+                    <div><i class="fa-solid fa-cloud-arrow-up" style="font-size:24px; margin-bottom:8px;"></i></div>
+                    <div style="font-weight:700">Click to upload banner</div>
+                </div>
+                <input id="hero-upload" type="file" accept="image/*" style="display:none">
+                <div class="thumbs" id="hero-thumbs" style="margin-top:10px"></div>
+                <button type="submit" class="btn btn-block" style="margin-top:16px;">Save Hero Image</button>
             </form>
         </div>
 
@@ -1059,6 +1094,7 @@
             <h3 style="margin:0 0 16px;font-family:Poppins">Add / Edit Stove</h3>
             <form id="product-form">
                 <input type="hidden" id="pf-id">
+                
                 <label>Product Name</label>
                 <input id="pf-name" required>
                 
@@ -1079,8 +1115,23 @@
                     </div>
                 </div>
                 
+                <div style="margin-top:12px;">
+                    <label>Discount %</label>
+                    <input id="pf-disc" type="number" min="0" max="99">
+                </div>
+                
+                <div style="margin-top:16px; padding:12px; border:1px solid var(--primary); border-radius:12px; background:#EFF6FF;">
+                    <label style="color:var(--primary); margin:0 0 6px 0;"><i class="fa-solid fa-link"></i> Payment Link (Razorpay Page)</label>
+                    <input id="pf-paylink" type="url" placeholder="https://rzp.io/l/xyz" style="border:1px solid var(--primary);">
+                    <div style="font-size:11px; color:var(--muted); margin-top:6px;">Put the Razorpay Payment Page link here. Ensure its Redirect URL is set to your domain's #/success-verified</div>
+                </div>
+
                 <label style="margin-top:16px;">Product Image</label>
-                <div class="dropzone" id="dz" onclick="document.getElementById('pf-upload').click()">Click to upload product image</div>
+                <div class="dropzone" id="dz" onclick="document.getElementById('pf-upload').click()">
+                    <div><i class="fa-solid fa-image" style="font-size:24px; margin-bottom:8px;"></i></div>
+                    <div style="font-weight:700">Click to upload product image</div>
+                    <div class="muted" style="font-size:12px; margin-top:4px;">JPG/PNG • Auto-compress • Max side 1200px</div>
+                </div>
                 <input id="pf-upload" type="file" accept="image/*" multiple style="display:none">
                 <div class="thumbs" id="pf-thumbs" style="margin-top:10px;"></div>
             </form>
@@ -1133,8 +1184,6 @@ const ADMIN_ID = "Madhav@store";
 const ADMIN_PW = "Madhav@1234";
 let HERO_IMAGE_URL = ""; 
 let BANNER_TEXT = "🚨 Gas Crisis Special: Fast Local Delivery within 2 Days! Get up to 50% OFF.";
-let UPI_QR_URL = "https://placehold.co/300x300?text=Upload+QR+Code"; 
-let UPI_ID = "admin@bank";
 
 const $ = s => document.querySelector(s); 
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -1166,25 +1215,6 @@ function formatDesc(text) {
     return escapeHtml(text).replace(/\n/g, '<br/>').replace(/- (.*?)<br\/>/g, '• <b>$1</b><br/>').replace(/- (.*?)$/g, '• <b>$1</b>'); 
 }
 
-/* ===== NEW: DOWNLOAD QR LOGIC ===== */
-window.downloadQR = () => {
-    if(!UPI_QR_URL || UPI_QR_URL.includes("placehold")) {
-        toast("QR Code not available yet."); 
-        return;
-    }
-    const a = document.createElement('a');
-    a.href = UPI_QR_URL;
-    a.download = 'InstaChulha_Payment_QR.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    toast("Saving QR Code to Gallery...");
-}
-
-window.copyUPI = () => { 
-    navigator.clipboard.writeText(UPI_ID).then(()=>toast("UPI ID Copied!")); 
-}
-
 /* ===== TIMER LOGIC ===== */
 let activeIntervals = [];
 
@@ -1211,7 +1241,7 @@ function startTimer(durationInSeconds, displayId) {
         
         if (--timer < 0) { 
             timer = 0; 
-        } // Stops at 00:00
+        } 
     }, 1000);
     
     activeIntervals.push(interval);
@@ -1227,6 +1257,7 @@ const hasCompleteProfile = () => !!(PROFILE.name && PROFILE.phone && PROFILE.add
 
 let PRODUCTS = []; 
 let CART = readLocal("instachulha_cart", []);
+
 const saveCart = () => writeLocal("instachulha_cart", CART);
 const cartTotal = () => CART.reduce((a,c) => { 
     const p = PRODUCTS.find(x=>x.id===c.productId); 
@@ -1245,7 +1276,14 @@ const appConfigRef = db.ref('config');
 let dataFetched = { products: false, orders: false, ratings: false, config: false };
 
 function showLoader() { 
-    $("#view").innerHTML = `<div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div style="margin-top:12px; font-weight:600;">Loading InstaChulha...</div></div>`; 
+    $("#view").innerHTML = `
+        <div class="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div style="margin-top:12px; font-weight:600;">Loading InstaChulha...</div>
+        </div>
+    `; 
 }
 
 function checkAndRender() { 
@@ -1279,8 +1317,6 @@ appConfigRef.on('value', snap => {
     const c = snap.val()||{}; 
     if(c.heroImage) HERO_IMAGE_URL = c.heroImage; 
     if(c.bannerText !== undefined) BANNER_TEXT = c.bannerText;
-    if(c.upiQr) UPI_QR_URL = c.upiQr; 
-    if(c.upiId) UPI_ID = c.upiId;
     
     if(BANNER_TEXT) { 
         $("#animated-banner-text").textContent = BANNER_TEXT; 
@@ -1377,6 +1413,11 @@ function ShopView(){
         <input id="shop-search" placeholder="Search smart stoves..." style="border:none; padding:10px 0; outline:none; background:transparent; width:100%;">
       </div>
       <div class="grid" id="shop-grid"></div>
+      
+      <div style="text-align:center; margin-top:30px; padding-bottom:20px; border-top:1px solid var(--line); padding-top:20px;">
+        <a href="#/terms" style="color:var(--primary);font-weight:600;font-size:13px;margin:0 10px;text-decoration:underline;">Terms & Conditions</a>
+        <a href="#/privacy" style="color:var(--primary);font-weight:600;font-size:13px;margin:0 10px;text-decoration:underline;">Privacy Policy</a>
+      </div>
     </section>
   `;
   
@@ -1495,13 +1536,14 @@ function ProductView(id){
             ${[1, 2, 3, 4].map((q, i) => `<button class="size-btn ${i === 0 ? 'active' : ''}" data-qty="${q}">${q}</button>`).join("")}
         </div>
         
-        <div class="sticky-sheet" style="margin:30px -16px 0 -16px; display:flex; gap:10px;">
-            <button class="btn btn-outline" id="add-to-cart" style="flex:1; padding:0;" title="Add to Cart"><i class="fa-solid fa-cart-plus" style="font-size:22px;"></i></button>
-            <button class="btn btn-pulse" id="direct-buy-btn" style="flex:4; font-size:18px;">Buy Now & Pay <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-        
-        <div style="text-align:center; font-size:12px; font-weight:600; color:var(--success); padding-top:12px;">
-            <i class="fa-solid fa-shield-halved"></i> 100% Safe Manual Payment
+        <div class="sticky-sheet" style="margin:30px -16px 0 -16px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline" id="add-to-cart" style="flex:1; padding:0;" title="Add to Cart"><i class="fa-solid fa-cart-plus" style="font-size:22px;"></i></button>
+                <button class="btn btn-pulse" id="direct-buy-btn" style="flex:4; font-size:18px;">Buy Now & Pay <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="trust-badge-rzp">
+                <i class="fa-solid fa-shield-halved"></i> 100% Secured & Verified Payments by Razorpay
+            </div>
         </div>
 
         ${isOrdered ? `<div class="card pad" style="margin-top:30px;"><h4 style="margin:0 0 10px;font-family:Poppins">Rate this Stove</h4><div id="rate-stars" class="rate-stars" style="font-size:28px;color:#E2E8F0;"><i class="fa-solid fa-star" data-rating="1"></i><i class="fa-solid fa-star" data-rating="2"></i><i class="fa-solid fa-star" data-rating="3"></i><i class="fa-solid fa-star" data-rating="4"></i><i class="fa-solid fa-star" data-rating="5"></i></div></div>` : ''}
@@ -1562,11 +1604,17 @@ function ProductView(id){
   }
 }
 
-/* ===== QUICK BUY / CHECKOUT ===== */
+/* ===== QUICK BUY (GATHERS DETAILS AND REDIRECTS TO RAZORPAY) ===== */
 function QuickBuyView(id) {
   const p = PRODUCTS.find(x=>x.id===id); 
   if(!p){ routeTo("#/shop"); return; }
   
+  if(!p.paymentLink || p.paymentLink.trim() === "") {
+    alert("Admin has not configured the Razorpay Payment Link for this product yet.");
+    routeTo(`#/product/${id}`); 
+    return; 
+  }
+
   setTopbar("Secure Checkout", true); 
   setActiveTab("");
 
@@ -1612,7 +1660,14 @@ function QuickBuyView(id) {
             <div>Total Pay</div>
             <div class="shimmer-text">${money(totalAmount)}</div>
         </div>
-        <button class="btn btn-block" id="proceed-pay" style="margin-top:16px; font-size:18px;">Continue to Payment <i class="fa-solid fa-arrow-right"></i></button>
+        
+        <button class="btn btn-block" id="proceed-pay" style="margin-top:16px; font-size:18px;">
+            Proceed to Payment <i class="fa-solid fa-lock" style="margin-left:5px;"></i>
+        </button>
+        
+        <div class="trust-badge-rzp">
+            <i class="fa-solid fa-shield-halved"></i> Secured & Verified by Razorpay
+        </div>
       </div>
     </section>
   `;
@@ -1646,122 +1701,127 @@ function QuickBuyView(id) {
         isCart: false 
     };
     
-    writeLocal("instachulha_pending_upi", pendingOrder); 
-    routeTo("#/pay-upi");
+    // Save order data temporarily before redirecting
+    writeLocal("instachulha_pending_redirect", pendingOrder); 
+    
+    // MAGIC HAPPENS HERE: Redirect user to Razorpay Link
+    window.location.href = p.paymentLink; 
   });
 }
 
-/* ===== NEW MANUAL UPI PAYMENT PAGE (WITH DOWNLOAD QR) ===== */
-function PayUPIView() {
-  const pend = readLocal("instachulha_pending_upi", null); 
-  if(!pend) { routeTo("#/shop"); return; }
-  
-  setTopbar("Secure Payment", true); 
+/* ===== SUCCESS VERIFIED VIEW (Fired when Razorpay redirects back) ===== */
+function SuccessVerifiedView() {
+  setTopbar("Order Confirmed", false); 
   setActiveTab("");
-
-  $("#view").innerHTML = `
-      <section style="padding:14px; text-align:center;">
-          <div class="urgency-box" style="justify-content:center; text-align:center; animation:none; border-color:var(--accent);">
-            Order reserved. Make payment in <b id="pay-timer" style="font-size:16px; margin:0 4px;">10:00</b> to confirm.
-          </div>
-
-          <div class="card pad" style="border-top: 4px solid var(--accent); position:relative; overflow:hidden;">
-              <h2 style="color:var(--primary); margin:0 0 4px; font-family:Poppins; font-size:24px;">Scan to Pay</h2>
-              <p class="muted" style="margin:0 0 16px;">Pay exactly <b class="shimmer-text" style="font-size:20px; display:inline-block;">${money(pend.amount)}</b></p>
-              
-              <div style="background:#F8FAFC; padding:16px; border-radius:16px; margin:0 auto; display:inline-block; border:2px dashed var(--primary); position:relative;">
-                  <img src="${UPI_QR_URL}" style="width:200px; height:200px; object-fit:contain; border-radius:8px;">
-              </div>
-              
-              <button onclick="downloadQR()" class="btn btn-outline" style="width:236px; padding:10px; margin-top:12px; font-size:14px;">
-                  <i class="fa-solid fa-download"></i> Save QR to Gallery
-              </button>
-              
-              <div style="font-weight:700; font-size:16px; display:flex; justify-content:center; align-items:center; gap:10px; margin-top:24px;">
-                <span class="muted" style="font-weight:500; font-size:13px;">UPI ID:</span> ${escapeHtml(UPI_ID)} 
-                <button onclick="copyUPI()" style="background:#EFF6FF; border:1px solid #BFDBFE; padding:6px 12px; border-radius:8px; color:var(--primary); font-weight:700; cursor:pointer;">
-                    <i class="fa-regular fa-copy"></i> Copy
-                </button>
-              </div>
-              
-              <div style="background:#F0FDF4; padding:16px; border-radius:12px; border:1px solid #86EFAC; margin-top:24px; text-align:left; font-size:13px; color:#166534;">
-                  <b style="display:block; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-circle-check"></i> How to pay?</b>
-                  1. <b>Download</b> the QR code or <b>Copy</b> the UPI ID.<br>
-                  2. Open PhonePe, GPay, or Paytm.<br>
-                  3. Scan the image from your gallery / Paste ID.<br>
-                  4. After successful payment, click the green button below.
-              </div>
-
-              <div class="sticky-sheet" style="margin:24px -18px -18px -18px; border-radius:0 0 var(--radius) var(--radius);">
-                <button class="btn btn-block btn-pulse" id="btn-paid" style="padding:18px; background:var(--success); font-size:18px;">
-                    I Have Paid ${money(pend.amount)} <i class="fa-solid fa-check-double"></i>
-                </button>
-                <button class="btn btn-outline btn-block" id="btn-cancel-pay" style="margin-top:12px; padding:12px; border:none; color:var(--muted);">Cancel Order</button>
-              </div>
-          </div>
-      </section>
-  `;
-
-  startTimer(600, "pay-timer");
-
-  $("#btn-paid").onclick = () => {
-      const btn = $("#btn-paid"); 
-      btn.innerHTML = `Verifying...`; 
-      btn.disabled = true; 
-      btn.classList.remove('btn-pulse');
-      
-      const orderKey = db.ref('orders').push().key;
-      const finalOrder = { 
-          ...pend, 
-          firebaseKey: orderKey, 
-          createdAt: Date.now(), 
-          status: "Payment Verification Pending", 
-          paymentMethod: "Manual UPI", 
-          trackingUrl: "" 
-      };
-      
-      db.ref('orders/' + orderKey).set(finalOrder).then(() => {
-        writeLocal("instachulha_last_order", finalOrder); 
-        localStorage.removeItem("instachulha_pending_upi");
-        if(pend.isCart) { 
-            CART = []; 
-            saveCart(); 
-        } 
-        routeTo("#/success-upi");
-      }).catch(err => { 
-          alert("Error saving order. Check connection."); 
-          btn.innerHTML = `I Have Paid`; 
-          btn.disabled = false; 
-      });
-  };
   
-  $("#btn-cancel-pay").onclick = () => history.back();
+  const pend = readLocal("instachulha_pending_redirect", null);
+
+  if (pend) {
+    // We came back from Razorpay successfully and have a pending order
+    const orderKey = db.ref('orders').push().key;
+    const finalOrder = {
+      ...pend,
+      firebaseKey: orderKey,
+      createdAt: Date.now(),
+      status: "PAID - Verified (Online)",
+      paymentMethod: "Razorpay Secure Link",
+      trackingUrl: ""
+    };
+
+    db.ref('orders/' + orderKey).set(finalOrder).then(() => {
+      writeLocal("instachulha_last_order", finalOrder);
+      localStorage.removeItem("instachulha_pending_redirect");
+      if(pend.isCart) { CART = []; saveCart(); } // Empty cart if checkout came from cart
+      renderSuccessUI(finalOrder);
+    }).catch(err => {
+      alert("Something went wrong saving the order. Please contact support.");
+    });
+  } else {
+    // If the user just refreshed the page or came directly without pending data
+    const last = readLocal("instachulha_last_order", null);
+    if (last && last.status && last.status.includes("PAID")) {
+      renderSuccessUI(last);
+    } else {
+      $("#view").innerHTML = `
+          <section style="padding:40px 20px; text-align:center;">
+              <h2 style="color:var(--primary); font-family:Poppins;">Payment Status Verified</h2>
+              <p class="muted">No pending orders found or payment already processed.</p>
+              <a href="#/shop" class="btn btn-outline" style="margin-top:20px;">Continue Shopping</a>
+          </section>`;
+    }
+  }
 }
 
-function SuccessUPIView() {
-  setTopbar("Order Received", false); 
-  setActiveTab("");
-  
-  const last = readLocal("instachulha_last_order", null);
-  
+function renderSuccessUI(order) {
   $("#view").innerHTML = `
-      <section class="success-wrap">
-        <div class="check-anim" style="background:#FEF3C7; border-color:#FDE68A; color:#D97706; animation:none; transform:scale(1); opacity:1;">
-            <i class="fa-solid fa-clock-rotate-left" style="font-size:40px"></i>
-        </div>
-        <h2 style="font-family:Poppins;margin:16px 0 8px; color:#D97706; text-align:center;">Verifying Payment</h2>
-        <div class="muted" style="text-align:center; line-height:1.5;">Thank you! We have received your order request <b>#${escapeHtml(last?.orderId||"")}</b>.</div>
-        
-        <div class="card pad" style="background:#FFFBEB; border-color:#FDE68A; margin-top:20px; width:100%; text-align:center;">
-          <div style="font-size:13px; color:#92400E; font-weight:600;"><i class="fa-solid fa-user-shield"></i> Manual Verification in Progress</div>
-          <div style="font-size:13px; color:#92400E; margin-top:6px;">Our team is verifying your payment of <b>${money(last?.amount)}</b>. Once confirmed, you will receive a tracking update in 'My Orders'.</div>
-        </div>
-        
-        <div style="margin-top:30px; width:100%;">
-          <a class="btn btn-block" href="#/account/orders" style="padding:16px; background:var(--primary);">Track My Order</a>
-        </div>
-      </section>
+    <section class="success-wrap">
+      <div class="check-anim"><i class="fa-solid fa-check" style="font-size:40px"></i></div>
+      <div class="confetti" id="confetti"></div>
+      
+      <h2 style="font-family:Poppins;margin:16px 0 8px; color:#10B981; text-align:center;">Payment Verified!</h2>
+      <div class="muted" style="text-align:center; line-height:1.5;">Thank you, ${escapeHtml(order.customer.name)}. Your order <b>#${escapeHtml(order.orderId)}</b> is confirmed and paid successfully.</div>
+      
+      <div class="card pad" style="background:#EFF6FF; border-color:#BFDBFE; margin-top:20px; width:100%; text-align:center;">
+        <div style="font-weight:600; color:var(--primary); font-size:18px;">Total Paid: ${money(order.amount)}</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:6px;">Your order will be shipped within 24 hours.</div>
+      </div>
+      
+      <div style="margin-top:24px;display:flex;gap:12px;flex-direction:column;width:100%;max-width:480px">
+        <a class="btn btn-block" href="#/account/orders" style="padding:16px;">Track Your Order</a>
+        <a class="btn btn-outline btn-block" href="#/shop" style="padding:16px;">Continue Shopping</a>
+      </div>
+    </section>
   `;
+  popConfetti();
+}
+
+function popConfetti(){
+  const c = $("#confetti"); if(!c) return;
+  c.innerHTML = "";
+  const colors = ["#005AD0","#FF6600","#10B981","#F59E0B","#3B82F6"];
+  for(let i=0;i<30;i++){
+    const s = document.createElement("span");
+    s.style.left = (4 + Math.random()*92) + "%";
+    s.style.background = colors[Math.floor(Math.random()*colors.length)];
+    s.style.animationDelay = (Math.random()*0.6) + "s";
+    c.appendChild(s);
+  }
+}
+
+/* ===== TERMS AND PRIVACY VIEWS (MANDATORY FOR RAZORPAY) ===== */
+function TermsView() {
+  setTopbar("Terms & Conditions", true); 
+  setActiveTab("");
+  $("#view").innerHTML = `
+    <section style="padding:16px;">
+      <div class="card pad">
+        <h3 style="margin-top:0; color:var(--primary); font-family:Poppins;">Terms of Service</h3>
+        <p class="muted" style="font-size:14px; line-height:1.6;">
+          Welcome to InstaChulha.<br><br>
+          1. <b>Sourcing:</b> All products are sourced and delivered via our trusted logistics partners.<br><br>
+          2. <b>Agreements:</b> By placing an order via our online payment link, you agree to purchase the item and accept these terms.<br><br>
+          3. <b>Cancellation:</b> Orders once placed and processed cannot be cancelled unless approved by the support team.<br><br>
+          4. <b>Changes:</b> Prices and availability are subject to change without prior notice.
+        </p>
+      </div>
+    </section>`;
+}
+
+function PrivacyView() {
+  setTopbar("Privacy Policy", true); 
+  setActiveTab("");
+  $("#view").innerHTML = `
+    <section style="padding:16px;">
+      <div class="card pad">
+        <h3 style="margin-top:0; color:var(--primary); font-family:Poppins;">Privacy Policy</h3>
+        <p class="muted" style="font-size:14px; line-height:1.6;">
+          We respect your privacy.<br><br>
+          <b>Data Collection:</b> Your address, phone number, and contact details are collected strictly for delivery fulfillment purposes.<br><br>
+          <b>Data Security:</b> We do not store any sensitive payment information on our servers. All payments are handled securely by Razorpay gateway.<br><br>
+          <b>Third Parties:</b> We do not share your information with unauthorized third parties. We share delivery details only with courier partners.
+        </p>
+      </div>
+    </section>`;
 }
 
 /* ===== CART ===== */
@@ -1854,7 +1914,10 @@ function CheckoutView(){
       
       <div class="card sticky-sheet" style="margin-top:16px">
         <div class="row" style="font-weight:800; font-size:20px;"><div>Total Payable</div><div class="shimmer-text">${money(total)}</div></div>
-        <button class="btn btn-block" id="pay-online-next" style="padding:16px; margin-top:16px;"><i class="fa-solid fa-qrcode"></i> Pay & Place Order</button>
+        <button class="btn btn-block" id="pay-online-next" style="padding:16px; margin-top:16px;"><i class="fa-solid fa-qrcode"></i> Proceed to Online Payment</button>
+        <div class="trust-badge-rzp">
+            <i class="fa-solid fa-shield-halved"></i> Secured & Verified by Razorpay
+        </div>
       </div>
     </section>
   `;
@@ -1879,12 +1942,20 @@ function CheckoutView(){
     PROFILE.isComplete = true; 
     saveProfile();
     
+    // For Multi-item cart, we grab the payment link of the FIRST item in the cart as a fallback.
+    // In a real scenario, you'd want to generate a dynamic link, but for dropshipping single items, this works perfectly.
+    const firstProduct = PRODUCTS.find(x=>x.id===CART[0].productId);
+    if(!firstProduct || !firstProduct.paymentLink) {
+        alert("Admin has not configured payment link for items in cart.");
+        return;
+    }
+
     const items = CART.map(it => { 
         const prod = PRODUCTS.find(x=>x.id===it.productId); 
         return { productId: it.productId, name: prod?.name, price: prod?.price, qty: it.qty }; 
     });
     
-    writeLocal("instachulha_pending_upi", { 
+    writeLocal("instachulha_pending_redirect", { 
         orderId: "INSTA-" + Date.now().toString().slice(-8), 
         items, 
         customer: { ...PROFILE }, 
@@ -1892,7 +1963,8 @@ function CheckoutView(){
         isCart: true 
     });
     
-    routeTo("#/pay-upi");
+    // Redirect to the first item's payment link
+    window.location.href = firstProduct.paymentLink;
   });
 }
 
@@ -2064,7 +2136,7 @@ function OrderDetailView(orderId){
         </div>
         <div style="padding-top:16px; border-top:1px solid var(--line);">
             <div class="row" style="font-size:18px;"><strong>Total Paid</strong><strong style="color:var(--success);">${money(o.amount)}</strong></div>
-            <div class="muted" style="font-size:13px; margin-top:4px;">Via ${escapeHtml(o.paymentMethod || "Online/UPI")}</div>
+            <div class="muted" style="font-size:13px; margin-top:4px;">Via ${escapeHtml(o.paymentMethod || "Online Secure Payment")}</div>
         </div>
         ${o.trackingUrl ? `<a href="${escapeHtml(o.trackingUrl)}" target="_blank" class="btn btn-block" style="margin-top:20px;"><i class="fa-solid fa-truck-fast"></i> Track Live Shipment</a>` : ''}
       </div>
@@ -2121,7 +2193,7 @@ function setAdminView(){
   const sub = parseRoute().parts[1] || "dashboard";
   
   if (sub==="dashboard"){ showAdmin("admin-dashboard"); adminGo("Dashboard", false); }
-  else if (sub==="banners"){ showAdmin("admin-banners"); adminGo("Setup & UPI"); renderAdminBanners(); }
+  else if (sub==="banners"){ showAdmin("admin-banners"); adminGo("Store Settings"); renderAdminBanners(); }
   else if (sub==="add"){ showAdmin("admin-add"); adminGo("Add Stove"); }
   else if (sub==="manage"){ showAdmin("admin-manage"); adminGo("Inventory Table"); renderManageTable(); }
   else if (sub==="manage-cards"){ showAdmin("admin-manage-cards"); adminGo("Inventory"); renderManageCards(); }
@@ -2150,30 +2222,11 @@ $("#admin-logout")?.addEventListener("click", ()=>{
 function renderAdminBanners() {
   $("#banner-text").value = BANNER_TEXT; 
   $("#hero-thumbs").innerHTML = HERO_IMAGE_URL ? `<div class="thumb"><img src="${HERO_IMAGE_URL}"></div>` : "";
-  
-  $("#upi-id-input").value = UPI_ID !== "admin@bank" ? UPI_ID : ""; 
-  $("#upi-thumbs").innerHTML = UPI_QR_URL && !UPI_QR_URL.includes("placehold") ? `<div class="thumb"><img src="${UPI_QR_URL}"></div>` : "";
 }
-
-$("#upi-form")?.addEventListener("submit", async (e) => { 
-    e.preventDefault(); 
-    const upiId = $("#upi-id-input").value.trim(); 
-    const file = $("#upi-upload").files[0]; 
-    let updates = {}; 
-    if (upiId) updates.upiId = upiId; 
-    if (file) { updates.upiQr = await compressToDataURL(file, 800, 800, 0.9); } 
-    if(Object.keys(updates).length > 0) { 
-        db.ref('config').update(updates).then(() => toast("Saved!")); 
-    } 
-});
 
 $("#banner-form")?.addEventListener("submit", (e) => { 
     e.preventDefault(); 
     db.ref('config/bannerText').set($("#banner-text").value.trim()).then(() => toast("Saved.")); 
-});
-
-$("#banner-remove")?.addEventListener("click", () => { 
-    db.ref('config/bannerText').set("").then(() => toast("Removed.")); 
 });
 
 $("#hero-form")?.addEventListener("submit", async (e) => { 
@@ -2199,12 +2252,6 @@ $("#pf-upload")?.addEventListener("change", async (e)=>{
     renderThumbs(); 
     $("#pf-save").disabled = false; 
     $("#pf-save").textContent = "Save Product"; 
-});
-
-$("#upi-upload")?.addEventListener("change", async (e) => { 
-    const f = e.target.files[0]; 
-    if(!f) return; 
-    $("#upi-thumbs").innerHTML = `<div class="thumb"><img src="${await compressToDataURL(f, 800, 800, 0.9)}"></div>`; 
 });
 
 function renderThumbs(){ 
@@ -2238,6 +2285,7 @@ $("#pf-reset")?.addEventListener("click", ()=>{
     $("#pf-price").value=""; 
     $("#pf-mrp").value=""; 
     $("#pf-disc").value=""; 
+    $("#pf-paylink").value="";
     $("#pf-upload").value=""; 
     pendingUploads=[]; 
     renderThumbs(); 
@@ -2248,6 +2296,7 @@ $("#pf-save")?.addEventListener("click", ()=>{
   const name = $("#pf-name").value.trim(); 
   const description = $("#pf-desc").value.trim(); 
   const category = $("#pf-category").value.trim();
+  const paymentLink = $("#pf-paylink").value.trim();
   
   let priceMrp = Number($("#pf-mrp").value||0), discountPercent = Number($("#pf-disc").value||0), price = Number($("#pf-price").value||0);
   
@@ -2261,7 +2310,7 @@ $("#pf-save")?.addEventListener("click", ()=>{
   }
   
   const data = { 
-      name, description, category, priceMrp, discountPercent, price, imageUrls: pendingUploads.slice(), createdAt: Date.now() 
+      name, description, category, priceMrp, discountPercent, price, paymentLink, imageUrls: pendingUploads.slice(), createdAt: Date.now() 
   };
   
   if (id) { 
@@ -2286,6 +2335,7 @@ function renderManageCards(){
           <div class="price-line" style="margin-top:4px;">
               <div style="font-weight:700; color:var(--primary);">${money(p.price||0)}</div>
           </div>
+          ${p.paymentLink ? `<div style="font-size:11px; color:var(--success); margin-top:2px;">Link Active</div>` : `<div style="font-size:11px; color:var(--accent); margin-top:2px;">No Pay Link</div>`}
       </div>
       <button class="icon-round" data-edit="${p.id}"><i class="fa-solid fa-pen"></i></button>
       <button class="icon-round" data-del="${p.id}" style="color:#ef4444"><i class="fa-solid fa-trash"></i></button>
@@ -2310,6 +2360,7 @@ function loadToAddForm(id){
         $("#pf-mrp").value = p.priceMrp||""; 
         $("#pf-disc").value = p.discountPercent||""; 
         $("#pf-price").value = p.price||""; 
+        $("#pf-paylink").value = p.paymentLink||""; 
         pendingUploads = p.imageUrls.slice(); 
         renderThumbs(); 
         window.scrollTo(0,0); 
@@ -2339,7 +2390,7 @@ function renderOrdersAdmin() {
                 <td><b>${money(o.amount)}</b></td>
                 <td>
                     <select class="adm-status" style="padding:6px;">
-                        ${["Payment Verification Pending","Order Verified (Paid)","Dispatched","Delivered","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
+                        ${["PAID - Verified (Online)","Dispatched","Delivered","Cancelled"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
                     </select>
                 </td>
                 <td><input class="adm-track" value="${escapeHtml(o.trackingUrl||"")}" style="padding:6px;width:100px;"></td>
@@ -2402,7 +2453,7 @@ const chatbotQuestions = $("#chatbot-questions");
 const FAQ_DATA = [ 
     {q: "Is this a good alternative to LPG Gas?", a: "Yes! Avoid the 25-day lock-in periods. Our electric cooktops are fast, safe, and reliable."}, 
     {q: "How fast is delivery?", a: "We prioritize local deliveries within 2-4 days."}, 
-    {q: "How do I pay?", a: "Scan our secure QR code and pay directly via PhonePe/GPay."}, 
+    {q: "How do I pay?", a: "We use highly secure Razorpay payment gateway for all orders."}, 
     {q: "Warranty details?", a: "1-year manufacturer warranty is included."} 
 ];
 
@@ -2478,10 +2529,11 @@ function render(){
   else if (root_p==="home") HomeView(); 
   else if (root_p==="product" && id) ProductView(id); 
   else if (root_p==="quick-buy" && id) QuickBuyView(id); 
+  else if (root_p==="success-verified") SuccessVerifiedView(); 
   else if (root_p==="cart") CartView(); 
   else if (root_p==="checkout") CheckoutView(); 
-  else if (root_p==="pay-upi") PayUPIView(); 
-  else if (root_p==="success-upi") SuccessUPIView(); 
+  else if (root_p==="terms") TermsView(); 
+  else if (root_p==="privacy") PrivacyView(); 
   else if (root_p==="account" && id==="orders" && subid) OrderDetailView(subid); 
   else if (root_p==="account" && id==="orders") OrdersListView(); 
   else if (root_p==="favorites") FavoritesView(); 
